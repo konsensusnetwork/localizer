@@ -107,19 +107,69 @@ class ChatGPTAPI(Base):
         self.model = next(self.model_list)
 
     def create_messages(self, text, intermediate_messages=None):
-        content = self.prompt_template.format(
-            text=text, language=self.language, crlf="\n"
-        )
-
+        try:
+            content = self.prompt_template.format(
+                text=text, language=self.language, crlf="\n"
+            )
+        except (KeyError, IndexError, ValueError) as e:
+            print("\n" + "="*80)
+            print("ERROR: Failed to format your prompt template")
+            print("="*80)
+            print(f"Details: {e}")
+            print("\nThis error occurs when your prompt file contains unescaped curly braces {}")
+            print("that Python mistakenly treats as format placeholders.")
+            print("\nPROBLEM DETECTED:")
+            
+            # Use regex to find the likely problematic patterns
+            import re
+            markdown_attrs = re.findall(r'\{[\w\s="\'\.]+\}', self.prompt_template)
+            if markdown_attrs:
+                print("\nFound these Markdown attribute blocks that need escaping:")
+                for attr in markdown_attrs:
+                    print(f"  ❌ {attr}")
+                    # Show how to fix it
+                    fixed = attr.replace("{", "{{").replace("}", "}}")
+                    print(f"  ✅ {fixed}  (correct version)")
+            
+            print("\nHOW TO FIX:")
+            print("1. Open your prompt file:", self.prompt_file)
+            print("2. For any literal curly braces, double them: { → {{ and } → }}")
+            print("3. For example, change {width=\"5in\"} to {{width=\"5in\"}}")
+            print("\nAborting translation. Please fix your prompt file and try again.")
+            raise ValueError("Prompt formatting error - see details above") from e
+        
         sys_content = self.system_content or self.prompt_sys_msg.format(crlf="\n")
         messages = [
-            {"role": "system", "content": sys_content},
+            {"role": "developer", "content": sys_content},
         ]
 
         if intermediate_messages:
             messages.extend(intermediate_messages)
 
         messages.append({"role": "user", "content": content})
+        
+        # Print truncated version of messages
+        print("\n[bold blue]Messages to API:[/bold blue]")
+        for msg in messages:
+            role = msg["role"]
+            content = msg["content"]
+            
+            # Count total lines in original content
+            total_lines = len(content.splitlines())
+            
+            # Truncate content if too long
+            if len(content) > 500:
+                truncated_content = content[:500] + "..."
+                # Count lines in truncated content
+                truncated_lines = len(truncated_content.splitlines())
+                # Calculate number of truncated lines
+                lines_truncated = total_lines - truncated_lines
+                print(f"[bold cyan]{role}:[/bold cyan] {truncated_content}")
+                print(f"[dim italic](+ {lines_truncated} more lines truncated)[/dim italic]")
+            else:
+                print(f"[bold cyan]{role}:[/bold cyan] {content}")
+        print("[bold blue]End of messages[/bold blue]\n")
+        
         return messages
 
     def create_context_messages(self):
@@ -136,6 +186,21 @@ class ChatGPTAPI(Base):
 
     def create_chat_completion(self, text):
         messages = self.create_messages(text, self.create_context_messages())
+        
+        # Print message structure summary without duplicating content
+        print("\n[bold blue]API Message Summary:[/bold blue]")
+        for i, msg in enumerate(messages):
+            role = msg["role"]
+            content = msg["content"]
+            total_lines = len(content.splitlines())
+            total_chars = len(content)
+            
+            # Estimate token count (rough approximation)
+            estimated_tokens = total_chars // 4
+            
+            print(f"[bold cyan]Message {i+1} ({role}):[/bold cyan] {total_lines} lines, {total_chars} chars (~{estimated_tokens} tokens)")
+        print("[bold blue]End of message summary[/bold blue]\n")
+        
         completion = self.openai_client.chat.completions.create(
             model=self.model,
             messages=messages,
@@ -172,9 +237,15 @@ class ChatGPTAPI(Base):
 
     def translate(self, text, needprint=True):
         start_time = time.time()
-        # todo: Determine whether to print according to the cli option
+        # Better formatted input text display
         if needprint:
-            print(re.sub("\n{3,}", "\n\n", text))
+            max_length = 1000  # maximum number of characters to display
+            truncated_text = text if len(text) <= max_length else text[:max_length] + "..."
+            clean_text = re.sub("\n{3,}", "\n\n", truncated_text)
+            print("\n[bold magenta]Input Text:[/bold magenta]")
+            print(clean_text)
+            if len(text) > max_length:
+                print(f"[dim italic](+ {len(text) - max_length} more characters truncated)[/dim italic]")
 
         attempt_count = 0
         max_attempts = 3

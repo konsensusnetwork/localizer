@@ -103,6 +103,9 @@ class MarkdownBookLoader(BaseBookLoader):
                         while retry_count < max_retries:
                             try:
                                 temp = self.translate_model.translate(batch_text)
+                                # Ensure temp is not None and is a string
+                                if temp is None:
+                                    temp = ""  # Or some default value
                                 break
                             except AttributeError as ae:
                                 print(f"翻译出错: {ae}")
@@ -156,9 +159,12 @@ class MarkdownBookLoader(BaseBookLoader):
 
     def _save_progress(self):
         try:
+            # Filter out None values before joining
+            filtered_content = [item for item in self.p_to_save if item is not None]
             with open(self.bin_path, "w", encoding="utf-8") as f:
-                f.write("\n".join(self.p_to_save))
-        except:
+                f.write("\n".join(filtered_content))
+        except Exception as e:
+            print(f"Failed to save progress: {e}")
             raise Exception("can not save resume file")
 
     def load_state(self):
@@ -170,7 +176,10 @@ class MarkdownBookLoader(BaseBookLoader):
 
     def save_file(self, book_path, content):
         try:
+            # Filter out None values before joining
+            filtered_content = [item for item in content if item is not None]
             with open(book_path, "w", encoding="utf-8") as f:
-                f.write("\n".join(content))
-        except:
+                f.write("\n".join(filtered_content))
+        except Exception as e:
+            print(f"Failed to save file: {e}")
             raise Exception("can not save file")
