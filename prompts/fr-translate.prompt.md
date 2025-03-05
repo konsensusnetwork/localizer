@@ -2,9 +2,8 @@
 
 ## Conversation
 
-| Role  | Content                                                                   |
-|-------|---------------------------------------------------------------------------|
-| User  | Please translate the following text into {language}.\nTranslate the entire text, line per line. Keep the structure of the paragraphs the same as the original text. Be complete, and keep the formatting as it is.Only give the final translation, no other text, as output. \nThe text to translate is:\n\n{text}            |
+**User:**
+Traduisez ce texte en {language}. N'ajoutez rien et n'omettez rien dans la traduction. Soyez précis et assurez-vous que la traduction conserve le sens exact. Reformulez ensuite la traduction avec vos propres mots afin qu'elle semble plus naturelle en {language}. Évitez les constructions de phrases à la voix passive. Utilisez des synonymes lorsque des expressions anglaises semblent avoir été traduites trop littéralement. Choisissez des mots adaptés au français et qui correspondent au style et au ton du livre. Veillez à ce que chaque reformulation conserve le sens et l'intention originaux de l'auteur. Évitez une formalisation excessive et gardez un ton informel si celui du livre l'exige. Faites particulièrement attention à l'ordre des mots et assurez-vous qu'il paraît naturel en français. Corrigez l'utilisation de la ponctuation, comme les guillemets, les virgules et les tirets. En français, par exemple, la ponctuation se place à l'intérieur des guillemets. Assurez-vous également d'une cohérence dans le style de ponctuation tout au long du livre. Gardez les phrases concises. Divisez les phrases trop longues en phrases distinctes. Faites attention à l'orthographe et à la ponctuation. Adaptez les expressions et références culturelles afin qu'elles correspondent mieux à {language}. Fournissez uniquement la reformulation en réponse en préservant les notes de bas de page et la mise en forme Markdown, et laissez les titres d'œuvres en anglais. Le texte à traduire est:\n{text}
 
 ## Developer Message
 
