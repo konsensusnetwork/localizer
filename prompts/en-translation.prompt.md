@@ -2,9 +2,9 @@
 
 ## Conversation
 
-| Role  | Content                                                                   |
-|-------|---------------------------------------------------------------------------|
-| User  | Please translate the following text into {language}.\nTranslate the entire text, line per line. Keep the structure of the paragraphs the same as the original text. Be complete, and keep the formatting as it is. Only give the final translation, no other text, as output. \nThe text to translate is:\n\n{text}            |
+**User:**
+Translate the given text to {language}. Be accurate in translation. If the text cannot be translated, return the original text as is. Do not translate a person's name. Do not add any additional text in the translation. Make it sound natural and idiomatic in {language}. Please ensure that the final version retains the intended meaning, context, and tone of the original text. Feel free to make necessary adjustments, rephrasing, or word choices to create a smooth and natural-sounding {language} version that would resonate well with native {language} speakers. Consider localizing certain expressions or cultural references to suit the {language} audience better. Provide a high-quality and linguistically accurate translation that reads as if it were originally written in {language}. The text to be translated is:
+{text}
 
 ## Developer Message
 

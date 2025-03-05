@@ -383,7 +383,7 @@ Furthermore, there really was a practical economic reason, given the imperatives
 De plus, il existait effectivement une raison économique pratique, liée aux impératifs de la sélection de la parentèle, pour qu’un individu associe la prospérité et la survie de ses proches à celles de sa tribu ou super-famille. Un membre d’une tribu de chasseurs-cueilleurs dépendait réellement du succès de l’ensemble de la tribu pour assurer sa prospérité. Il n’y avait pas de propriété individuelle indépendante ni aucune manière plausible, pour un individu ou une famille, de survivre et de prospérer en dehors de la tribu. L’intérêt personnel de chacun se trouvait donc étroitement lié à celui du groupe. Comme le formule Hirshleifer : « Dans la mesure où les membres du groupe partagent un même destin ou un même résultat, s’entraider revient à s’aider soi-même[^372]. »
 
 > "Evidently primitive man-and the Lovedu can be regarded as representative of hundreds of similar peoples-considers as the norm a society in which, at any one moment of time, everyone's situation is precisely equal." - HELMET SCHOECK
-
+> 
 > « De toute évidence, l’homme primitif – et on peut considérer que les Lovedu représentent des centaines de peuples similaires – considère comme la norme une société dans laquelle, à tout moment donné, la situation de chacun est exactement égale à celle des autres. » - HELMET SCHOECK
 
 ---
