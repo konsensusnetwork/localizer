@@ -337,7 +337,7 @@ So you are close to reaching the limit. You have to choose your own value, there
         "--batch_size",
         dest="batch_size",
         type=int,
-        help="how many lines will be translated by aggregated translation(This options currently only applies to txt files)",
+        help="how many lines will be translated by aggregated translation (This options currently only applies to txt files)",
     )
     parser.add_argument(
         "--retranslate",

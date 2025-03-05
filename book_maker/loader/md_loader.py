@@ -25,6 +25,7 @@ class MarkdownBookLoader(BaseBookLoader):
         context_flag=False,
         context_paragraph_limit=0,
         temperature=1.0,
+        batch_size=10,
     ) -> None:
         self.md_name = md_name
         self.translate_model = model(
@@ -41,7 +42,7 @@ class MarkdownBookLoader(BaseBookLoader):
         self.bilingual_result = []
         self.bilingual_temp_result = []
         self.test_num = test_num
-        self.batch_size = 10
+        self.batch_size = batch_size
         self.single_translate = single_translate
         self.md_paragraphs = []
 
@@ -63,23 +64,23 @@ class MarkdownBookLoader(BaseBookLoader):
         """Process the original content into markdown paragraphs."""
         current_paragraph = []
         for line in self.origin_book:
-            # 如果是空行且当前段落不为空，保存当前段落
+            # If it's an empty line and the current paragraph is not empty, save the current paragraph
             if not line.strip() and current_paragraph:
-                self.md_paragraphs.append("\n".join(current_paragraph))
+                self.md_paragraphs.append("\n\n".join(current_paragraph))
                 current_paragraph = []
-            # 如果是标题行，单独作为一个段落
+            # If it's a title line, treat it as a separate paragraph
             elif line.strip().startswith("#"):
                 if current_paragraph:
-                    self.md_paragraphs.append("\n".join(current_paragraph))
+                    self.md_paragraphs.append("\n\n".join(current_paragraph))
                     current_paragraph = []
                 self.md_paragraphs.append(line)
-            # 其他情况，添加到当前段落
+            # In other cases, add to the current paragraph
             else:
                 current_paragraph.append(line)
 
-        # 处理最后一个段落
+        # Process the last paragraph
         if current_paragraph:
-            self.md_paragraphs.append("\n".join(current_paragraph))
+            self.md_paragraphs.append("\n\n".join(current_paragraph))
 
     @staticmethod
     def _is_special_text(text):
