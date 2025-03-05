@@ -352,23 +352,6 @@ def log_translation_run(input_path, output_path, run_params):
                     log_entry['system_message_preview'] = system_message[:max_preview_length] + "..."
                 else:
                     log_entry['system_message_preview'] = system_message
-        
-        # If it's a file, try to get prompt content and stats
-        if prompt_file_path and os.path.exists(prompt_file_path):
-            try:
-                with open(prompt_file_path, 'r', encoding='utf-8') as f:
-                    prompt_content = f.read()
-                    prompt_lines = prompt_content.count('\n') + 1
-                    log_entry['prompt_lines'] = prompt_lines
-                    
-                    # Count tokens if possible
-                    try:
-                        prompt_tokens = num_tokens_from_text(prompt_content)
-                        log_entry['prompt_tokens'] = prompt_tokens
-                    except Exception:
-                        pass
-            except Exception as e:
-                log_entry['prompt_read_error'] = str(e)
     
     # Write log entry to file
     log_data = {"runs": []}

@@ -3,6 +3,43 @@ from pathlib import Path
 import datetime
 import os
 
+# Add tqdm import with fallback
+try:
+    from tqdm import tqdm
+    TQDM_AVAILABLE = True
+except ImportError:
+    TQDM_AVAILABLE = False
+    # Simple fallback progress indicator
+    class SimpleTqdm:
+        def __init__(self, iterable=None, total=None, desc=None):
+            self.iterable = iterable
+            self.total = total or len(iterable) if iterable is not None else 0
+            self.desc = desc
+            self.current = 0
+            self.print_progress()
+
+        def __iter__(self):
+            for item in self.iterable:
+                yield item
+                self.current += 1
+                self.print_progress()
+            print()  # Add final newline
+
+        def print_progress(self):
+            if self.total > 0:
+                percent = int(100 * self.current / self.total)
+                bar_length = 20
+                bar = '█' * int(bar_length * self.current / self.total) + ' ' * (bar_length - int(bar_length * self.current / self.total))
+                suffix = f"{self.current}/{self.total}"
+                if self.desc:
+                    prefix = f"{self.desc}: "
+                else:
+                    prefix = ""
+                sys.stdout.write(f"\r{prefix}[{bar}] {percent}% {suffix}")
+                sys.stdout.flush()
+    
+    tqdm = SimpleTqdm
+
 from book_maker.utils import prompt_config_to_kwargs, generate_output_filename, log_translation_run
 
 from .base_loader import BaseBookLoader
@@ -100,7 +137,16 @@ class MarkdownBookLoader(BaseBookLoader):
                 self.md_paragraphs[i : i + self.batch_size]
                 for i in range(0, len(self.md_paragraphs), self.batch_size)
             ]
-            for paragraphs in sliced_list:
+            
+            # Add progress bar for batch processing
+            progress_bar = tqdm(
+                sliced_list,
+                desc="Translating",
+                unit="batch",
+                total=len(sliced_list)
+            )
+            
+            for paragraphs in progress_bar:
                 batch_text = "\n\n".join(paragraphs)
                 if self._is_special_text(batch_text):
                     continue
@@ -110,18 +156,21 @@ class MarkdownBookLoader(BaseBookLoader):
                         retry_count = 0
                         while retry_count < max_retries:
                             try:
+                                # Update progress bar description with current batch number
+                                progress_bar.set_description(f"Translating batch {index//self.batch_size + 1}/{len(sliced_list)}")
+                                
                                 temp = self.translate_model.translate(batch_text)
                                 # Ensure temp is not None and is a string
                                 if temp is None:
                                     temp = ""  # Or some default value
                                 break
                             except AttributeError as ae:
-                                print(f"Translation error: {ae}")
+                                print(f"\nTranslation error: {ae}")
                                 retry_count += 1
                                 if retry_count == max_retries:
                                     raise Exception("Translation model initialization failed") from ae
                     except Exception as e:
-                        print(f"Error during translation: {e}")
+                        print(f"\nError during translation: {e}")
                         raise Exception("Error occurred during translation") from e
 
                     self.p_to_save.append(temp)
@@ -173,7 +222,7 @@ class MarkdownBookLoader(BaseBookLoader):
             return True
 
         except (KeyboardInterrupt, Exception) as e:
-            print(f"Error: {e}")
+            print(f"\nError: {e}")
             print("Progress will be saved, you can continue later")
             self._save_progress()
             self._save_temp_book()

@@ -2,6 +2,10 @@ import argparse
 import json
 import os
 from os import environ as env
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 from book_maker.loader import BOOK_LOADER_DICT
 from book_maker.translator import MODEL_DICT
