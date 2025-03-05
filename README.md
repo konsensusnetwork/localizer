@@ -389,3 +389,35 @@ Thank you, that's enough.
 
 [^token]: https://platform.openai.com/account/api-keys
 [^black]: https://github.com/psf/black
+
+### Processing a Directory of Files
+
+You can now process a directory containing markdown files (.md and .qmd) in a single command:
+
+```shell
+python3 make_book.py --book_name path/to/your/directory --openai_key ${openai_key} --language zh-hans
+```
+
+This will:
+- Find all markdown files in the directory (both .md and .qmd)
+- Skip any files with "_bilingual" in the name (already processed files)
+- Translate each file using the markdown processor
+- Output translated files with "_bilingual" suffix in the same directory
+
+This is particularly useful for translating a collection of markdown chapter files or a complete manuscript split into multiple documents.
+
+## Processing Directories of Markdown Files
+
+You can now process entire directories containing markdown files:
+
+```shell
+python3 make_book.py --book_name path/to/markdown_directory --openai_key ${openai_key}
+```
+
+This will:
+- Recursively find all markdown files (`.md` and `.qmd`) in the directory
+- Process each file to create a bilingual version with "_bilingual" added to the filename
+- Skip any files that already have "_bilingual" in their name
+- Display a summary of successful and failed translations
+
+You can combine this with other options like `--language`, `--model`, and `--test`.

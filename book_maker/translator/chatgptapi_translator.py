@@ -12,6 +12,7 @@ from rich import print
 
 from .base_translator import Base
 from ..config import config
+from ..utils import count_tokens_with_tiktoken
 
 CHATGPT_CONFIG = config["translator"]["chatgptapi"]
 
@@ -63,6 +64,7 @@ class ChatGPTAPI(Base):
         temperature=1.0,
         context_flag=False,
         context_paragraph_limit=0,
+        system_role=None,
         **kwargs,
     ) -> None:
         super().__init__(key, language)
@@ -99,6 +101,17 @@ class ChatGPTAPI(Base):
         self.batch_text_list = []
         self.batch_info_cache = None
         self.result_content_cache = {}
+        self.system_role = system_role or 'system'
+        # Initialize cumulative token counters
+        self.cumulative_token_info = {
+            "system_tokens": 0,
+            "user_tokens": 0,
+            "intermediate_tokens": 0,
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+        }
+        self.api_call_count = 0
 
     def rotate_key(self):
         self.openai_client.api_key = next(self.keys)
@@ -138,17 +151,52 @@ class ChatGPTAPI(Base):
             print("\nAborting translation. Please fix your prompt file and try again.")
             raise ValueError("Prompt formatting error - see details above") from e
         
-        sys_content = self.system_content or self.prompt_sys_msg.format(crlf="\n")
-        messages = [
-            {"role": "developer", "content": sys_content},
-        ]
+        # Format system content with text and language placeholders too
+        try:
+            sys_content = self.system_content or self.prompt_sys_msg
+            # Format system content with the same parameters as user content
+            sys_content = sys_content.format(text=text, language=self.language, crlf="\n")
+        except (KeyError, IndexError, ValueError) as e:
+            print("\n" + "="*80)
+            print("ERROR: Failed to format your system/developer message template")
+            print("="*80)
+            print(f"Details: {e}")
+            print("\nThis error occurs when your system/developer message contains unescaped curly braces {}")
+            print("or invalid placeholders.")
+            print("\nAborting translation. Please fix your prompt file and try again.")
+            raise ValueError("System prompt formatting error") from e
+        
+        # Use the stored role type from the PromptDown file
+        role = getattr(self, 'system_role', 'system')  # Default to 'system' if not specified
+        
+        # Create individual messages first
+        system_message = {"role": role, "content": sys_content}
+        user_message = {"role": "user", "content": content}
+        
+        # Count tokens for each message separately
+        model_name = getattr(self, 'model', None)  # Get model if available, otherwise None for default counting
+        system_tokens = count_tokens_with_tiktoken([system_message], model=model_name)
+        user_tokens = count_tokens_with_tiktoken([user_message], model=model_name)
+        
+        # Store token counts on self for later access
+        self.message_token_info = {
+            "system_tokens": system_tokens,
+            "user_tokens": user_tokens,
+            "intermediate_tokens": 0  # Will be updated if intermediate messages exist
+        }
+        
+        # Build the full messages list
+        messages = [system_message]
 
         if intermediate_messages:
+            # Count tokens for intermediate messages if present
+            intermediate_tokens = count_tokens_with_tiktoken(intermediate_messages, model=model_name)
+            self.message_token_info["intermediate_tokens"] = intermediate_tokens
             messages.extend(intermediate_messages)
 
-        messages.append({"role": "user", "content": content})
+        messages.append(user_message)
         
-        # Print truncated version of messages
+        # Print message structure with clear representation of newlines
         print("\n[bold blue]Messages to API:[/bold blue]")
         for msg in messages:
             role = msg["role"]
@@ -164,10 +212,17 @@ class ChatGPTAPI(Base):
                 truncated_lines = len(truncated_content.splitlines())
                 # Calculate number of truncated lines
                 lines_truncated = total_lines - truncated_lines
-                print(f"[bold cyan]{role}:[/bold cyan] {truncated_content}")
+                print(f"[bold cyan]{role}:[/bold cyan]")
+                # Split by newlines to print each line separately
+                for line in truncated_content.splitlines():
+                    print(f"  {line}")
                 print(f"[dim italic](+ {lines_truncated} more lines truncated)[/dim italic]")
             else:
-                print(f"[bold cyan]{role}:[/bold cyan] {content}")
+                print(f"[bold cyan]{role}:[/bold cyan]")
+                # Split by newlines to print each line separately
+                for line in content.splitlines():
+                    print(f"  {line}")
+        
         print("[bold blue]End of messages[/bold blue]\n")
         
         return messages
@@ -185,28 +240,88 @@ class ChatGPTAPI(Base):
         return messages
 
     def create_chat_completion(self, text):
-        messages = self.create_messages(text, self.create_context_messages())
+        # for issue #350
+        if hasattr(self.openai_client, "api_key"):
+            self.openai_client.api_key = next(self.keys)
+        max_retries = 5
+        retry_count = 0
+        self.model = next(self.model_list)
         
-        # Print message structure summary without duplicating content
-        print("\n[bold blue]API Message Summary:[/bold blue]")
-        for i, msg in enumerate(messages):
-            role = msg["role"]
-            content = msg["content"]
-            total_lines = len(content.splitlines())
-            total_chars = len(content)
-            
-            # Estimate token count (rough approximation)
-            estimated_tokens = total_chars // 4
-            
-            print(f"[bold cyan]Message {i+1} ({role}):[/bold cyan] {total_lines} lines, {total_chars} chars (~{estimated_tokens} tokens)")
-        print("[bold blue]End of message summary[/bold blue]\n")
+        # Create messages outside the retry loop to avoid recreating them each time
+        messages = self.create_messages(text)
         
-        completion = self.openai_client.chat.completions.create(
-            model=self.model,
-            messages=messages,
-            temperature=self.temperature,
-        )
-        return completion
+        # Token counts were already calculated in create_messages
+        total_token_count = sum(self.message_token_info.values())
+        
+        # Store token count information for logging
+        self.token_info = {
+            "estimated_prompt_tokens": total_token_count,
+            "system_tokens": self.message_token_info["system_tokens"],
+            "user_tokens": self.message_token_info["user_tokens"],
+            "intermediate_tokens": self.message_token_info["intermediate_tokens"],
+            "model": self.model,
+            "temperature": self.temperature
+        }
+        
+        # Log token usage information
+        print(f"\n[bold blue]API Request Information:[/bold blue]")
+        print(f"[cyan]Model:[/cyan] {self.model}")
+        print(f"[cyan]System message tokens:[/cyan] {self.token_info['system_tokens']} tokens")
+        print(f"[cyan]User message tokens:[/cyan] {self.token_info['user_tokens']} tokens")
+        if self.token_info['intermediate_tokens'] > 0:
+            print(f"[cyan]Intermediate message tokens:[/cyan] {self.token_info['intermediate_tokens']} tokens")
+        print(f"[cyan]Total token count:[/cyan] {total_token_count} tokens")
+        print(f"[cyan]Temperature:[/cyan] {self.temperature}")
+        print("[bold blue]End of request information[/bold blue]\n")
+
+        while retry_count < max_retries:
+            try:
+                completion = self.openai_client.chat.completions.create(
+                    model=self.model,
+                    messages=messages,
+                    temperature=self.temperature,
+                )
+                # Increment API call counter
+                self.api_call_count += 1
+                
+                # Store actual token usage information from the API response
+                self.token_info.update({
+                    "prompt_tokens": completion.usage.prompt_tokens,
+                    "completion_tokens": completion.usage.completion_tokens, 
+                    "total_tokens": completion.usage.total_tokens
+                })
+                
+                # Update cumulative token information
+                self.cumulative_token_info["system_tokens"] += self.message_token_info["system_tokens"]
+                self.cumulative_token_info["user_tokens"] += self.message_token_info["user_tokens"]
+                self.cumulative_token_info["intermediate_tokens"] += self.message_token_info["intermediate_tokens"]
+                self.cumulative_token_info["prompt_tokens"] += completion.usage.prompt_tokens
+                self.cumulative_token_info["completion_tokens"] += completion.usage.completion_tokens
+                self.cumulative_token_info["total_tokens"] += completion.usage.total_tokens
+                
+                # Log completion information
+                print(f"\n[bold green]API Response Information:[/bold green]")
+                print(f"[green]Prompt tokens:[/green] {completion.usage.prompt_tokens}")
+                print(f"[green]Completion tokens:[/green] {completion.usage.completion_tokens}")
+                print(f"[green]Total tokens:[/green] {completion.usage.total_tokens}")
+                print("[bold green]End of response information[/bold green]\n")
+                
+                return completion
+            except RateLimitError:
+                # Rotate API key and model on rate limit
+                if hasattr(self.openai_client, "api_key"):
+                    self.openai_client.api_key = next(self.keys)
+                self.model = next(self.model_list)
+                retry_count += 1
+                if retry_count >= max_retries:
+                    raise Exception("Rate limit exceeded too many times.")
+                time.sleep(3 * retry_count)  # Exponential backoff
+            except Exception as e:
+                print(f"Error: {e}")
+                retry_count += 1
+                if retry_count >= max_retries:
+                    raise
+                time.sleep(1)
 
     def get_translation(self, text):
         self.rotate_key()

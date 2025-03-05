@@ -1,4 +1,8 @@
 import tiktoken
+import datetime
+import json
+import os
+from pathlib import Path
 
 # Borrowed from : https://github.com/openai/whisper
 LANGUAGES = {
@@ -128,6 +132,7 @@ def prompt_config_to_kwargs(prompt_config):
     return dict(
         prompt_template=prompt_config.get("user", None),
         prompt_sys_msg=prompt_config.get("system", None),
+        system_role=prompt_config.get("system_role", None),
     )
 
 
@@ -162,3 +167,209 @@ def num_tokens_from_text(text, model="gpt-3.5-turbo-0301"):
             f"""num_tokens_from_messages() is not presently implemented for model {model}.
   See https://github.com/openai/openai-python/blob/main/chatml.md for information on how messages are converted to tokens."""
         )
+
+def count_tokens_with_tiktoken(messages, model="gpt-3.5-turbo"):
+    """
+    Returns the number of tokens used by a list of messages using tiktoken.
+    Follows OpenAI's token counting approach for chat completions.
+    
+    Args:
+        messages: List of message dictionaries with role and content
+        model: The model name to use for tokenization
+    
+    Returns:
+        int: Number of tokens used by the messages
+    """
+    import tiktoken
+    
+    try:
+        encoding = tiktoken.encoding_for_model(model)
+    except KeyError:
+        # Fall back to cl100k_base encoding if model-specific encoding not found
+        encoding = tiktoken.get_encoding("cl100k_base")
+    
+    # Base tokens for the entire messages array
+    num_tokens = 3  # every reply is primed with <|start|>assistant<|message|>
+    
+    for message in messages:
+        # Each message follows: <|im_start|>{role/name}\n{content}<|im_end|>\n
+        num_tokens += 4
+        
+        for key, value in message.items():
+            if key == "role":
+                # Role is always required and usually 1 token
+                num_tokens += 1
+            elif key == "content" and value:
+                # Add the encoded content length
+                num_tokens += len(encoding.encode(value))
+            elif key == "name":
+                # If there's a name, the role is omitted
+                num_tokens += len(encoding.encode(value))
+    
+    return num_tokens
+
+def generate_output_filename(input_path, language, model_name):
+    """Generate standardized output filename with date, time and model info.
+    
+    Args:
+        input_path: Original file path
+        language: Target language code (used in logs but not in filename)
+        model_name: Name of the translation model used
+        
+    Returns:
+        String containing the new filename path with pattern: 
+        original_YYYYMMDD_HHMM_model.ext
+    """
+    path = Path(input_path)
+    date_str = datetime.datetime.now().strftime("%Y%m%d_%H%M")
+    stem = path.stem
+
+    # Clean up model name for filename (remove special chars, limit length)
+    safe_model_name = "".join(c if c.isalnum() or c in "-_" else "_" for c in model_name)
+    if len(safe_model_name) > 30:  # Limit length to avoid too long filenames
+        safe_model_name = safe_model_name[:30]
+
+    # Create new filename with pattern: original_YYYYMMDD_HHMM_model.ext
+    new_filename = f"{stem}_{date_str}_{safe_model_name}{path.suffix}"
+
+    return str(path.parent / new_filename)
+
+def log_translation_run(input_path, output_path, run_params):
+    """Log translation run parameters to a log file in the same directory.
+    
+    Args:
+        input_path: Original file path
+        output_path: Output file path
+        run_params: Dictionary of run parameters
+    """
+    log_dir = Path(input_path).parent
+    log_file = log_dir / "translation_log.json"
+    
+    # Count lines in input file
+    input_line_count = 0
+    if os.path.exists(input_path):
+        try:
+            with open(input_path, 'r', encoding='utf-8') as f:
+                input_line_count = sum(1 for _ in f)
+        except Exception as e:
+            print(f"Warning: Could not count lines in input file: {e}")
+    
+    # Count lines in output file if it exists
+    output_line_count = 0
+    if os.path.exists(output_path):
+        try:
+            with open(output_path, 'r', encoding='utf-8') as f:
+                output_line_count = sum(1 for _ in f)
+        except Exception as e:
+            print(f"Warning: Could not count lines in output file: {e}")
+    
+    # Extract translator object if present
+    translator = run_params.pop('translate_model', None)
+    
+    # Add timestamp and file info to parameters
+    log_entry = {
+        "timestamp": datetime.datetime.now().isoformat(),
+        "input_file": str(Path(input_path).name),
+        "input_line_count": input_line_count,
+        "output_file": str(Path(output_path).name),
+        "output_line_count": output_line_count,
+        **run_params
+    }
+    
+    # Check for new token info structure on the translator
+    if translator and hasattr(translator, 'token_info'):
+        # First check if we have cumulative token info
+        if hasattr(translator, 'cumulative_token_info'):
+            # Add detailed cumulative token information
+            token_info = translator.cumulative_token_info
+            log_entry.update({
+                "system_tokens": token_info.get("system_tokens", 0),
+                "user_tokens": token_info.get("user_tokens", 0),
+                "intermediate_tokens": token_info.get("intermediate_tokens", 0),
+                "prompt_tokens": token_info.get("prompt_tokens", 0),
+                "completion_tokens": token_info.get("completion_tokens", 0),
+                "total_tokens": token_info.get("total_tokens", 0)
+            })
+        else:
+            # Fall back to the last call's token info
+            token_info = translator.token_info
+            log_entry.update({
+                "system_tokens": token_info.get("system_tokens", 0),
+                "user_tokens": token_info.get("user_tokens", 0),
+                "intermediate_tokens": token_info.get("intermediate_tokens", 0),
+                "prompt_tokens": token_info.get("estimated_prompt_tokens", 0)
+            })
+    
+    # Add prompt info if available
+    if 'prompt_file' in run_params and run_params['prompt_file']:
+        # Extract the prompt template string
+        prompt_template = run_params['prompt_file']
+        
+        # Check if it's a file path or a direct template string
+        prompt_file_path = None
+        if isinstance(prompt_template, str) and os.path.exists(prompt_template):
+            prompt_file_path = prompt_template
+            log_entry['prompt_filename'] = os.path.basename(prompt_file_path)
+        elif isinstance(prompt_template, str) and len(prompt_template) > 20:
+            # It's likely a direct template string, not a file path
+            log_entry['prompt_filename'] = "inline_template"
+        
+        # Add truncated user message if we have the translator object
+        if translator and hasattr(translator, 'prompt_template'):
+            max_preview_length = 100
+            prompt_template = getattr(translator, 'prompt_template', '')
+            if prompt_template and isinstance(prompt_template, str):
+                if len(prompt_template) > max_preview_length:
+                    log_entry['user_message_preview'] = prompt_template[:max_preview_length] + "..."
+                else:
+                    log_entry['user_message_preview'] = prompt_template
+        
+            # Add system message if available from the translator
+            system_message = getattr(translator, 'prompt_sys_msg', None)
+            if system_message:
+                if len(system_message) > max_preview_length:
+                    log_entry['system_message_preview'] = system_message[:max_preview_length] + "..."
+                else:
+                    log_entry['system_message_preview'] = system_message
+        
+        # If it's a file, try to get prompt content and stats
+        if prompt_file_path and os.path.exists(prompt_file_path):
+            try:
+                with open(prompt_file_path, 'r', encoding='utf-8') as f:
+                    prompt_content = f.read()
+                    prompt_lines = prompt_content.count('\n') + 1
+                    log_entry['prompt_lines'] = prompt_lines
+                    
+                    # Count tokens if possible
+                    try:
+                        prompt_tokens = num_tokens_from_text(prompt_content)
+                        log_entry['prompt_tokens'] = prompt_tokens
+                    except Exception:
+                        pass
+            except Exception as e:
+                log_entry['prompt_read_error'] = str(e)
+    
+    # Write log entry to file
+    log_data = {"runs": []}
+    if os.path.exists(log_file):
+        try:
+            with open(log_file, 'r', encoding='utf-8') as f:
+                log_data = json.load(f)
+                # Check the format of the loaded data to support both old and new formats
+                if isinstance(log_data, list):
+                    # New format - convert to old format with "runs" key
+                    log_data = {"runs": log_data}
+                elif not isinstance(log_data, dict) or "runs" not in log_data:
+                    # Invalid format - reset
+                    log_data = {"runs": []}
+        except json.JSONDecodeError:
+            # If JSON is invalid, start fresh
+            log_data = {"runs": []}
+    
+    # Add new entry and save
+    log_data["runs"].append(log_entry)
+    
+    with open(log_file, 'w', encoding='utf-8') as f:
+        json.dump(log_data, f, indent=2, ensure_ascii=False)
+    
+    print(f"Translation run logged to {log_file}")

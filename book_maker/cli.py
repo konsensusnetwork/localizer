@@ -10,46 +10,78 @@ from book_maker.utils import LANGUAGES, TO_LANGUAGE_CODE
 
 def parse_prompt_arg(prompt_arg):
     prompt = None
+    prompt_file_path = None  # Initialize prompt_file_path
+    
     if prompt_arg is None:
-        return prompt
+        return prompt, prompt_file_path
 
     # Check if it's a path to a markdown file (PromptDown format)
     if prompt_arg.endswith(".md") and os.path.exists(prompt_arg):
         try:
             from promptdown import StructuredPrompt
             structured_prompt = StructuredPrompt.from_promptdown_file(prompt_arg)
+            prompt_file_path = prompt_arg  # Store the actual file path
             
             # Initialize our prompt structure
             prompt = {}
             
             # Handle developer_message or system_message
-            # Developer message takes precedence if both are present
+            # Store both the content and the role type
+            system_content = None
+            system_role = None
+            
             if hasattr(structured_prompt, 'developer_message') and structured_prompt.developer_message:
-                prompt['system'] = structured_prompt.developer_message
+                system_content = structured_prompt.developer_message
+                system_role = 'developer'
             elif hasattr(structured_prompt, 'system_message') and structured_prompt.system_message:
-                prompt['system'] = structured_prompt.system_message
+                system_content = structured_prompt.system_message
+                system_role = 'system'
+            
+            # Check for invalid placeholders in system/developer message
+            if system_content:
+                # Find all placeholders with format {something}
+                import re
+                invalid_placeholders = re.findall(r'\{([^{}]+)\}', system_content)
+                if invalid_placeholders:
+                    # Only language and text are allowed in rare cases - but generally no placeholders here
+                    disallowed = [p for p in invalid_placeholders if p not in ['language', 'text', 'crlf']]
+                    if disallowed:
+                        raise ValueError(f"Invalid placeholders found in system/developer message: {', '.join('{' + p + '}' for p in disallowed)}")
+                
+                prompt['system'] = system_content
+                prompt['system_role'] = system_role
             
             # Extract user message from conversation
+            user_message = None
             if hasattr(structured_prompt, 'conversation') and structured_prompt.conversation:
                 for message in structured_prompt.conversation:
                     if message.role.lower() == 'user':
-                        prompt['user'] = message.content
+                        user_message = message.content
                         break
-            
+                        
             # Ensure we found a user message
-            if 'user' not in prompt or not prompt['user']:
+            if not user_message:
                 raise ValueError("PromptDown file must contain at least one user message")
-                
-            print(f"Successfully loaded PromptDown file: {prompt_arg}")
             
-            # Validate required placeholders
-            if any(c not in prompt["user"] for c in ["{text}"]):
+            # Check for invalid placeholders in user message
+            invalid_placeholders = re.findall(r'\{([^{}]+)\}', user_message)
+            allowed_placeholders = ['text', 'language', 'crlf']
+            disallowed = [p for p in invalid_placeholders if p not in allowed_placeholders]
+            if disallowed:
+                raise ValueError(f"Invalid placeholders found in user message: {', '.join('{' + p + '}' for p in disallowed)}")
+            
+            # Check for required placeholders
+            if '{text}' not in user_message:
                 raise ValueError("User message in PromptDown must contain `{text}` placeholder")
+                
+            prompt['user'] = user_message
             
-            return prompt
+            print(f"Successfully loaded PromptDown file: {prompt_arg}")
+            return prompt, prompt_file_path
+            
         except Exception as e:
             print(f"Error parsing PromptDown file: {e}")
-            # Fall through to other parsing methods
+            raise  # Re-raise to stop processing if there's an error
     
     # Existing parsing logic for JSON strings and other formats
     if not any(prompt_arg.endswith(ext) for ext in [".json", ".txt", ".md"]):
@@ -57,11 +89,14 @@ def parse_prompt_arg(prompt_arg):
             # user can define prompt by passing a json string
             # eg: --prompt '{"system": "You are a professional translator who translates computer technology books", "user": "Translate \`{text}\` to {language}"}'
             prompt = json.loads(prompt_arg)
+            prompt_file_path = "inline_json"  # Mark as inline JSON
         except json.JSONDecodeError:
             # if not a json string, treat it as a template string
             prompt = {"user": prompt_arg}
+            prompt_file_path = "inline_template"  # Mark as inline template
 
     elif os.path.exists(prompt_arg):
+        prompt_file_path = prompt_arg  # Store the actual file path
         if prompt_arg.endswith(".txt"):
             # if it's a txt file, treat it as a template string
             with open(prompt_arg, encoding="utf-8") as f:
@@ -85,7 +120,7 @@ def parse_prompt_arg(prompt_arg):
         raise ValueError("prompt can only contain the keys of `user` and `system`")
 
     print("prompt config:", prompt)
-    return prompt
+    return prompt, prompt_file_path
 
 
 def main():
@@ -478,7 +513,8 @@ So you are close to reaching the limit. You have to choose your own value, there
         model_api_base=model_api_base,
         is_test=options.test,
         test_num=options.test_num,
-        prompt_config=parse_prompt_arg(options.prompt_arg),
+        prompt_config=parse_prompt_arg(options.prompt_arg)[0],  # Get just the prompt config
+        prompt_file_path=parse_prompt_arg(options.prompt_arg)[1],  # Get the prompt file path
         single_translate=options.single_translate,
         context_flag=options.context_flag,
         context_paragraph_limit=options.context_paragraph_limit,
