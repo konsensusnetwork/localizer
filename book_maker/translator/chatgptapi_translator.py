@@ -101,7 +101,16 @@ class ChatGPTAPI(Base):
         self.batch_info_cache = None
         self.result_content_cache = {}
         self.system_role = system_role or 'system'
-        # Initialize cumulative token counters
+        # Initialize token tracking attributes
+        self.token_info = {
+            "system_tokens": 0,
+            "user_tokens": 0,
+            "intermediate_tokens": 0,
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+        }
+        # Track cumulative tokens across all API calls
         self.cumulative_token_info = {
             "system_tokens": 0,
             "user_tokens": 0,
@@ -271,6 +280,17 @@ class ChatGPTAPI(Base):
             print(f"[cyan]Intermediate message tokens:[/cyan] {self.token_info['intermediate_tokens']} tokens")
         print(f"[cyan]Total token count:[/cyan] {total_token_count} tokens")
         print(f"[cyan]Temperature:[/cyan] {self.temperature}")
+        
+        # Add cumulative statistics
+        print(f"\n[bold green]Cumulative Stats (API Call #{self.api_call_count}):[/bold green]")
+        print(f"[green]Total system tokens:[/green] {self.cumulative_token_info['system_tokens']} tokens")
+        print(f"[green]Total user tokens:[/green] {self.cumulative_token_info['user_tokens']} tokens")
+        if self.cumulative_token_info['intermediate_tokens'] > 0:
+            print(f"[green]Total intermediate tokens:[/green] {self.cumulative_token_info['intermediate_tokens']} tokens")
+        print(f"[green]Total prompt tokens:[/green] {self.cumulative_token_info['prompt_tokens']} tokens")
+        print(f"[green]Total completion tokens:[/green] {self.cumulative_token_info['completion_tokens']} tokens")
+        print(f"[green]Total tokens used:[/green] {self.cumulative_token_info['total_tokens']} tokens")
+        
         print("[bold blue]End of request information[/bold blue]\n")
 
         while retry_count < max_retries:

@@ -160,7 +160,9 @@ class MarkdownBookLoader(BaseBookLoader):
                 "single_translate": self.single_translate,
                 "prompt_file": getattr(self.translate_model, 'prompt_file', None),
                 "api_calls": getattr(self.translate_model, 'api_call_count', 0),
-                "translate_model": self.translate_model
+                "translate_model": self.translate_model,
+                "full_system_message": getattr(self.translate_model, 'prompt_sys_msg', None),
+                "full_user_message": getattr(self.translate_model, 'prompt_template', None)
             }
             log_translation_run(self.md_name, output_path, log_params)
             
@@ -224,7 +226,7 @@ class MarkdownBookLoader(BaseBookLoader):
             # Filter out None values before joining
             filtered_content = [item for item in content if item is not None]
             with open(book_path, "w", encoding="utf-8") as f:
-                f.write("\n".join(filtered_content))
+                f.write("\n\n".join(filtered_content))
         except Exception as e:
             print(f"Failed to save file: {e}")
             raise Exception("can not save file")

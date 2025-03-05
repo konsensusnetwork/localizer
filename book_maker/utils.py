@@ -314,8 +314,24 @@ def log_translation_run(input_path, output_path, run_params):
             # It's likely a direct template string, not a file path
             log_entry['prompt_filename'] = "inline_template"
         
-        # Add truncated user message if we have the translator object
-        if translator and hasattr(translator, 'prompt_template'):
+        # Helper function to remove example text section
+        def remove_example_text(text):
+            if not text:
+                return text
+            
+            # Check for the Example Text section and remove it
+            example_text_markers = ["### Example Text", "### Examples", "### Example"]
+            for marker in example_text_markers:
+                if marker in text:
+                    return text.split(marker)[0].strip()
+            return text
+            
+        # Add full user message if we have it in the params
+        if 'full_user_message' in run_params and run_params['full_user_message']:
+            user_message = run_params['full_user_message']
+            log_entry['full_user_message'] = remove_example_text(user_message)
+        # Otherwise fallback to truncated preview from translator object 
+        elif translator and hasattr(translator, 'prompt_template'):
             max_preview_length = 100
             prompt_template = getattr(translator, 'prompt_template', '')
             if prompt_template and isinstance(prompt_template, str):
@@ -324,7 +340,12 @@ def log_translation_run(input_path, output_path, run_params):
                 else:
                     log_entry['user_message_preview'] = prompt_template
         
-            # Add system message if available from the translator
+        # Add full system message if we have it in the params
+        if 'full_system_message' in run_params and run_params['full_system_message']:
+            system_message = run_params['full_system_message']
+            log_entry['full_system_message'] = remove_example_text(system_message)
+        # Otherwise fallback to truncated preview from translator
+        elif translator and hasattr(translator, 'prompt_sys_msg'):
             system_message = getattr(translator, 'prompt_sys_msg', None)
             if system_message:
                 if len(system_message) > max_preview_length:
