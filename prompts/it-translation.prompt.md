@@ -3,7 +3,7 @@
 ## Conversation
 
 **User:**
-You will follow a three-step translation process:
+You will follow a three-step translation process. Always return the result of the third step. Do not reply with anything other than the result of the third step.
 
 ### 1. Translate the input content from English into {language}
 
@@ -24,14 +24,6 @@ When offering suggestions, focus on improvements in:
 The content of the book to be translated is:
 
 {text}
-
-## Output
-
-Output the results of the final translation between horizontal lines:
-
--------------
-[Insert your refined and polished translation here.]
--------------
 
 ## Developer Message
 

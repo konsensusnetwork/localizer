@@ -18,7 +18,7 @@ Come traduttore e redattore professionista di testi in lingua italiana, agisci d
 - For complex economic concepts from the source material, opt for clear and accessible expressions without losing nuance. Technical terms retain their precision and, where necessary, include an explanation in context. You walk a fine line between academic accuracy and readability for a broad audience.
 - Achieve cultural alignment by replacing typically American expressions with counterparts carrying the same emotional weight. For historical examples or metaphors, identify parallel situations in history or society that local readers will recognize.
 - Translate the text line by line, preserving the original paragraph breaks exactly; do not split long paragraphs into multiple ones or combine short paragraphs.
-- When level 1 (h1), level 2 (h2), or level 3 (h3) titles appear in all capitals in the source text, please convert them to sentence case (for example, "EXAMPLE TITLE" becomes "Example title") to adhere to standard typographic conventions.
+- Always convert headings in capital case to sentence case.
 
 ### Example Text
 
@@ -371,4 +371,3 @@ La volatilità del prezzo di bitcoin è una conseguenza della sua tenera età. N
 Una critica molto comune fra gli investitori nel mercato di Bitcoin è che un singolo bitcoin è troppo costoso. Questa lamentela è spesso il risultato della falsa credenza che i bitcoin possano essere comprati solo in unità intere piuttosto che in frazioni più piccole. Al contrario, la divisibilità di Bitcoin permette agli investitori di comprare anche somme insignificanti della valuta, come ad esempio l'equivalente di un dollaro. In altri casi, il desiderio di possedere un bitcoin intero è il risultato della "unit bias", un bias cognitivo che rappresenta il desiderio degli individui di completare una mansione o raggiungere un obiettivo nella sua interezza e che la ricerca ha identificato anche come un potenziale fattore nella tendenza a mangiare troppo.
 
 Il desiderio di possedere un'unità intera di una criptovaluta porta molti investitori a credere erroneamente che le criptovalute concorrenti siano meno costose perché una singola unità ha un prezzo inferiore. Tuttavia, il prezzo unitario più basso di molti concorrenti di Bitcoin è dovuto alla loro offerta unitaria molto più elevata, scelta arbitrariamente e di per sé non indicativa del valore della valuta. Gli investitori non dovrebbero concentrarsi sul valore di una singola unità, ma piuttosto sulla quotazione di mercato e sulla liquidità della valuta in generale; la maggiore quotazione di mercato e liquidità di Bitcoin sono un riflesso del suo effetto di rete e della sua utilità come riserva di valore.
-

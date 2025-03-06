@@ -6,3 +6,8 @@ pdm run bbook_maker --book_name  books/tsi-fi/ch09.qmd --model openai --model_li
 
 
 ## TSI_FI
+
+
+# BM_IT
+
+pdm run bbook_maker --book_name  books/bm-it/ch01.qmd --model openai --model_list o3-mini --prompt prompts/it-translation.prompt.md --batch_size=5 --single_translate --language it
