@@ -27,8 +27,8 @@ def find_markdown_files(directory_path):
             
             # Only process .md and .qmd files
             if file_ext in ['.md', '.qmd']:
-                # Skip already processed bilingual files
-                if "_bilingual" in file:
+                # Skip any files with an underscore in the name
+                if "_" in file:
                     continue
                 markdown_files.append(file_path)
     
@@ -81,7 +81,7 @@ def main():
         
         try:
             # Run bbook_maker for this file
-            process = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+            process = subprocess.run(cmd, shell=True, text=True)
             
             # Print the output
             if process.stdout:

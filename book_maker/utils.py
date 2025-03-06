@@ -273,6 +273,8 @@ def log_translation_run(input_path, output_path, run_params):
         "input_line_count": input_line_count,
         "output_file": str(Path(output_path).name),
         "output_line_count": output_line_count,
+        # Add batch_size if it exists in run_params
+        "batch_size": run_params.get('batch_size', None),
         **run_params
     }
     
@@ -288,7 +290,8 @@ def log_translation_run(input_path, output_path, run_params):
                 "intermediate_tokens": token_info.get("intermediate_tokens", 0),
                 "prompt_tokens": token_info.get("prompt_tokens", 0),
                 "completion_tokens": token_info.get("completion_tokens", 0),
-                "total_tokens": token_info.get("total_tokens", 0)
+                "total_tokens": token_info.get("total_tokens", 0),
+                "total_cost": token_info.get("cost", 0)  # Add cost information
             })
         else:
             # Fall back to the last call's token info
@@ -297,7 +300,8 @@ def log_translation_run(input_path, output_path, run_params):
                 "system_tokens": token_info.get("system_tokens", 0),
                 "user_tokens": token_info.get("user_tokens", 0),
                 "intermediate_tokens": token_info.get("intermediate_tokens", 0),
-                "prompt_tokens": token_info.get("estimated_prompt_tokens", 0)
+                "prompt_tokens": token_info.get("estimated_prompt_tokens", 0),
+                "total_cost": token_info.get("cost", 0)  # Add cost information
             })
     
     # Add prompt info if available

@@ -203,6 +203,7 @@ class MarkdownBookLoader(BaseBookLoader):
                 "model_class": model_class,
                 "model": actual_model,
                 "context_flag": getattr(self.translate_model, 'context_flag', False),
+                "batch_size": self.batch_size,	
                 "temperature": getattr(self.translate_model, 'temperature', 1.0),
                 "is_test": self.is_test,
                 "test_num": self.test_num if self.is_test else None,
@@ -278,7 +279,7 @@ class MarkdownBookLoader(BaseBookLoader):
                 f.write("\n\n".join(filtered_content))
         except Exception as e:
             print(f"Failed to save file: {e}")
-            raise Exception("can not save file")
+            raise Exception(f"Cannot save file: {e}")
 
     def remove_temp_file(self):
         """Remove temporary file if it exists and translation was successful."""

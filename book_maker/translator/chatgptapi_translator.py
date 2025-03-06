@@ -283,13 +283,10 @@ class ChatGPTAPI(Base):
         
         # Add cumulative statistics
         print(f"\n[bold green]Cumulative Stats (API Call #{self.api_call_count}):[/bold green]")
-        print(f"[green]Total system tokens:[/green] {self.cumulative_token_info['system_tokens']} tokens")
-        print(f"[green]Total user tokens:[/green] {self.cumulative_token_info['user_tokens']} tokens")
-        if self.cumulative_token_info['intermediate_tokens'] > 0:
-            print(f"[green]Total intermediate tokens:[/green] {self.cumulative_token_info['intermediate_tokens']} tokens")
         print(f"[green]Total prompt tokens:[/green] {self.cumulative_token_info['prompt_tokens']} tokens")
         print(f"[green]Total completion tokens:[/green] {self.cumulative_token_info['completion_tokens']} tokens")
         print(f"[green]Total tokens used:[/green] {self.cumulative_token_info['total_tokens']} tokens")
+        print(f"[green]Total estimated cost so far for batch:[/green] ${self.cumulative_token_info.get('cost', 0):.6f}")
         
         print("[bold blue]End of request information[/bold blue]\n")
 
@@ -310,6 +307,10 @@ class ChatGPTAPI(Base):
                     "total_tokens": completion.usage.total_tokens
                 })
                 
+                # Calculate cost based on model and token usage
+                cost = self._calculate_cost(completion.model, completion.usage.prompt_tokens, completion.usage.completion_tokens)
+                self.token_info["cost"] = cost
+                
                 # Update cumulative token information
                 self.cumulative_token_info["system_tokens"] += self.message_token_info["system_tokens"]
                 self.cumulative_token_info["user_tokens"] += self.message_token_info["user_tokens"]
@@ -317,12 +318,14 @@ class ChatGPTAPI(Base):
                 self.cumulative_token_info["prompt_tokens"] += completion.usage.prompt_tokens
                 self.cumulative_token_info["completion_tokens"] += completion.usage.completion_tokens
                 self.cumulative_token_info["total_tokens"] += completion.usage.total_tokens
+                self.cumulative_token_info["cost"] = self.cumulative_token_info.get("cost", 0) + cost
                 
                 # Log completion information
                 print(f"\n[bold green]API Response Information:[/bold green]")
                 print(f"[green]Prompt tokens:[/green] {completion.usage.prompt_tokens}")
                 print(f"[green]Completion tokens:[/green] {completion.usage.completion_tokens}")
                 print(f"[green]Total tokens:[/green] {completion.usage.total_tokens}")
+                print(f"[green]Estimated cost:[/green] ${cost:.6f}")
                 print("[bold green]End of response information[/bold green]\n")
                 
                 return completion
@@ -852,3 +855,57 @@ class ChatGPTAPI(Base):
 
     def get_batch_result(self, output_file_id):
         return self.openai_client.files.content(output_file_id)
+
+    def _calculate_cost(self, model, prompt_tokens, completion_tokens):
+        """Calculate the cost of the API call based on model and token usage."""
+        # Pricing per million tokens (USD)
+        pricing = {
+            # GPT-4.5
+            "gpt-4.5-preview": {"input": 75.0, "output": 150.0},
+            "gpt-4.5-preview-2025-02-27": {"input": 75.0, "output": 150.0},
+            
+            # GPT-4o
+            "gpt-4o": {"input": 2.5, "output": 10.0},
+            "gpt-4o-2024-08-06": {"input": 2.5, "output": 10.0},
+            "gpt-4o-audio-preview": {"input": 2.5, "output": 10.0},
+            "gpt-4o-audio-preview-2024-12-17": {"input": 2.5, "output": 10.0},
+            "gpt-4o-realtime-preview": {"input": 5.0, "output": 20.0},
+            "gpt-4o-realtime-preview-2024-12-17": {"input": 5.0, "output": 20.0},
+            
+            # GPT-4o Mini
+            "gpt-4o-mini": {"input": 0.15, "output": 0.60},
+            "gpt-4o-mini-2024-07-18": {"input": 0.15, "output": 0.60},
+            "gpt-4o-mini-audio-preview": {"input": 0.15, "output": 0.60},
+            "gpt-4o-mini-audio-preview-2024-12-17": {"input": 0.15, "output": 0.60},
+            "gpt-4o-mini-realtime-preview": {"input": 0.60, "output": 2.40},
+            "gpt-4o-mini-realtime-preview-2024-12-17": {"input": 0.60, "output": 2.40},
+            
+            # O1
+            "o1": {"input": 15.0, "output": 60.0},
+            "o1-2024-12-17": {"input": 15.0, "output": 60.0},
+            
+            # O3 Mini & O1 Mini
+            "o3-mini": {"input": 1.10, "output": 4.40},
+            "o3-mini-2025-01-31": {"input": 1.10, "output": 4.40},
+            "o1-mini": {"input": 1.10, "output": 4.40},
+            "o1-mini-2024-09-12": {"input": 1.10, "output": 4.40},
+            
+            # Default fallback to GPT-3.5 Turbo pricing
+            "gpt-3.5-turbo": {"input": 0.0005, "output": 0.0015},
+        }
+        
+        # Extract model name without version suffix if not found directly
+        if model not in pricing:
+            base_model = model.split('-2')[0] if '-2' in model else model
+            if base_model not in pricing:
+                print(f"[yellow]Warning: Unknown model {model}, using gpt-3.5-turbo pricing[/yellow]")
+                model = "gpt-3.5-turbo"
+            else:
+                model = base_model
+        
+        # Calculate cost - prices are per million tokens
+        input_cost = (prompt_tokens / 1_000_000) * pricing[model]["input"]
+        output_cost = (completion_tokens / 1_000_000) * pricing[model]["output"]
+        total_cost = input_cost + output_cost
+        
+        return total_cost

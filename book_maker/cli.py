@@ -2,15 +2,36 @@ import argparse
 import json
 import os
 from os import environ as env
+from pathlib import Path
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
-load_dotenv()
+# load_dotenv()
 
 from book_maker.loader import BOOK_LOADER_DICT
 from book_maker.translator import MODEL_DICT
 from book_maker.utils import LANGUAGES, TO_LANGUAGE_CODE
 
+# Added helper function to load project-specific API keys
+def get_project_config(key, project_dir=None):
+    """
+    Retrieve the API key or other config value from a project-specific .env file if available,
+    otherwise fallback to the global .env loaded earlier.
+    """
+    if project_dir:
+        project_env = Path(project_dir) / '.env'
+        if project_env.exists():
+            load_dotenv(dotenv_path=project_env, override=True)
+            value = os.getenv(key)
+            if value:
+                print(f"Using {key} from project-specific .env file: {project_env}")
+                return value
+    # Fallback to already loaded global .env
+    load_dotenv()
+    value = os.getenv(key)
+    if value:
+        print(f"Using {key} from global .env file")
+    return value
 
 def parse_prompt_arg(prompt_arg):
     prompt = None
@@ -411,6 +432,7 @@ So you are close to reaching the limit. You have to choose your own value, there
     )
 
     options = parser.parse_args()
+    project_dir = os.path.dirname(os.path.abspath(options.book_name))
 
     if not options.book_name:
         print(f"Error: please provide the path of your book using --book_name <path>")
@@ -428,17 +450,10 @@ So you are close to reaching the limit. You have to choose your own value, there
     assert translate_model is not None, "unsupported model"
     API_KEY = ""
     if options.model in ["openai", "chatgptapi", "gpt4", "gpt4omini", "gpt4o"]:
-        if OPENAI_API_KEY := (
-            options.openai_key
-            or env.get(
-                "OPENAI_API_KEY",
-            )  # XXX: for backward compatibility, deprecate soon
-            or env.get(
-                "BBM_OPENAI_API_KEY",
-            )  # suggest adding `BBM_` prefix for all the bilingual_book_maker ENVs.
-        ):
-            API_KEY = OPENAI_API_KEY
-            # patch
+        API_KEY = get_project_config("BBM_OPENAI_API_KEY", project_dir) or options.openai_key
+        if API_KEY:
+            # patch if necessary
+            pass
         elif options.ollama_model:
             # any string is ok, can't be empty
             API_KEY = "ollama"
@@ -447,27 +462,27 @@ So you are close to reaching the limit. You have to choose your own value, there
                 "OpenAI API key not provided, please google how to obtain it",
             )
     elif options.model == "caiyun":
-        API_KEY = options.caiyun_key or env.get("BBM_CAIYUN_API_KEY")
+        API_KEY = get_project_config("BBM_CAIYUN_API_KEY", project_dir) or options.caiyun_key
         if not API_KEY:
             raise Exception("Please provide caiyun key")
     elif options.model == "deepl":
-        API_KEY = options.deepl_key or env.get("BBM_DEEPL_API_KEY")
+        API_KEY = get_project_config("BBM_DEEPL_API_KEY", project_dir) or options.deepl_key
         if not API_KEY:
             raise Exception("Please provide deepl key")
     elif options.model.startswith("claude"):
-        API_KEY = options.claude_key or env.get("BBM_CLAUDE_API_KEY")
+        API_KEY = get_project_config("BBM_CLAUDE_API_KEY", project_dir) or options.claude_key
         if not API_KEY:
             raise Exception("Please provide claude key")
     elif options.model == "customapi":
-        API_KEY = options.custom_api or env.get("BBM_CUSTOM_API")
+        API_KEY = get_project_config("BBM_CUSTOM_API", project_dir) or options.custom_api
         if not API_KEY:
             raise Exception("Please provide custom translate api")
     elif options.model in ["gemini", "geminipro"]:
-        API_KEY = options.gemini_key or env.get("BBM_GOOGLE_GEMINI_KEY")
+        API_KEY = get_project_config("BBM_GOOGLE_GEMINI_KEY", project_dir) or options.gemini_key
     elif options.model == "groq":
-        API_KEY = options.groq_key or env.get("BBM_GROQ_API_KEY")
+        API_KEY = get_project_config("BBM_GROQ_API_KEY", project_dir) or options.groq_key
     elif options.model == "xai":
-        API_KEY = options.xai_key or env.get("BBM_XAI_API_KEY")
+        API_KEY = get_project_config("BBM_XAI_API_KEY", project_dir) or options.xai_key
     else:
         API_KEY = ""
 
