@@ -1,6 +1,6 @@
 # La transition en l'an 2000
 
-> Â« On a l’impression que quelque chose de grand est sur le point d’arriver : les courbes nous montrent la croissance annuelle des populations, la concentration de dioxyde de carbone dans l’atmosphère, le nombre d’adresses Web et la quantité de mégaoctets par dollar. Toutes s’envolent vers une asymptote juste après le tournant du siècle : la Singularité. La fin de tout ce que nous connaissons. Le début de quelque chose que nous ne comprendrons peut-être jamais Â» [^1] – Danny Hillis
+> « On a l’impression que quelque chose de grand est sur le point d’arriver : les courbes nous montrent la croissance annuelle des populations, la concentration de dioxyde de carbone dans l’atmosphère, le nombre d’adresses Web et la quantité de mégaoctets par dollar. Toutes s’envolent vers une asymptote juste après le tournant du siècle : la Singularité. La fin de tout ce que nous connaissons. Le début de quelque chose que nous ne comprendrons peut-être jamais » [^1] – Danny Hillis
 
 ## PRÉMONITIONS
 
@@ -260,7 +260,7 @@ Nous sommes convaincus que les travaux de Lane sur les usages compétitifs de la
 
 ## La vanité des souhaits
 
-L’ignorance des causes profondes n’est pas l’apanage du grand public rivé devant la télévision. De nombreux analystes politiques et spécialistes de l’économie semblent eux aussi se soumettre au dogme étatique, selon lequel l’opinion domine le cours de l’Histoire. Il n’est pas rare de lire des commentaires et analyses attribuant les décisions historiques à un prétendu « pouvoir de la volonté ». Citons, par exemple, un article intitulé Â« Goodbye, NationState, Hello…What ?Â » signé Nicholas Colchester[^14], publié sur la page éditoriale du *New York Times*. Non seulement ce texte abordait la fin de l’État-nation, sur le même sujet que le nôtre, mais son auteur, en sa qualité de directeur éditorial de l’Economist Intelligence Unit, était censé avoir une vision lucide du monde. Pourtant, il y prédit que « l’arrivée d’un gouvernement mondial » est « inéluctable », arguant que l’État-nation montre ses limites et n’interagit plus correctement avec l’économie.
+L’ignorance des causes profondes n’est pas l’apanage du grand public rivé devant la télévision. De nombreux analystes politiques et spécialistes de l’économie semblent eux aussi se soumettre au dogme étatique, selon lequel l’opinion domine le cours de l’Histoire. Il n’est pas rare de lire des commentaires et analyses attribuant les décisions historiques à un prétendu « pouvoir de la volonté ». Citons, par exemple, un article intitulé « Goodbye, NationState, Hello…What ?Â » signé Nicholas Colchester[^14], publié sur la page éditoriale du *New York Times*. Non seulement ce texte abordait la fin de l’État-nation, sur le même sujet que le nôtre, mais son auteur, en sa qualité de directeur éditorial de l’Economist Intelligence Unit, était censé avoir une vision lucide du monde. Pourtant, il y prédit que « l’arrivée d’un gouvernement mondial » est « inéluctable », arguant que l’État-nation montre ses limites et n’interagit plus correctement avec l’économie.
 
 Pourquoi ? Parce que l’État‑nation s’effondre et ne parvient plus à maîtriser les forces économiques.
 
