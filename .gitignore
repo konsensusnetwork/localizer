@@ -144,3 +144,5 @@ log/
 .cursorrules
 #books/
 #prompts/
+
+.pdm-python
