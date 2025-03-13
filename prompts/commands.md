@@ -11,3 +11,7 @@ pdm run bbook_maker --book_name  books/tsi-fi/ch09.qmd --model openai --model_li
 # BM_IT
 
 pdm run bbook_maker --book_name  books/bm-it/ch01.qmd --model openai --model_list o3-mini --prompt prompts/it-translation.prompt.md --batch_size=5 --single_translate --language it
+
+# BM_NL
+
+pdm run bbook_maker --book_name  books/bm-nl/todo/ch20.qmd --model openai --model_list o3-mini --prompt prompts/nl-edit-o3.prompt.md --batch_size=5 --single_translate --language nl --use_context
