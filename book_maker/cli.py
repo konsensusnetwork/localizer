@@ -45,7 +45,13 @@ def parse_prompt_arg(prompt_arg):
         try:
             from promptdown import StructuredPrompt
 
-            structured_prompt = StructuredPrompt.from_promptdown_file(prompt_arg)
+            # Instead of relying on the default PromptDown file loading,
+            # we'll read the file with explicit UTF-8 encoding first
+            with open(prompt_arg, 'r', encoding='utf-8') as f:
+                promptdown_content = f.read()
+            
+            # Parse from string with explicit UTF-8 content
+            structured_prompt = StructuredPrompt.from_promptdown_string(promptdown_content)
             prompt_file_path = prompt_arg  # Store the actual file path
             
             # Initialize our prompt structure

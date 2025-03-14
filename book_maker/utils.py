@@ -247,21 +247,36 @@ def log_translation_run(input_path, output_path, run_params):
     
     # Count lines in input file
     input_line_count = 0
+    input_file_tokens = 0
     if os.path.exists(input_path):
         try:
             with open(input_path, 'r', encoding='utf-8') as f:
+                input_text = f.read()
+                # Reset file pointer to beginning to count lines
+                f.seek(0)
                 input_line_count = sum(1 for _ in f)
+            
+            # Count tokens in input file
+            encoding = tiktoken.get_encoding("cl100k_base")
+            input_file_tokens = len(encoding.encode(input_text))
         except Exception as e:
-            print(f"Warning: Could not count lines in input file: {e}")
+            print(f"Warning: Could not process input file: {e}")
     
     # Count lines in output file if it exists
     output_line_count = 0
+    output_file_tokens = 0
     if os.path.exists(output_path):
         try:
             with open(output_path, 'r', encoding='utf-8') as f:
+                output_text = f.read()
+                # Reset file pointer to beginning to count lines
+                f.seek(0)
                 output_line_count = sum(1 for _ in f)
+            
+            # Count tokens in output file
+            output_file_tokens = len(encoding.encode(output_text))
         except Exception as e:
-            print(f"Warning: Could not count lines in output file: {e}")
+            print(f"Warning: Could not process output file: {e}")
     
     # Extract translator object if present
     translator = run_params.pop('translate_model', None)
@@ -271,8 +286,10 @@ def log_translation_run(input_path, output_path, run_params):
         "timestamp": datetime.datetime.now().isoformat(),
         "input_file": str(Path(input_path).name),
         "input_line_count": input_line_count,
+        "input_file_tokens": input_file_tokens,
         "output_file": str(Path(output_path).name),
         "output_line_count": output_line_count,
+        "output_file_tokens": output_file_tokens,
         # Add batch_size if it exists in run_params
         "batch_size": run_params.get('batch_size', None),
         **run_params
@@ -356,6 +373,47 @@ def log_translation_run(input_path, output_path, run_params):
                     log_entry['system_message_preview'] = system_message[:max_preview_length] + "..."
                 else:
                     log_entry['system_message_preview'] = system_message
+    
+    # Adjust total_cost based on the token counts and pricing model
+    # Uncached tokens are billed at half the price of regular input tokens
+    if "prompt_tokens" in log_entry and input_file_tokens > 0 and log_entry["prompt_tokens"] > 0:
+        # Store the total maximum cost (without any caching benefit)
+        uncached_cost = log_entry.get("total_cost", 0)
+        log_entry["total_cost_maximum_uncached"] = uncached_cost
+        
+        # Calculate uncached vs cached tokens
+        if log_entry["prompt_tokens"] > input_file_tokens:
+            # Calculate the number of cached tokens
+            cached_tokens = log_entry["prompt_tokens"] - input_file_tokens
+            uncached_tokens = input_file_tokens
+            
+            # Calculate the cost with the pricing model:
+            # - Uncached tokens billed at half price
+            # - Total = (cached_tokens * full_price) + (uncached_tokens * half_price)
+            
+            # Calculate the proportion of each token type
+            cached_ratio = cached_tokens / log_entry["prompt_tokens"]
+            uncached_ratio = uncached_tokens / log_entry["prompt_tokens"]
+            
+            # Apply the pricing rule (uncached at half price)
+            # The total cost formula: Cost = (cached_portion * full_price) + (uncached_portion * half_price)
+            # Which simplifies to: Cost = full_price * (cached_ratio + uncached_ratio/2)
+            adjusted_cost = uncached_cost * (cached_ratio + (uncached_ratio / 2))
+            
+            # Store the adjusted cost
+            log_entry["total_cost"] = adjusted_cost
+            
+            # Print explanation of calculation
+            print(f"Cost calculation with caching benefit:")
+            print(f"  Maximum cost (no caching): ${uncached_cost:.6f}")
+            print(f"  Cached tokens: {cached_tokens} ({cached_ratio:.2%} of total)")
+            print(f"  Uncached tokens: {uncached_tokens} ({uncached_ratio:.2%} of total, billed at half price)")
+            print(f"  Formula: ${uncached_cost:.6f} * ({cached_ratio:.4f} + {uncached_ratio:.4f}/2)")
+            print(f"  Adjusted cost: ${adjusted_cost:.6f}")
+        else:
+            # If input_file_tokens >= prompt_tokens, no caching benefit was detected
+            print("No caching benefit detected: input file tokens <= prompt tokens reported by API")
+            log_entry["total_cost"] = uncached_cost
     
     # Write log entry to file
     log_data = {"runs": []}

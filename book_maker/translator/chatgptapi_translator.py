@@ -144,6 +144,10 @@ class ChatGPTAPI(Base):
 
     def create_messages(self, text, intermediate_messages=None):
         try:
+            # Ensure text is properly decoded as UTF-8 if it's bytes
+            if isinstance(text, bytes):
+                text = text.decode('utf-8')
+            
             content = self.prompt_template.format(
                 text=text, language=self.language, crlf="\n"
             )
@@ -177,6 +181,10 @@ class ChatGPTAPI(Base):
         # Format system content with text and language placeholders too
         try:
             sys_content = self.system_content or self.prompt_sys_msg
+            # Ensure system content is properly decoded as UTF-8 if it's bytes
+            if isinstance(sys_content, bytes):
+                sys_content = sys_content.decode('utf-8')
+                
             # Format system content with the same parameters as user content
             sys_content = sys_content.format(text=text, language=self.language, crlf="\n")
         except (KeyError, IndexError, ValueError) as e:
@@ -212,6 +220,11 @@ class ChatGPTAPI(Base):
         messages = [system_message]
 
         if intermediate_messages:
+            # Ensure intermediate messages use proper UTF-8
+            for msg in intermediate_messages:
+                if isinstance(msg["content"], bytes):
+                    msg["content"] = msg["content"].decode('utf-8')
+                    
             # Count tokens for intermediate messages if present
             intermediate_tokens = count_tokens_with_tiktoken(intermediate_messages, model=model_name)
             self.message_token_info["intermediate_tokens"] = intermediate_tokens
@@ -366,10 +379,10 @@ class ChatGPTAPI(Base):
 
         completion = self.create_chat_completion(text)
 
-        # TODO work well or exception finish by length limit
-        # Check if content is not None before encoding
+        # Ensure proper UTF-8 handling of the response
         if completion.choices[0].message.content is not None:
-            t_text = completion.choices[0].message.content.encode("utf8").decode() or ""
+            # Don't double-encode/decode - just ensure we have a clean string
+            t_text = completion.choices[0].message.content
         else:
             t_text = ""
 
@@ -389,6 +402,11 @@ class ChatGPTAPI(Base):
 
     def translate(self, text, needprint=True):
         start_time = time.time()
+        
+        # Ensure text is UTF-8 if it's bytes
+        if isinstance(text, bytes):
+            text = text.decode('utf-8')
+            
         # Better formatted input text display
         if needprint:
             max_length = 1000  # maximum number of characters to display
