@@ -212,7 +212,8 @@ class MarkdownBookLoader(BaseBookLoader):
                 "api_calls": getattr(self.translate_model, 'api_call_count', 0),
                 "translate_model": self.translate_model,
                 "full_system_message": getattr(self.translate_model, 'prompt_sys_msg', None),
-                "full_user_message": getattr(self.translate_model, 'prompt_template', None)
+                "full_user_message": getattr(self.translate_model, 'prompt_template', None),
+                "reasoning_effort": getattr(self.translate_model, 'reasoning_effort', "medium")
             }
             log_translation_run(self.md_name, output_path, log_params)
             

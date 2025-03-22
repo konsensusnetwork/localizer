@@ -79,6 +79,7 @@ class ChatGPTAPI(Base):
         context_flag=False,
         context_paragraph_limit=0,
         system_role=None,
+        reasoning_effort="medium",
         **kwargs,
     ) -> None:
         super().__init__(key, language)
@@ -116,23 +117,31 @@ class ChatGPTAPI(Base):
         self.batch_info_cache = None
         self.result_content_cache = {}
         self.system_role = system_role or 'system'
-        # Initialize token tracking attributes
-        self.token_info = {
-            "system_tokens": 0,
-            "user_tokens": 0,
-            "intermediate_tokens": 0,
-            "prompt_tokens": 0,
-            "completion_tokens": 0,
-            "total_tokens": 0
+        self.reasoning_effort = reasoning_effort
+        
+        self.log_info = {
+            "input_uncached_tokens": 0,
+            "input_system_tokens": 0,
+            "input_user_tokens": 0,
+            "input_intermediate_tokens": 0,
+            "input_total_tokens": 0,
+            "output_prompt_tokens": 0,
+            "output_completion_tokens": 0,
+            "output_total_tokens": 0,
+            "cost": 0
         }
+
         # Track cumulative tokens across all API calls
-        self.cumulative_token_info = {
-            "system_tokens": 0,
-            "user_tokens": 0,
-            "intermediate_tokens": 0,
-            "prompt_tokens": 0,
-            "completion_tokens": 0,
-            "total_tokens": 0
+        self.cumulative_log_info = {
+            "input_uncached_tokens": 0,
+            "input_system_tokens": 0,
+            "input_user_tokens": 0,
+            "input_intermediate_tokens": 0,
+            "input_total_tokens": 0,
+            "output_prompt_tokens": 0,
+            "output_completion_tokens": 0,
+            "output_total_tokens": 0,
+            "cost": 0
         }
         self.api_call_count = 0
 
@@ -143,41 +152,18 @@ class ChatGPTAPI(Base):
         self.model = next(self.model_list)
 
     def create_messages(self, text, intermediate_messages=None):
+        # Format user content with text and language placeholders
         try:
-            # Ensure text is properly decoded as UTF-8 if it's bytes
             if isinstance(text, bytes):
                 text = text.decode('utf-8')
-            
-            content = self.prompt_template.format(
-                text=text, language=self.language, crlf="\n"
-            )
+            content = self.prompt_template.format(text=text, language=self.language, crlf="\n")
         except (KeyError, IndexError, ValueError) as e:
-            print("\n" + "="*80)
-            print("ERROR: Failed to format your prompt template")
-            print("="*80)
-            print(f"Details: {e}")
-            print("\nThis error occurs when your prompt file contains unescaped curly braces {}")
-            print("that Python mistakenly treats as format placeholders.")
-            print("\nPROBLEM DETECTED:")
-            
-            # Use regex to find the likely problematic patterns
+            print("ERROR: Prompt template formatting failed:", e)
             import re
             markdown_attrs = re.findall(r'\{[\w\s="\'\.]+\}', self.prompt_template)
             if markdown_attrs:
-                print("\nFound these Markdown attribute blocks that need escaping:")
-                for attr in markdown_attrs:
-                    print(f"  ❌ {attr}")
-                    # Show how to fix it
-                    fixed = attr.replace("{", "{{").replace("}", "}}")
-                    print(f"  ✅ {fixed}  (correct version)")
-            
-            print("\nHOW TO FIX:")
-            print("1. Open your prompt file:", self.prompt_file)
-            print("2. For any literal curly braces, double them: { → {{ and } → }}")
-            print("3. For example, change {width=\"5in\"} to {{width=\"5in\"}}")
-            print("\nAborting translation. Please fix your prompt file and try again.")
-            raise ValueError("Prompt formatting error - see details above") from e
-        
+                print("Unescaped curly braces detected in:", markdown_attrs)
+            raise ValueError("Prompt formatting error") from e
         # Format system content with text and language placeholders too
         try:
             sys_content = self.system_content or self.prompt_sys_msg
@@ -188,19 +174,13 @@ class ChatGPTAPI(Base):
             # Format system content with the same parameters as user content
             sys_content = sys_content.format(text=text, language=self.language, crlf="\n")
         except (KeyError, IndexError, ValueError) as e:
-            print("\n" + "="*80)
-            print("ERROR: Failed to format your system/developer message template")
-            print("="*80)
-            print(f"Details: {e}")
-            print("\nThis error occurs when your system/developer message contains unescaped curly braces {}")
-            print("or invalid placeholders.")
-            print("\nAborting translation. Please fix your prompt file and try again.")
+            print(f"ERROR: System prompt formatting error: {e}")
             raise ValueError("System prompt formatting error") from e
         
         # Use the stored role type from the PromptDown file
         role = getattr(self, 'system_role', 'system')  # Default to 'system' if not specified
         
-        # Create individual messages first
+        # Create individual messages first (developer or system)
         system_message = {"role": role, "content": sys_content}
         user_message = {"role": "user", "content": content}
         
@@ -209,12 +189,24 @@ class ChatGPTAPI(Base):
         system_tokens = count_tokens_with_tiktoken([system_message], model=model_name)
         user_tokens = count_tokens_with_tiktoken([user_message], model=model_name)
         
+        # Count tokens for the {text} placeholder
+        placeholder_tokens = count_tokens_with_tiktoken([text], model=model_name)
+
         # Store token counts on self for later access
-        self.message_token_info = {
-            "system_tokens": system_tokens,
-            "user_tokens": user_tokens,
-            "intermediate_tokens": 0  # Will be updated if intermediate messages exist
-        }
+        self.log_info.update({
+            "input_uncached_tokens": placeholder_tokens,
+            "input_system_tokens": system_tokens,
+            "input_user_tokens": user_tokens,
+            "input_total_tokens": system_tokens + user_tokens,
+        })
+        
+        # Cumulative log info
+        self.cumulative_log_info.update({
+            "input_uncached_tokens": self.cumulative_log_info["input_uncached_tokens"] + placeholder_tokens,
+            "input_system_tokens": self.cumulative_log_info["input_system_tokens"] + system_tokens,
+            "input_user_tokens": self.cumulative_log_info["input_user_tokens"] + user_tokens,
+            "input_total_tokens": self.cumulative_log_info["input_total_tokens"] + system_tokens + user_tokens,
+        })
         
         # Build the full messages list
         messages = [system_message]
@@ -227,39 +219,11 @@ class ChatGPTAPI(Base):
                     
             # Count tokens for intermediate messages if present
             intermediate_tokens = count_tokens_with_tiktoken(intermediate_messages, model=model_name)
-            self.message_token_info["intermediate_tokens"] = intermediate_tokens
+            self.log_info["input_intermediate_tokens"] = intermediate_tokens
+            self.cumulative_log_info["input_intermediate_tokens"] = self.cumulative_log_info["input_intermediate_tokens"] + intermediate_tokens
             messages.extend(intermediate_messages)
 
         messages.append(user_message)
-        
-        # Print message structure with clear representation of newlines
-        print("\n[bold blue]Messages to API:[/bold blue]")
-        for msg in messages:
-            role = msg["role"]
-            content = msg["content"]
-            
-            # Count total lines in original content
-            total_lines = len(content.splitlines())
-            
-            # Truncate content if too long
-            if len(content) > 500:
-                truncated_content = content[:500] + "..."
-                # Count lines in truncated content
-                truncated_lines = len(truncated_content.splitlines())
-                # Calculate number of truncated lines
-                lines_truncated = total_lines - truncated_lines
-                print(f"[bold cyan]{role}:[/bold cyan]")
-                # Split by newlines to print each line separately
-                for line in truncated_content.splitlines():
-                    print(f"  {line}")
-                print(f"[dim italic](+ {lines_truncated} more lines truncated)[/dim italic]")
-            else:
-                print(f"[bold cyan]{role}:[/bold cyan]")
-                # Split by newlines to print each line separately
-                for line in content.splitlines():
-                    print(f"  {line}")
-        
-        print("[bold blue]End of messages[/bold blue]\n")
         
         return messages
 
@@ -276,7 +240,6 @@ class ChatGPTAPI(Base):
         return messages
 
     def create_chat_completion(self, text):
-        # for issue #350
         if hasattr(self.openai_client, "api_key"):
             self.openai_client.api_key = next(self.keys)
         max_retries = 5
@@ -284,77 +247,43 @@ class ChatGPTAPI(Base):
         self.model = next(self.model_list)
         
         # Create messages outside the retry loop to avoid recreating them each time
-        messages = self.create_messages(text)
+        messages = self.create_messages(text)        
         
-        # Token counts were already calculated in create_messages
-        total_token_count = sum(self.message_token_info.values())
-        
-        # Store token count information for logging
-        self.token_info = {
-            "estimated_prompt_tokens": total_token_count,
-            "system_tokens": self.message_token_info["system_tokens"],
-            "user_tokens": self.message_token_info["user_tokens"],
-            "intermediate_tokens": self.message_token_info["intermediate_tokens"],
-            "model": self.model,
-            "temperature": self.temperature
-        }
-        
-        # Log token usage information
-        print(f"\n[bold blue]API Request Information:[/bold blue]")
-        print(f"[cyan]Model:[/cyan] {self.model}")
-        print(f"[cyan]System message tokens:[/cyan] {self.token_info['system_tokens']} tokens")
-        print(f"[cyan]User message tokens:[/cyan] {self.token_info['user_tokens']} tokens")
-        if self.token_info['intermediate_tokens'] > 0:
-            print(f"[cyan]Intermediate message tokens:[/cyan] {self.token_info['intermediate_tokens']} tokens")
-        print(f"[cyan]Total token count:[/cyan] {total_token_count} tokens")
-        print(f"[cyan]Temperature:[/cyan] {self.temperature}")
-        
-        # Add cumulative statistics
-        print(f"\n[bold green]Cumulative Stats (API Call #{self.api_call_count}):[/bold green]")
-        print(f"[green]Total prompt tokens:[/green] {self.cumulative_token_info['prompt_tokens']} tokens")
-        print(f"[green]Total completion tokens:[/green] {self.cumulative_token_info['completion_tokens']} tokens")
-        print(f"[green]Total tokens used:[/green] {self.cumulative_token_info['total_tokens']} tokens")
-        print(f"[green]Total estimated cost so far for batch:[/green] ${self.cumulative_token_info.get('cost', 0):.6f}")
-        
-        print("[bold blue]End of request information[/bold blue]\n")
-
         while retry_count < max_retries:
             try:
-                completion = self.openai_client.chat.completions.create(
-                    model=self.model,
-                    messages=messages,
-                    temperature=self.temperature,
-                )
-                # Increment API call counter
+                # Prepare request parameters
+                request_params = {
+                    "model": self.model,
+                    "messages": messages,
+                    "temperature": self.temperature,
+                }
+                
+                # If using the o3-mini model, include the reasoning_effort parameter.
+                if self.model in O3MINI_MODEL_LIST:
+                    request_params["reasoning_effort"] = self.reasoning_effort
+                
+                ## ACTUAL API CALL to OpenAI
+                completion = self.openai_client.chat.completions.create(**request_params)
                 self.api_call_count += 1
                 
                 # Store actual token usage information from the API response
-                self.token_info.update({
-                    "prompt_tokens": completion.usage.prompt_tokens,
-                    "completion_tokens": completion.usage.completion_tokens, 
-                    "total_tokens": completion.usage.total_tokens
+                self.log_info.update({
+                    "output_prompt_tokens": completion.usage.prompt_tokens,
+                    "output_completion_tokens": completion.usage.completion_tokens, 
+                    "output_total_tokens": completion.usage.total_tokens
+                })
+                
+                # Cumulative log info
+                self.cumulative_log_info.update({
+                    "output_prompt_tokens": self.cumulative_log_info["output_prompt_tokens"] + completion.usage.prompt_tokens,
+                    "output_completion_tokens": self.cumulative_log_info["output_completion_tokens"] + completion.usage.completion_tokens,
+                    "output_total_tokens": self.cumulative_log_info["output_total_tokens"] + completion.usage.total_tokens
                 })
                 
                 # Calculate cost based on model and token usage
-                cost = self._calculate_cost(completion.model, completion.usage.prompt_tokens, completion.usage.completion_tokens)
-                self.token_info["cost"] = cost
-                
-                # Update cumulative token information
-                self.cumulative_token_info["system_tokens"] += self.message_token_info["system_tokens"]
-                self.cumulative_token_info["user_tokens"] += self.message_token_info["user_tokens"]
-                self.cumulative_token_info["intermediate_tokens"] += self.message_token_info["intermediate_tokens"]
-                self.cumulative_token_info["prompt_tokens"] += completion.usage.prompt_tokens
-                self.cumulative_token_info["completion_tokens"] += completion.usage.completion_tokens
-                self.cumulative_token_info["total_tokens"] += completion.usage.total_tokens
-                self.cumulative_token_info["cost"] = self.cumulative_token_info.get("cost", 0) + cost
-                
-                # Log completion information
-                print(f"\n[bold green]API Response Information:[/bold green]")
-                print(f"[green]Prompt tokens:[/green] {completion.usage.prompt_tokens}")
-                print(f"[green]Completion tokens:[/green] {completion.usage.completion_tokens}")
-                print(f"[green]Total tokens:[/green] {completion.usage.total_tokens}")
-                print(f"[green]Estimated cost:[/green] ${cost:.6f}")
-                print("[bold green]End of response information[/bold green]\n")
+                cost = self._calculate_cost(completion.model, completion.usage.prompt_tokens, completion.usage.completion_tokens, self.log_info["input_uncached_tokens"])
+                self.log_info["cost"] = cost
+                self.cumulative_log_info["cost"] = self.cumulative_log_info["cost"] + cost
                 
                 return completion
             except RateLimitError:
@@ -937,7 +866,7 @@ class ChatGPTAPI(Base):
     def get_batch_result(self, output_file_id):
         return self.openai_client.files.content(output_file_id)
 
-    def _calculate_cost(self, model, prompt_tokens, completion_tokens):
+    def _calculate_cost(self, model, prompt_tokens, completion_tokens, input_uncached_tokens):
         """Calculate the cost of the API call based on model and token usage."""
         # Pricing per million tokens (USD)
         pricing = {
@@ -984,9 +913,13 @@ class ChatGPTAPI(Base):
             else:
                 model = base_model
         
+        # 
+        input_cached_tokens = prompt_tokens - input_uncached_tokens
+        
         # Calculate cost - prices are per million tokens
-        input_cost = (prompt_tokens / 1_000_000) * pricing[model]["input"]
+        input_cost_cached = (input_cached_tokens / 1_000_000) * pricing[model]["input"]/2
+        input_cost_uncached = (input_uncached_tokens / 1_000_000) * pricing[model]["input"]
         output_cost = (completion_tokens / 1_000_000) * pricing[model]["output"]
-        total_cost = input_cost + output_cost
+        total_cost = input_cost_cached + input_cost_uncached + output_cost
         
         return total_cost

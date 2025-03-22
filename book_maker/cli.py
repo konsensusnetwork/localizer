@@ -437,6 +437,14 @@ So you are close to reaching the limit. You have to choose your own value, there
         default=0.01,
         help="Request interval in seconds (e.g., 0.1 for 100ms). Currently only supported for Gemini models. Default: 0.01",
     )
+    parser.add_argument(
+        "--reasoning_effort",
+        dest="reasoning_effort",
+        type=str,
+        default="medium",
+        choices=["low", "medium", "high", "auto"],
+        help="Set the reasoning effort for o3-mini model (default: medium)",
+    )
 
     options = parser.parse_args()
     project_dir = os.path.dirname(os.path.abspath(options.book_name))
@@ -627,6 +635,11 @@ So you are close to reaching the limit. You have to choose your own value, there
     if options.model == "geminipro":
         e.translate_model.set_geminipro_models()
 
+    # Set the reasoning_effort parameter BEFORE calling make_bilingual_book
+    if hasattr(e, "translate_model"):
+        e.translate_model.reasoning_effort = options.reasoning_effort
+
+    # Now call make_bilingual_book with all parameters properly set
     e.make_bilingual_book()
 
 
