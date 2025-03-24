@@ -33,6 +33,8 @@ dependencies = [
 
 [project.scripts]
 bbook_maker = "book_maker.cli:main"
+dir_process = "utils.process_md_dir:main"
+rename_files = "utils.rename_files:main"
 promptdown = "promptdown_cli:main"
 
 [project.urls]

@@ -20,6 +20,10 @@ pdm run bbook_maker --book_name books/bm-nl/to-edit --model openai --model_list 
 
 pdm run dir_process books/21fff/fr --model openai --model_list o3-mini --reasoning_effort=high --prompt prompts/fr-translation-2.prompt.md --batch_size=5 --single_translate --language fr
 
+### Run 2
+
+pdm run dir_process books/21fff/fr/to-edit --model openai --model_list o3-mini --reasoning_effort=high --prompt prompts/fr-edit-2.prompt.md --batch_size=5 --single_translate --language fr
+
 ## 21FFF_ES
 
 pdm run dir_process books/21fff/es --model openai --model_list o3-mini --reasoning_effort=high --prompt prompts/es-translation-prompt.md --batch_size=5 --single_translate --language es
