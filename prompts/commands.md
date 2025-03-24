@@ -27,3 +27,5 @@ pdm run dir_process books/21fff/fr/to-edit --model openai --model_list o3-mini -
 ## 21FFF_ES
 
 pdm run dir_process books/21fff/es --model openai --model_list o3-mini --reasoning_effort=high --prompt prompts/es-translation-prompt.md --batch_size=5 --single_translate --language es
+
+pdm run dir_process books/21fff/es/to-edit --model openai --model_list o3-mini --reasoning_effort=high --prompt prompts/es/es-edit.prompt.md --batch_size=5 --single_translate --language es
