@@ -375,7 +375,7 @@ def log_translation_run(input_path, output_path, run_params):
                     log_entry['system_message_preview'] = system_message
     
     # Adjust total_cost based on the token counts and pricing model
-    # Uncached tokens are billed at half the price of regular input tokens
+    # Cached tokens are billed at half the price of regular input tokens
     if "prompt_tokens" in log_entry and input_file_tokens > 0 and log_entry["prompt_tokens"] > 0:
         # Store the total maximum cost (without any caching benefit)
         uncached_cost = log_entry.get("total_cost", 0)
@@ -388,17 +388,17 @@ def log_translation_run(input_path, output_path, run_params):
             uncached_tokens = input_file_tokens
             
             # Calculate the cost with the pricing model:
-            # - Uncached tokens billed at half price
-            # - Total = (cached_tokens * full_price) + (uncached_tokens * half_price)
+            # - Cached tokens billed at half price
+            # - Total = (uncached_tokens * full_price) + (cached_tokens * half_price)
             
             # Calculate the proportion of each token type
             cached_ratio = cached_tokens / log_entry["prompt_tokens"]
             uncached_ratio = uncached_tokens / log_entry["prompt_tokens"]
             
-            # Apply the pricing rule (uncached at half price)
-            # The total cost formula: Cost = (cached_portion * full_price) + (uncached_portion * half_price)
-            # Which simplifies to: Cost = full_price * (cached_ratio + uncached_ratio/2)
-            adjusted_cost = uncached_cost * (cached_ratio + (uncached_ratio / 2))
+            # Apply the pricing rule (cached at half price)
+            # The total cost formula: Cost = (uncached_portion * full_price) + (cached_portion * half_price)
+            # Which simplifies to: Cost = full_price * (uncached_ratio + cached_ratio/2)
+            adjusted_cost = uncached_cost * (uncached_ratio + (cached_ratio / 2))
             
             # Store the adjusted cost
             log_entry["total_cost"] = adjusted_cost
@@ -406,9 +406,9 @@ def log_translation_run(input_path, output_path, run_params):
             # Print explanation of calculation
             print(f"Cost calculation with caching benefit:")
             print(f"  Maximum cost (no caching): ${uncached_cost:.6f}")
-            print(f"  Cached tokens: {cached_tokens} ({cached_ratio:.2%} of total)")
-            print(f"  Uncached tokens: {uncached_tokens} ({uncached_ratio:.2%} of total, billed at half price)")
-            print(f"  Formula: ${uncached_cost:.6f} * ({cached_ratio:.4f} + {uncached_ratio:.4f}/2)")
+            print(f"  Cached tokens: {cached_tokens} ({cached_ratio:.2%} of total, billed at half price)")
+            print(f"  Uncached tokens: {uncached_tokens} ({uncached_ratio:.2%} of total)")
+            print(f"  Formula: ${uncached_cost:.6f} * ({uncached_ratio:.4f} + {cached_ratio:.4f}/2)")
             print(f"  Adjusted cost: ${adjusted_cost:.6f}")
         else:
             # If input_file_tokens >= prompt_tokens, no caching benefit was detected
