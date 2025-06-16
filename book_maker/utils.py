@@ -317,7 +317,7 @@ def log_translation_run(input_path, output_path, run_params):
     }
 
     # Append the translator's token-usage information if available
-    if translator:
+    if translator and hasattr(translator, 'cumulative_log_info'):
         log_entry["cumulative_log_info"] = translator.cumulative_log_info
 
     # Optionally include prompt template information if provided
