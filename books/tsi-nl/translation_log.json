@@ -765,6 +765,24 @@
       "prompt_filename": "nl-edit-o3.prompt.md",
       "full_user_message": "Je bent een professioneel corrector-redacteur met meer dan tien jaar ervaring in het redigeren en re...",
       "full_system_message": "As a professional {language} translator and editor, you act as a cultural mediator between source te..."
+    },
+    {
+      "timestamp": "2025-06-16T13:59:49.123548",
+      "input_file": "ch03.qmd",
+      "input_line_count": 263,
+      "input_file_tokens": 12125,
+      "output_file": "ch03_20250616_1359_gemini-2_5-pro-preview-06-05.qmd",
+      "output_line_count": 238,
+      "output_file_tokens": 20257,
+      "batch_size": 5,
+      "language": "nederlands",
+      "model": "gemini-2.5-pro-preview-06-05",
+      "context_flag": false,
+      "single_translate": true,
+      "api_calls": 0,
+      "reasoning_effort": "medium",
+      "prompt_filename": "nl-translation-tsi.prompt.md",
+      "full_system_message": "As a professional translator and editor, you act as a cultural mediator between source text and targ..."
     }
   ]
 }

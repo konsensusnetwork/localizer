@@ -31,6 +31,26 @@ PROMPT_ENV_MAP = {
     "system": "BBM_GEMINIAPI_SYS_MSG",
 }
 
+# Gemini API pricing (per 1M tokens)
+GEMINI_PRICING = {
+    "gemini-1.5-pro": {
+        "input": 1.25,  # $1.25 per 1M tokens for prompts <= 128k tokens
+        "output": 5.00,  # $5.00 per 1M tokens for prompts <= 128k tokens
+    },
+    "gemini-1.5-flash": {
+        "input": 0.075,  # $0.075 per 1M tokens for prompts <= 128k tokens
+        "output": 0.30,  # $0.30 per 1M tokens for prompts <= 128k tokens
+    },
+    "gemini-2.5-pro-preview": {
+        "input": 1.25,  # $1.25 per 1M tokens for prompts <= 200k tokens
+        "output": 10.00,  # $10.00 per 1M tokens for prompts <= 200k tokens
+    },
+    "gemini-2.5-flash-preview": {
+        "input": 0.15,  # $0.15 per 1M tokens
+        "output": 0.60,  # $0.60 per 1M tokens (non-thinking)
+    }
+}
+
 GEMINIPRO_MODEL_LIST = [
     "gemini-1.5-pro",
     "gemini-1.5-pro-latest",
@@ -79,6 +99,54 @@ class Gemini(Base):
         self.interval = 3
         genai.configure(api_key=next(self.keys))
         generation_config["temperature"] = temperature
+        
+        # Initialize token tracking
+        self.log_info = {
+            "input_uncached_tokens": 0,
+            "input_system_tokens": 0,
+            "input_user_tokens": 0,
+            "input_intermediate_tokens": 0,
+            "input_total_tokens": 0,
+            "output_prompt_tokens": 0,
+            "output_completion_tokens": 0,
+            "output_total_tokens": 0,
+            "cost": 0
+        }
+        
+        # Track cumulative tokens across all API calls
+        self.cumulative_log_info = {
+            "input_uncached_tokens": 0,
+            "input_system_tokens": 0,
+            "input_user_tokens": 0,
+            "input_intermediate_tokens": 0,
+            "input_total_tokens": 0,
+            "output_prompt_tokens": 0,
+            "output_completion_tokens": 0,
+            "output_total_tokens": 0,
+            "cost": 0
+        }
+        self.api_call_count = 0
+        self.context_list = []
+        self.context_translated_list = []
+
+    def calculate_cost(self, input_tokens, output_tokens, model_name, input_uncached_tokens=0):
+        """Calculate cost based on token usage and model pricing."""
+        # Get base model name without version suffix
+        base_model = model_name.split("-")[0] + "-" + model_name.split("-")[1]
+        
+        # Get pricing for the model
+        pricing = GEMINI_PRICING.get(base_model, GEMINI_PRICING["gemini-1.5-pro"])
+        
+        # Calculate cached vs uncached input tokens
+        input_cached_tokens = input_tokens - input_uncached_tokens
+        
+        # Calculate costs (convert to per token pricing)
+        # Cached tokens are charged at half the rate
+        input_cost_cached = (input_cached_tokens / 1_000_000) * pricing["input"] / 2
+        input_cost_uncached = (input_uncached_tokens / 1_000_000) * pricing["input"]
+        output_cost = (output_tokens / 1_000_000) * pricing["output"]
+        
+        return input_cost_cached + input_cost_uncached + output_cost
 
     def create_convo(self):
         model = genai.GenerativeModel(
@@ -116,10 +184,60 @@ class Gemini(Base):
 
         while attempt_count < max_attempts:
             try:
-                self.convo.send_message(
+                # Count tokens for the input text
+                input_tokens = self.convo.model.count_tokens(text).total_tokens
+                system_tokens = self.convo.model.count_tokens(self.prompt_sys_msg).total_tokens if self.prompt_sys_msg else 0
+                prompt_tokens = self.convo.model.count_tokens(self.prompt.format(text=text, language=self.language)).total_tokens
+                total_input_tokens = system_tokens + prompt_tokens
+                
+                # Calculate uncached tokens (new content)
+                input_uncached_tokens = input_tokens
+                
+                # Update log info
+                self.log_info.update({
+                    "input_uncached_tokens": input_uncached_tokens,
+                    "input_system_tokens": system_tokens,
+                    "input_user_tokens": prompt_tokens,
+                    "input_total_tokens": total_input_tokens,
+                })
+                
+                # Update cumulative log info
+                self.cumulative_log_info.update({
+                    "input_uncached_tokens": self.cumulative_log_info["input_uncached_tokens"] + input_uncached_tokens,
+                    "input_system_tokens": self.cumulative_log_info["input_system_tokens"] + system_tokens,
+                    "input_user_tokens": self.cumulative_log_info["input_user_tokens"] + prompt_tokens,
+                    "input_total_tokens": self.cumulative_log_info["input_total_tokens"] + total_input_tokens,
+                })
+                
+                # Send message and get response
+                response = self.convo.send_message(
                     self.prompt.format(text=text, language=self.language)
                 )
-                t_text = self.convo.last.text.strip()
+                t_text = "".join(part.text for part in response.parts).strip()
+                
+                # Count tokens for the response
+                output_tokens = self.convo.model.count_tokens(t_text).total_tokens
+                
+                # Calculate cost for this translation
+                cost = self.calculate_cost(total_input_tokens, output_tokens, self.model, input_uncached_tokens)
+                
+                # Update log info with output tokens and cost
+                self.log_info.update({
+                    "output_completion_tokens": output_tokens,
+                    "output_total_tokens": output_tokens,
+                    "cost": cost
+                })
+                
+                # Update cumulative log info with output tokens and cost
+                self.cumulative_log_info.update({
+                    "output_completion_tokens": self.cumulative_log_info["output_completion_tokens"] + output_tokens,
+                    "output_total_tokens": self.cumulative_log_info["output_total_tokens"] + output_tokens,
+                    "cost": self.cumulative_log_info["cost"] + cost
+                })
+                
+                # Increment API call count
+                self.api_call_count += 1
+                
                 # 检查是否包含特定标签,如果有则只返回标签内的内容
                 tag_pattern = (
                     r"<step3_refined_translation>(.*?)</step3_refined_translation>"
