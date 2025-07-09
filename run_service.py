@@ -15,17 +15,17 @@ from pathlib import Path
 def check_dependencies():
     """Check if required dependencies are installed"""
     required_packages = [
-        'fastapi',
-        'uvicorn',
-        'python-multipart'
+        ('fastapi', 'fastapi'),
+        ('uvicorn', 'uvicorn'),
+        ('python-multipart', 'multipart')
     ]
     
     missing = []
-    for package in required_packages:
+    for package_name, import_name in required_packages:
         try:
-            __import__(package.replace('-', '_'))
+            __import__(import_name)
         except ImportError:
-            missing.append(package)
+            missing.append(package_name)
     
     if missing:
         print(f"❌ Missing required packages: {', '.join(missing)}")
@@ -105,6 +105,17 @@ def create_directories():
 def start_fastapi(host='0.0.0.0', port=8000, workers=1, reload=False):
     """Start the FastAPI server"""
     print(f"🚀 Starting FastAPI server on {host}:{port}")
+    
+    # Check if frontend exists
+    frontend_path = Path("frontend/index.html")
+    if frontend_path.exists():
+        print("📱 Frontend dashboard will be available at:")
+        print(f"   🌐 http://{host}:{port}/")
+        print(f"   📊 http://{host}:{port}/dashboard")
+    else:
+        print("⚠️  Frontend not found - API only mode")
+    
+    print(f"📚 API documentation: http://{host}:{port}/docs")
     
     cmd = [
         'uvicorn',

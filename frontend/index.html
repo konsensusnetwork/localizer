@@ -375,26 +375,38 @@
                                 <div class="form-group">
                                     <label for="model">Translation Model</label>
                                     <select id="model" required>
-                                        <option value="">Select Model</option>
-                                        <option value="openai">OpenAI</option>
-                                        <option value="claude">Claude</option>
-                                        <option value="gemini">Gemini</option>
+                                        <option value="">Select a model...</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
+                                    <label for="model-list">Model List (Optional)</label>
+                                    <input type="text" id="model-list" placeholder="e.g., o3-mini, gpt-4-1106-preview">
+                                    <small style="color: #6b7280; font-size: 12px;">Comma-separated list of specific models (for OpenAI)</small>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
                                     <label for="language">Target Language</label>
                                     <select id="language" required>
-                                        <option value="">Select Language</option>
-                                        <option value="zh-hans">Chinese (Simplified)</option>
-                                        <option value="zh-hant">Chinese (Traditional)</option>
-                                        <option value="ja">Japanese</option>
-                                        <option value="ko">Korean</option>
-                                        <option value="fr">French</option>
-                                        <option value="es">Spanish</option>
-                                        <option value="de">German</option>
-                                        <option value="it">Italian</option>
-                                        <option value="pt">Portuguese</option>
-                                        <option value="ru">Russian</option>
+                                        <option value="">Select language...</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="prompt-file">Prompt File (Optional)</label>
+                                    <select id="prompt-file">
+                                        <option value="">Use default prompt</option>
+                                        <option value="prompts/en-translation.prompt.md">English Translation</option>
+                                        <option value="prompts/it-translation.prompt.md">Italian Translation</option>
+                                        <option value="prompts/it-translation-2.prompt.md">Italian Translation 2</option>
+                                        <option value="prompts/al-translation.prompt.md">Albanian Translation</option>
+                                        <option value="prompts/formatter.prompt.md">Formatter</option>
+                                        <option value="prompts/nl/nl-edit-o3.prompt.md">Dutch Edit</option>
+                                        <option value="prompts/nl/nl-translation-tsi.prompt.md">Dutch Translation TSI</option>
+                                        <option value="prompts/es/es-edit.prompt.md">Spanish Edit</option>
+                                        <option value="prompts/fr-translation-2.prompt.md">French Translation 2</option>
+                                        <option value="prompts/fr-edit-2.prompt.md">French Edit 2</option>
+                                        <option value="prompts/es-translation-prompt.md">Spanish Translation</option>
                                     </select>
                                 </div>
                             </div>
@@ -402,6 +414,7 @@
                             <div class="form-group">
                                 <label for="prompt">Custom Prompt (Optional)</label>
                                 <textarea id="prompt" rows="3" placeholder="Enter custom translation prompt..."></textarea>
+                                <small style="color: #6b7280; font-size: 12px;">Use this if you don't select a prompt file above</small>
                             </div>
 
                             <div class="form-row">
@@ -411,20 +424,39 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="batch-size">Batch Size</label>
-                                    <input type="number" id="batch-size" value="1" min="1" max="10">
+                                    <input type="number" id="batch-size" value="5" min="1" max="20">
+                                    <small style="color: #6b7280; font-size: 12px;">Typical: 5-12</small>
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label>
-                                    <input type="checkbox" id="single-translate"> Single Language Output (No Bilingual)
-                                </label>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>
+                                        <input type="checkbox" id="single-translate" checked> Single Language Output (No Bilingual)
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <input type="checkbox" id="test-mode"> Test Mode (First 10 paragraphs only)
+                                    </label>
+                                </div>
                             </div>
 
-                            <div class="form-group">
-                                <label>
-                                    <input type="checkbox" id="test-mode"> Test Mode (First 10 paragraphs only)
-                                </label>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>
+                                        <input type="checkbox" id="use-context"> Use Context (Adds historical context)
+                                    </input>
+                                </div>
+                                <div class="form-group">
+                                    <label for="reasoning-effort">Reasoning Effort (for o3-mini)</label>
+                                    <select id="reasoning-effort">
+                                        <option value="medium">Medium</option>
+                                        <option value="low">Low</option>
+                                        <option value="high">High</option>
+                                        <option value="auto">Auto</option>
+                                    </select>
+                                </div>
                             </div>
 
                             <button type="submit" class="btn" id="submit-btn">
@@ -494,7 +526,11 @@
                 document.getElementById('user-email').textContent = 'mock@example.com';
                 userInfo.classList.remove('hidden');
                 appContent.classList.remove('hidden');
-                currentUser = { email: 'mock@example.com', id: 'mock_user' };
+                currentUser = { 
+                    email: 'mock@example.com', 
+                    id: 'mock_user',
+                    access_token: 'mock-token'  // Add access_token for mock user
+                };
                 return;
             }
 
@@ -609,11 +645,20 @@
         // Load models and languages
         async function loadModelsAndLanguages() {
             try {
+                console.log('Loading models and languages...');
                 const response = await fetch(`${API_BASE_URL}/translate/models`);
+                console.log('Models response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
                 const data = await response.json();
+                console.log('Models data:', data);
                 
                 // Populate model select
                 const modelSelect = document.getElementById('model');
+                modelSelect.innerHTML = '<option value="">Select a model...</option>';
                 data.models.forEach(model => {
                     const option = document.createElement('option');
                     option.value = model;
@@ -623,6 +668,7 @@
                 
                 // Populate language select
                 const languageSelect = document.getElementById('language');
+                languageSelect.innerHTML = '<option value="">Select language...</option>';
                 data.languages.choices.forEach(lang => {
                     const option = document.createElement('option');
                     option.value = lang;
@@ -630,8 +676,16 @@
                     languageSelect.appendChild(option);
                 });
                 
+                console.log('Models and languages loaded successfully');
+                
             } catch (error) {
                 console.error('Error loading models and languages:', error);
+                // Show error in the UI
+                const errorDiv = document.getElementById('translation-error');
+                if (errorDiv) {
+                    errorDiv.textContent = `Failed to load models and languages: ${error.message}`;
+                    errorDiv.classList.remove('hidden');
+                }
             }
         }
 
@@ -646,32 +700,73 @@
             errorDiv.classList.add('hidden');
             successDiv.classList.add('hidden');
             
+            // Form validation
+            const model = document.getElementById('model').value;
+            const language = document.getElementById('language').value;
+            
+            if (!model) {
+                errorDiv.textContent = 'Please select a translation model';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+            
+            if (!language) {
+                errorDiv.textContent = 'Please select a target language';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+            
+            if (currentMethod === 'file') {
+                const fileInput = document.getElementById('file-input');
+                if (!fileInput.files[0]) {
+                    errorDiv.textContent = 'Please select a file to translate';
+                    errorDiv.classList.remove('hidden');
+                    return;
+                }
+            } else {
+                const bookPath = document.getElementById('book-path').value;
+                if (!bookPath) {
+                    errorDiv.textContent = 'Please enter a file path';
+                    errorDiv.classList.remove('hidden');
+                    return;
+                }
+            }
+            
             submitBtn.disabled = true;
             submitBtn.textContent = 'Starting Translation...';
             
             try {
+                console.log('Starting translation submission...');
                 const formData = new FormData();
                 
                 if (currentMethod === 'file') {
                     const fileInput = document.getElementById('file-input');
-                    if (!fileInput.files[0]) {
-                        throw new Error('Please select a file to translate');
-                    }
                     formData.append('file', fileInput.files[0]);
+                    console.log('File selected:', fileInput.files[0].name);
                 } else {
-                    formData.append('book_path', document.getElementById('book-path').value);
+                    const bookPath = document.getElementById('book-path').value;
+                    formData.append('book_path', bookPath);
+                    console.log('Book path:', bookPath);
                 }
                 
-                formData.append('model', document.getElementById('model').value);
-                formData.append('language', document.getElementById('language').value);
+                formData.append('model', model);
+                formData.append('model_list', document.getElementById('model-list').value);
+                formData.append('language', language);
+                formData.append('prompt_file', document.getElementById('prompt-file').value);
                 formData.append('prompt', document.getElementById('prompt').value);
                 formData.append('temperature', document.getElementById('temperature').value);
                 formData.append('batch_size', document.getElementById('batch-size').value);
                 formData.append('single_translate', document.getElementById('single-translate').checked);
                 formData.append('test', document.getElementById('test-mode').checked);
+                formData.append('use_context', document.getElementById('use-context').checked);
+                formData.append('reasoning_effort', document.getElementById('reasoning-effort').value);
                 
                 const endpoint = currentMethod === 'file' ? 'upload-and-translate' : 'start';
-                const response = await fetch(`${API_BASE_URL}/translate/${endpoint}`, {
+                const url = `${API_BASE_URL}/translate/${endpoint}`;
+                console.log('Making request to:', url);
+                console.log('Current user:', currentUser);
+                
+                const response = await fetch(url, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${currentUser?.access_token || 'mock-token'}`
@@ -679,7 +774,9 @@
                     body: formData
                 });
                 
+                console.log('Response status:', response.status);
                 const result = await response.json();
+                console.log('Response data:', result);
                 
                 if (response.ok) {
                     successDiv.textContent = `Translation started successfully! Job ID: ${result.job_id}`;
@@ -697,6 +794,7 @@
                 }
                 
             } catch (error) {
+                console.error('Translation error:', error);
                 errorDiv.textContent = error.message;
                 errorDiv.classList.remove('hidden');
             } finally {

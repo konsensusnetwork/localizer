@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import tempfile
 import shutil
+from pydantic import BaseModel, ConfigDict
 
 from my_app.core import (
     TranslationConfig,
@@ -24,6 +25,9 @@ router = APIRouter()
 
 class TranslationRequest:
     """Request model for translation"""
+    
+    model_config = ConfigDict(protected_namespaces=())
+    
     def __init__(
         self,
         book_path: str,
@@ -65,6 +69,7 @@ async def start_translation(
     model: str = Form(...),
     language: str = Form(...),
     prompt: Optional[str] = Form(None),
+    prompt_file: Optional[str] = Form(None),
     batch_size: int = Form(1),
     single_translate: bool = Form(False),
     model_list: Optional[str] = Form(None),
@@ -73,50 +78,78 @@ async def start_translation(
     test_num: int = Form(10),
     accumulated_num: int = Form(1),
     block_size: int = Form(-1),
+    use_context: bool = Form(False),
+    reasoning_effort: str = Form("medium"),
     background_tasks: BackgroundTasks = BackgroundTasks(),
     user: Dict[str, Any] = Depends(get_current_user),
 ):
     """Start a translation job"""
     
-    # Create translation configuration
-    config = TranslationConfig(
-        book_path=book_path,
-        model=model,
-        language=language,
-        prompt=prompt,
-        batch_size=batch_size,
-        single_translate=single_translate,
-        model_list=model_list,
-        temperature=temperature,
-        test=test,
-        test_num=test_num,
-        accumulated_num=accumulated_num,
-        block_size=block_size,
-        user_id=user["id"]
-    )
-    
-    # Validate configuration
-    validation_result = validate_translation_config(config)
-    if not validation_result["valid"]:
-        raise HTTPException(
-            status_code=400,
-            detail={"errors": validation_result["errors"]}
+    try:
+        print(f"DEBUG: Starting translation with book_path={book_path}, model={model}, language={language}")
+        print(f"DEBUG: User: {user}")
+        
+        # Use prompt file if provided, otherwise use custom prompt
+        final_prompt = prompt_file if prompt_file else prompt
+        
+        # Create translation configuration
+        config = TranslationConfig(
+            book_path=book_path,
+            model=model,
+            language=language,
+            prompt=final_prompt,
+            batch_size=batch_size,
+            single_translate=single_translate,
+            model_list=model_list,
+            temperature=temperature,
+            test=test,
+            test_num=test_num,
+            accumulated_num=accumulated_num,
+            block_size=block_size,
+            user_id=user["id"]
         )
-    
-    # Create job
-    job = create_translation_job(config)
-    
-    # Start translation in background
-    async def run_translation():
-        await translate_book_async(config, job)
-    
-    background_tasks.add_task(run_translation)
-    
-    return {
-        "job_id": config.job_id,
-        "status": "started",
-        "message": "Translation job started successfully"
-    }
+        
+        print(f"DEBUG: Created config with job_id={config.job_id}")
+        
+        # Validate configuration
+        validation_result = validate_translation_config(config)
+        print(f"DEBUG: Validation result: {validation_result}")
+        
+        if not validation_result["valid"]:
+            print(f"DEBUG: Validation failed with errors: {validation_result['errors']}")
+            raise HTTPException(
+                status_code=400,
+                detail={"errors": validation_result["errors"]}
+            )
+        
+        # Create job
+        job = create_translation_job(config)
+        print(f"DEBUG: Created job with status={job.status}")
+        
+        # Start translation in background
+        async def run_translation():
+            await translate_book_async(config, job)
+        
+        background_tasks.add_task(run_translation)
+        
+        return {
+            "job_id": config.job_id,
+            "status": "started",
+            "message": "Translation job started successfully"
+        }
+        
+    except HTTPException:
+        # Re-raise HTTP exceptions as-is
+        raise
+    except Exception as e:
+        print(f"DEBUG: Unexpected error in start_translation: {str(e)}")
+        print(f"DEBUG: Error type: {type(e)}")
+        import traceback
+        print(f"DEBUG: Traceback: {traceback.format_exc()}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Internal server error: {str(e)}"
+        )
 
 
 @router.post("/upload-and-translate")
@@ -125,6 +158,7 @@ async def upload_and_translate(
     model: str = Form(...),
     language: str = Form(...),
     prompt: Optional[str] = Form(None),
+    prompt_file: Optional[str] = Form(None),
     batch_size: int = Form(1),
     single_translate: bool = Form(False),
     model_list: Optional[str] = Form(None),
@@ -133,82 +167,116 @@ async def upload_and_translate(
     test_num: int = Form(10),
     accumulated_num: int = Form(1),
     block_size: int = Form(-1),
+    use_context: bool = Form(False),
+    reasoning_effort: str = Form("medium"),
     background_tasks: BackgroundTasks = BackgroundTasks(),
     user: Dict[str, Any] = Depends(get_current_user),
 ):
     """Upload a file and start translation"""
     
-    # Validate file type
-    allowed_extensions = ['.epub', '.txt', '.srt', '.qmd', '.md']
-    file_ext = Path(file.filename).suffix.lower()
-    
-    if file_ext not in allowed_extensions:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Unsupported file type: {file_ext}. Supported types: {', '.join(allowed_extensions)}"
-        )
-    
-    # Create uploads directory if it doesn't exist
-    uploads_dir = Path("uploads")
-    uploads_dir.mkdir(exist_ok=True)
-    
-    # Save uploaded file
-    file_id = str(uuid.uuid4())
-    file_path = uploads_dir / f"{file_id}_{file.filename}"
-    
     try:
-        with open(file_path, "wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
+        print(f"DEBUG: Starting upload and translate with filename={file.filename}, model={model}, language={language}")
+        print(f"DEBUG: User: {user}")
+        
+        # Validate file type
+        allowed_extensions = ['.epub', '.txt', '.srt', '.qmd', '.md']
+        file_ext = Path(file.filename).suffix.lower()
+        print(f"DEBUG: File extension: {file_ext}")
+        
+        if file_ext not in allowed_extensions:
+            print(f"DEBUG: Unsupported file type: {file_ext}")
+            raise HTTPException(
+                status_code=400,
+                detail=f"Unsupported file type: {file_ext}. Supported types: {', '.join(allowed_extensions)}"
+            )
+        
+        # Create uploads directory if it doesn't exist
+        uploads_dir = Path("uploads")
+        uploads_dir.mkdir(exist_ok=True)
+        print(f"DEBUG: Uploads directory: {uploads_dir.absolute()}")
+        
+        # Save uploaded file
+        file_id = str(uuid.uuid4())
+        file_path = uploads_dir / f"{file_id}_{file.filename}"
+        print(f"DEBUG: Saving file to: {file_path}")
+        
+        try:
+            with open(file_path, "wb") as buffer:
+                shutil.copyfileobj(file.file, buffer)
+            print(f"DEBUG: File saved successfully to: {file_path}")
+        except Exception as e:
+            print(f"DEBUG: Failed to save file: {str(e)}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to save uploaded file: {str(e)}"
+            )
+        
+        # Use prompt file if provided, otherwise use custom prompt
+        final_prompt = prompt_file if prompt_file else prompt
+        
+        # Create translation configuration
+        config = TranslationConfig(
+            book_path=str(file_path),
+            model=model,
+            language=language,
+            prompt=final_prompt,
+            batch_size=batch_size,
+            single_translate=single_translate,
+            model_list=model_list,
+            temperature=temperature,
+            test=test,
+            test_num=test_num,
+            accumulated_num=accumulated_num,
+            block_size=block_size,
+            user_id=user["id"]
+        )
+        
+        print(f"DEBUG: Created config with job_id={config.job_id}")
+        
+        # Validate configuration
+        validation_result = validate_translation_config(config)
+        print(f"DEBUG: Validation result: {validation_result}")
+        
+        if not validation_result["valid"]:
+            print(f"DEBUG: Validation failed with errors: {validation_result['errors']}")
+            # Clean up uploaded file if validation fails
+            file_path.unlink(missing_ok=True)
+            raise HTTPException(
+                status_code=400,
+                detail={"errors": validation_result["errors"]}
+            )
+        
+        # Create job
+        job = create_translation_job(config)
+        print(f"DEBUG: Created job with status={job.status}")
+        
+        # Start translation in background
+        async def run_translation():
+            await translate_book_async(config, job)
+            # Clean up uploaded file after translation
+            file_path.unlink(missing_ok=True)
+        
+        background_tasks.add_task(run_translation)
+        
+        return {
+            "job_id": config.job_id,
+            "status": "started",
+            "message": "File uploaded and translation job started successfully",
+            "uploaded_file": file.filename
+        }
+        
+    except HTTPException:
+        # Re-raise HTTP exceptions as-is
+        raise
     except Exception as e:
+        print(f"DEBUG: Unexpected error in upload_and_translate: {str(e)}")
+        print(f"DEBUG: Error type: {type(e)}")
+        import traceback
+        print(f"DEBUG: Traceback: {traceback.format_exc()}")
         raise HTTPException(
             status_code=500,
-            detail=f"Failed to save uploaded file: {str(e)}"
+            detail=f"Internal server error: {str(e)}"
         )
-    
-    # Create translation configuration
-    config = TranslationConfig(
-        book_path=str(file_path),
-        model=model,
-        language=language,
-        prompt=prompt,
-        batch_size=batch_size,
-        single_translate=single_translate,
-        model_list=model_list,
-        temperature=temperature,
-        test=test,
-        test_num=test_num,
-        accumulated_num=accumulated_num,
-        block_size=block_size,
-        user_id=user["id"]
-    )
-    
-    # Validate configuration
-    validation_result = validate_translation_config(config)
-    if not validation_result["valid"]:
-        # Clean up uploaded file if validation fails
-        file_path.unlink(missing_ok=True)
-        raise HTTPException(
-            status_code=400,
-            detail={"errors": validation_result["errors"]}
-        )
-    
-    # Create job
-    job = create_translation_job(config)
-    
-    # Start translation in background
-    async def run_translation():
-        await translate_book_async(config, job)
-        # Clean up uploaded file after translation
-        file_path.unlink(missing_ok=True)
-    
-    background_tasks.add_task(run_translation)
-    
-    return {
-        "job_id": config.job_id,
-        "status": "started",
-        "message": "File uploaded and translation job started successfully",
-        "uploaded_file": file.filename
-    }
 
 
 @router.get("/status/{job_id}")
