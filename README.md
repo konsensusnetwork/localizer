@@ -32,7 +32,9 @@ For comprehensive documentation, please visit the **[docs folder](./docs/)** whi
 - `gemini-1.5-pro`, `gemini-1.5-pro-002`
 - `gemini-1.0-pro`
 
-**Important:** You must specify exact model names using the `--model_list` parameter. The old `--model` parameter has been removed for simplicity.
+**Model Selection:** You can use either:
+- `--model` with simple defaults: `--model openai` (uses gpt-3.5-turbo) or `--model gemini` (uses gemini-1.5-flash)
+- `--model_list` for precise control: specify exact model names like `--model_list gpt-4,gpt-3.5-turbo`
 
 ## Preparation
 
@@ -47,9 +49,17 @@ A sample book, `test_books/animal_farm.epub`, is provided for testing purposes.
 
 ```shell
 pip install -r requirements.txt
+# Simple usage with defaults
+python3 make_book.py --book_name test_books/animal_farm.epub --model openai --openai_key ${openai_key} --test
+# Or specify exact model
 python3 make_book.py --book_name test_books/animal_farm.epub --model_list gpt-3.5-turbo --openai_key ${openai_key} --test
+
 OR
+
 pip install -U bbook_maker
+# Simple usage with defaults
+bbook --book_name test_books/animal_farm.epub --model openai --openai_key ${openai_key} --test
+# Or specify exact model
 bbook --book_name test_books/animal_farm.epub --model_list gpt-3.5-turbo --openai_key ${openai_key} --test
 ```
 
@@ -82,14 +92,21 @@ python tests/run_tests.py --coverage
   Or, just set environment variable `BBM_OPENAI_API_KEY` instead.
 - Use `--gemini_key` option to specify Gemini API key, or set environment variable `BBM_GOOGLE_GEMINI_KEY` instead.
 - A sample book, `test_books/animal_farm.epub`, is provided for testing purposes.
-- **Required:** Use `--model_list` to specify exact model names (e.g., `gpt-4`, `gpt-3.5-turbo`, `gemini-1.5-flash-002`).
+- **Model Selection:** Choose either:
+  - `--model openai` or `--model gemini` for simple usage with sensible defaults
+  - `--model_list` to specify exact model names (e.g., `gpt-4`, `gpt-3.5-turbo`, `gemini-1.5-flash-002`)
 - You can specify multiple models separated by commas for load balancing: `--model_list gpt-4,gpt-3.5-turbo,gpt-4o`.
 - You can add `--use_context` to add a context paragraph to each passage sent to the model for translation (see below).
 
 ### OpenAI Models
 
-Use any OpenAI model with the `--model_list` parameter:
+**Simple Usage (with defaults):**
+```shell
+# Use OpenAI with default model (gpt-3.5-turbo)
+python3 make_book.py --book_name test_books/animal_farm.epub --model openai --openai_key ${openai_key}
+```
 
+**Advanced Usage (specific models):**
 ```shell
 # Use GPT-4
 python3 make_book.py --book_name test_books/animal_farm.epub --model_list gpt-4 --openai_key ${openai_key}
@@ -106,8 +123,13 @@ python3 make_book.py --book_name test_books/animal_farm.epub --model_list o1-min
 
 ### Gemini Models
 
-Use any Gemini model with the `--model_list` parameter:
+**Simple Usage (with defaults):**
+```shell
+# Use Gemini with default model (gemini-1.5-flash)
+python3 make_book.py --book_name test_books/animal_farm.epub --model gemini --gemini_key ${gemini_key}
+```
 
+**Advanced Usage (specific models):**
 ```shell
 # Use Gemini Flash
 python3 make_book.py --book_name test_books/animal_farm.epub --model_list gemini-1.5-flash --gemini_key ${gemini_key}
@@ -257,17 +279,17 @@ python3 make_book.py --book_name test_books/animal_farm.epub --model_list gpt-3.
 **Note if use `pip install bbook_maker` all commands can change to `bbook_maker args`**
 
 ```shell
-# Test quickly with GPT-3.5-turbo
-python3 make_book.py --book_name test_books/animal_farm.epub --model_list gpt-3.5-turbo --openai_key ${openai_key} --test --language zh-hans
+# Test quickly with default OpenAI model (gpt-3.5-turbo)
+python3 make_book.py --book_name test_books/animal_farm.epub --model openai --openai_key ${openai_key} --test --language zh-hans
 
-# Test quickly for srt file
-python3 make_book.py --book_name test_books/Lex_Fridman_episode_322.srt --model_list gpt-3.5-turbo --openai_key ${openai_key} --test
+# Test quickly for srt file with default OpenAI model
+python3 make_book.py --book_name test_books/Lex_Fridman_episode_322.srt --model openai --openai_key ${openai_key} --test
 
-# Or translate the whole book with GPT-4
+# Or translate the whole book with default Gemini model
+python3 make_book.py --book_name test_books/animal_farm.epub --model gemini --gemini_key ${gemini_key} --language zh-hans
+
+# Or translate the whole book using specific GPT-4 model
 python3 make_book.py --book_name test_books/animal_farm.epub --model_list gpt-4 --openai_key ${openai_key} --language zh-hans
-
-# Or translate the whole book using Gemini flash
-python3 make_book.py --book_name test_books/animal_farm.epub --model_list gemini-1.5-flash --gemini_key ${gemini_key}
 
 # Use a specific list of Gemini model aliases
 python3 make_book.py --book_name test_books/animal_farm.epub --model_list gemini-1.5-flash-002,gemini-1.5-flash-8b-exp-0924 --gemini_key ${gemini_key}
@@ -284,23 +306,23 @@ python3 make_book.py --book_name test_books/animal_farm.epub --model_list gpt-4-
 # Use multiple OpenAI models for load balancing
 python3 make_book.py --book_name test_books/animal_farm.epub --model_list gpt-4-1106-preview,gpt-4-0125-preview,gpt-3.5-turbo-0125 --openai_key ${openai_key}
 
-# Translate contents in <div> and <p>
-python3 make_book.py --book_name test_books/animal_farm.epub --model_list gpt-3.5-turbo --translate-tags div,p
+# Translate contents in <div> and <p> using simple defaults
+python3 make_book.py --book_name test_books/animal_farm.epub --model openai --translate-tags div,p
 
-# Tweaking the prompt
-python3 make_book.py --book_name test_books/animal_farm.epub --model_list gpt-3.5-turbo --prompt prompt_template_sample.txt
+# Tweaking the prompt with simple defaults
+python3 make_book.py --book_name test_books/animal_farm.epub --model openai --prompt prompt_template_sample.txt
 # or
-python3 make_book.py --book_name test_books/animal_farm.epub --model_list gpt-3.5-turbo --prompt prompt_template_sample.json
+python3 make_book.py --book_name test_books/animal_farm.epub --model openai --prompt prompt_template_sample.json
 # or
-python3 make_book.py --book_name test_books/animal_farm.epub --model_list gpt-3.5-turbo --prompt "Please translate \`{text}\` to {language}"
+python3 make_book.py --book_name test_books/animal_farm.epub --model openai --prompt "Please translate \`{text}\` to {language}"
 
 # Translate books download from Rakuten Kobo on kobo e-reader
-python3 make_book.py --book_from kobo --device_path /tmp/kobo --model_list gpt-3.5-turbo
+python3 make_book.py --book_from kobo --device_path /tmp/kobo --model openai
 
 # translate txt file
-python3 make_book.py --book_name test_books/the_little_prince.txt --model_list gpt-3.5-turbo --test --language zh-hans
+python3 make_book.py --book_name test_books/the_little_prince.txt --model openai --test --language zh-hans
 # aggregated translation txt file
-python3 make_book.py --book_name test_books/the_little_prince.txt --model_list gpt-3.5-turbo --test --batch_size 20
+python3 make_book.py --book_name test_books/the_little_prince.txt --model openai --test --batch_size 20
 
 ```
 

@@ -13,8 +13,9 @@ The book maker has been simplified to support only OpenAI and Gemini models, rem
   - Gemini: `gemini-1.5-flash`, `gemini-1.5-pro`, `gemini-1.5-flash-002`, etc.
 
 ### 2. CLI Parameter Changes (`book_maker/cli.py`)
-- **Removed**: `--model` parameter entirely
-- **Made `--model_list` required**: Users must now specify exact model names
+- **Added back `--model` parameter**: Simple selection with sensible defaults (`openai` or `gemini`)
+- **Made `--model_list` optional**: Users can choose between simple defaults or precise control
+- **Mutually exclusive options**: Users must choose either `--model` or `--model_list`, not both
 - **Removed unnecessary API key parameters**: `--caiyun_key`, `--deepl_key`, `--claude_key`, `--groq_key`, `--xai_key`, `--custom_api`
 - **Kept only**: `--openai_key` and `--gemini_key`
 - **Simplified logic**: Direct model lookup in MODEL_DICT, no complex inference needed
@@ -46,11 +47,12 @@ The book maker has been simplified to support only OpenAI and Gemini models, rem
 
 ## Benefits of the Simplification
 
-1. **Cleaner API**: Users specify exactly what they want
+1. **Flexible API**: Users can choose between simple defaults or precise control
 2. **Reduced complexity**: No more complex model type inference
 3. **Better maintenance**: Fewer dependencies and providers to maintain
-4. **Explicit control**: Users have full control over which models to use
-5. **Future-ready**: Easy to add new models within the two supported providers
+4. **Beginner-friendly**: Simple `--model openai` for quick start
+5. **Expert-friendly**: Precise `--model_list` for advanced users
+6. **Future-ready**: Easy to add new models within the two supported providers
 
 ## Usage Examples
 
@@ -61,8 +63,13 @@ python3 make_book.py --book_name test.epub --model claude --claude_key $key
 python3 make_book.py --book_name test.epub --model gemini --gemini_key $key
 ```
 
-### After (Simple)
+### After (Simple & Flexible)
 ```bash
+# Simple usage with sensible defaults
+python3 make_book.py --book_name test.epub --model openai --openai_key $key
+python3 make_book.py --book_name test.epub --model gemini --gemini_key $key
+
+# Precise control with specific models
 python3 make_book.py --book_name test.epub --model_list gpt-3.5-turbo --openai_key $key
 python3 make_book.py --book_name test.epub --model_list gemini-1.5-flash --gemini_key $key
 python3 make_book.py --book_name test.epub --model_list gpt-4,gpt-3.5-turbo --openai_key $key
@@ -70,9 +77,21 @@ python3 make_book.py --book_name test.epub --model_list gpt-4,gpt-3.5-turbo --op
 
 ## Migration Guide for Users
 
+### Simple Migration (Recommended)
+1. **Replace old model names with new simple options**:
+   - `--model chatgptapi` → `--model openai`
+   - `--model gpt4` → `--model openai`
+   - `--model gemini` → `--model gemini`
+2. **Remove unsupported provider keys** (Claude, DeepL, etc.)
+3. **Keep only `--openai_key` and `--gemini_key`**
+
+### Advanced Migration (For precise control)
 1. **Replace `--model` with `--model_list`**
 2. **Use exact model names** (e.g., `gpt-4` instead of `gpt4`)
-3. **Remove unsupported provider keys** (Claude, DeepL, etc.)
-4. **Check the MODEL_DICT** in `translator/__init__.py` for all supported models
+3. **Check the MODEL_DICT** in `translator/__init__.py` for all supported models
+
+### Default Models
+- `--model openai` → uses `gpt-3.5-turbo`
+- `--model gemini` → uses `gemini-1.5-flash`
 
 The system is now much simpler and more predictable while maintaining the core functionality for the two most popular AI providers.

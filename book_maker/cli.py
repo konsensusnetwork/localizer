@@ -377,10 +377,18 @@ So you are close to reaching the limit. You have to choose your own value, there
         help="merge multiple paragraphs into one block, may increase accuracy and speed up the process, but disturb the original format, must be used with `--single_translate`",
     )
     parser.add_argument(
+        "-m",
+        "--model",
+        dest="model",
+        type=str,
+        choices=["openai", "gemini"],
+        metavar="MODEL",
+        help="Simple model selection with sensible defaults. Choose 'openai' (uses gpt-3.5-turbo) or 'gemini' (uses gemini-1.5-flash). For specific models, use --model_list instead.",
+    )
+    parser.add_argument(
         "--model_list",
         type=str,
         dest="model_list",
-        required=True,
         help="Specify exactly the models you want as a comma separated list. OpenAI examples: `gpt-4,gpt-3.5-turbo,gpt-4o,o1-mini`. Gemini examples: `gemini-1.5-flash-002,gemini-1.5-pro`. For all available models, see the MODEL_DICT in translator/__init__.py",
     )
     parser.add_argument(
@@ -425,25 +433,45 @@ So you are close to reaching the limit. You have to choose your own value, there
         os.environ["http_proxy"] = PROXY
         os.environ["https_proxy"] = PROXY
 
-    # Parse and validate the model list
-    model_list = options.model_list.split(",")
-    first_model = model_list[0].strip()
+    # Validate that either --model or --model_list is provided
+    if not options.model and not options.model_list:
+        raise Exception("Either --model or --model_list must be provided")
     
-    # Check if the first model is supported
-    if first_model not in MODEL_DICT:
-        supported_models = list(MODEL_DICT.keys())
-        raise Exception(f"Unsupported model: '{first_model}'. Supported models are: {', '.join(supported_models)}")
+    if options.model and options.model_list:
+        raise Exception("Cannot use both --model and --model_list. Choose one.")
+    
+    # Set up model list and provider type
+    if options.model:
+        # Use defaults for the selected provider
+        if options.model == "openai":
+            provider_type = "openai"
+            model_list = ["gpt-3.5-turbo"]
+        elif options.model == "gemini":
+            provider_type = "gemini"
+            model_list = ["gemini-1.5-flash"]
+        else:
+            raise Exception(f"Unsupported model type: {options.model}")
+    else:
+        # Use explicit model list
+        model_list = options.model_list.split(",")
+        first_model = model_list[0].strip()
+        
+        # Check if the first model is supported
+        if first_model not in MODEL_DICT:
+            supported_models = list(MODEL_DICT.keys())
+            raise Exception(f"Unsupported model: '{first_model}'. Supported models are: {', '.join(supported_models)}")
+        
+        # Determine provider type based on model name
+        if first_model.startswith(("gpt-", "o1-", "o3-")):
+            provider_type = "openai"
+        elif first_model.startswith("gemini-"):
+            provider_type = "gemini"
+        else:
+            raise Exception(f"Unable to determine provider for model: {first_model}")
     
     # Get the translator class for the first model
+    first_model = model_list[0].strip()
     translate_model = MODEL_DICT[first_model]
-    
-    # Determine provider type based on model name
-    if first_model.startswith(("gpt-", "o1-", "o3-")):
-        provider_type = "openai"
-    elif first_model.startswith("gemini-"):
-        provider_type = "gemini"
-    else:
-        raise Exception(f"Unable to determine provider for model: {first_model}")
     
     # Handle API keys based on provider type
     API_KEY = ""
@@ -546,7 +574,7 @@ So you are close to reaching the limit. You have to choose your own value, there
     
     # Set the model list for all supported provider types
     if provider_type in ("openai", "gemini"):
-        e.translate_model.set_model_list(options.model_list.split(","))
+        e.translate_model.set_model_list(model_list)
     
     if options.block_size > 0:
         e.block_size = options.block_size
