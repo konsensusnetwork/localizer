@@ -1,16 +1,15 @@
-# FastAPI + Supabase Translation Service
+# Book Translation Service API
 
-This is a comprehensive implementation of a translation service built with FastAPI and Supabase, as outlined in the integration guide. The service provides asynchronous translation capabilities with user authentication, file storage, and a modern web dashboard.
+This is a backend-only translation service built with FastAPI and Supabase. The service provides asynchronous translation capabilities with user authentication and file processing.
 
 ## Architecture Overview
 
-The implementation follows the architecture described in the integration guide:
+The implementation consists of:
 
 1. **FastAPI Backend** - Async-capable web framework for the API
-2. **Supabase Integration** - Authentication, file storage, and database logging
-3. **Asynchronous Processing** - Both BackgroundTasks and Celery options
-4. **Web Dashboard** - Modern HTML/JavaScript front-end
-5. **Translation Engine** - Built on top of the existing book-maker translation system
+2. **Supabase Integration** - Authentication and database logging
+3. **Asynchronous Processing** - BackgroundTasks for translation jobs
+4. **Translation Engine** - Built on top of the existing book-maker translation system
 
 ## Project Structure
 
@@ -28,13 +27,10 @@ my_app/
     ├── __init__.py
     └── tasks.py           # Celery tasks for background processing
 
-frontend/
-└── index.html             # Web dashboard
-
 Config Files:
-├── .env.example           # Environment variables template
-├── fastapi_requirements.txt # Additional dependencies
-└── FASTAPI_TRANSLATION_SERVICE.md # This documentation
+├── .env                   # Environment variables
+├── requirements.txt       # Dependencies
+└── docs/                  # API documentation
 ```
 
 ## Features
@@ -47,62 +43,43 @@ Config Files:
 
 ### Translation Processing
 - ✅ Asynchronous translation with FastAPI BackgroundTasks
-- ✅ Celery integration for robust background processing
 - ✅ Support for multiple file formats (EPUB, TXT, SRT, QMD, MD)
-- ✅ File upload and processing
+- ✅ File path-based processing
 - ✅ Model and language validation
 - ✅ Custom prompt support
 - ✅ Test mode for development
 
 ### Job Management
 - ✅ Real-time job status tracking
-- ✅ Job cancellation
 - ✅ Progress monitoring
 - ✅ Error handling and reporting
 - ✅ Job history
 
 ### File Storage & Logging
 - ✅ Supabase Storage integration
-- ✅ Automatic file upload after translation
 - ✅ Structured logging to database
-- ✅ Download links for completed translations
 - ✅ File cleanup and management
-
-### Web Dashboard
-- ✅ Modern, responsive UI
-- ✅ Drag-and-drop file upload
-- ✅ Real-time job monitoring
-- ✅ Translation history
-- ✅ Configuration validation
-- ✅ Error handling and user feedback
 
 ## Installation & Setup
 
 ### 1. Install Dependencies
 
 ```bash
-# Install existing dependencies
+# Install dependencies
 pip install -r requirements.txt
-
-# Install additional FastAPI dependencies
-pip install -r fastapi_requirements.txt
 ```
 
 ### 2. Environment Configuration
 
 ```bash
-# Copy the example environment file
+# Create .env file with your credentials
 cp .env.example .env
-
-# Edit the .env file with your credentials
-nano .env
 ```
 
 Required environment variables:
 - `SUPABASE_URL`: Your Supabase project URL
 - `SUPABASE_ANON_KEY`: Supabase anonymous key
 - `SUPABASE_SERVICE_KEY`: Supabase service key (for server-side operations)
-- `REDIS_URL`: Redis connection URL (for Celery)
 - API keys for your chosen translation models
 
 ### 3. Supabase Setup
@@ -137,16 +114,6 @@ CREATE INDEX idx_translation_runs_job_id ON translation_runs(job_id);
 CREATE INDEX idx_translation_runs_status ON translation_runs(status);
 ```
 
-### 4. Redis Setup (Optional - for Celery)
-
-```bash
-# Install Redis
-sudo apt-get install redis-server
-
-# Or using Docker
-docker run -d -p 6379:6379 redis:alpine
-```
-
 ## Running the Service
 
 ### Development Mode
@@ -154,9 +121,6 @@ docker run -d -p 6379:6379 redis:alpine
 ```bash
 # Start the FastAPI server
 uvicorn my_app.main:app --reload --host 0.0.0.0 --port 8000
-
-# For Celery (in a separate terminal)
-celery -A my_app.workers.tasks worker --loglevel=info
 ```
 
 ### Production Mode
@@ -164,9 +128,6 @@ celery -A my_app.workers.tasks worker --loglevel=info
 ```bash
 # Start with multiple workers
 uvicorn my_app.main:app --host 0.0.0.0 --port 8000 --workers 4
-
-# Start Celery worker
-celery -A my_app.workers.tasks worker --loglevel=info --concurrency=4
 ```
 
 ### Using Docker
@@ -175,11 +136,17 @@ celery -A my_app.workers.tasks worker --loglevel=info --concurrency=4
 # Build the image
 docker build -t translation-service .
 
-# Run with Docker Compose
-docker-compose up -d
+# Run the container
+docker run -d -p 8000:8000 translation-service
 ```
 
 ## API Endpoints
+
+### Root Endpoints
+- `GET /` - Service information
+- `GET /models` - Get supported models and languages
+- `GET /docs` - Interactive API documentation (Swagger UI)
+- `GET /redoc` - Alternative API documentation
 
 ### Authentication
 - `GET /auth/status` - Check authentication system status
@@ -187,61 +154,145 @@ docker-compose up -d
 - `POST /auth/test-auth` - Test authentication
 
 ### Translation
-- `GET /translate/models` - Get supported models and languages
 - `POST /translate/start` - Start translation with file path
-- `POST /translate/upload-and-translate` - Upload file and start translation
-- `GET /translate/status/{job_id}` - Get job status
 - `GET /translate/jobs` - Get user's active jobs
-- `DELETE /translate/jobs/{job_id}` - Cancel a job
-- `GET /translate/download/{job_id}` - Get download link
-- `POST /translate/validate` - Validate translation configuration
+- `GET /translate/jobs/{job_id}` - Get specific job status
+- `GET /translate/validate` - Validate translation configuration
 
-### Core Endpoints
-- `GET /` - API information
-- `GET /health` - Health check
+## API Usage Examples
 
-## Usage Examples
-
-### Starting a Translation (File Upload)
+### 1. Get Service Information
 
 ```bash
-curl -X POST "http://localhost:8000/translate/upload-and-translate" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -F "file=@/path/to/book.epub" \
-  -F "model=openai" \
-  -F "language=zh-hans" \
-  -F "single_translate=true"
+curl -X GET "http://localhost:8000/" \
+  -H "Content-Type: application/json"
 ```
 
-### Checking Job Status
+Response:
+```json
+{
+  "service": "Book Translation Service",
+  "version": "1.0.0",
+  "docs": "/docs",
+  "redoc": "/redoc"
+}
+```
+
+### 2. Get Supported Models
 
 ```bash
-curl -X GET "http://localhost:8000/translate/status/job-id" \
+curl -X GET "http://localhost:8000/models" \
+  -H "Content-Type: application/json"
+```
+
+### 3. Check Authentication Status
+
+```bash
+curl -X GET "http://localhost:8000/auth/status" \
+  -H "Content-Type: application/json"
+```
+
+### 4. Start Translation Job
+
+```bash
+curl -X POST "http://localhost:8000/translate/start" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "book_path": "/path/to/book.epub",
+    "model": "openai",
+    "language": "zh-hans",
+    "single_translate": true,
+    "test_mode": true,
+    "test_num": 10
+  }'
+```
+
+Response:
+```json
+{
+  "job_id": "uuid-job-id",
+  "status": "started",
+  "message": "Translation job started"
+}
+```
+
+### 5. Check Job Status
+
+```bash
+curl -X GET "http://localhost:8000/translate/jobs/uuid-job-id" \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
-### Getting User Jobs
+Response:
+```json
+{
+  "job_id": "uuid-job-id",
+  "status": "running",
+  "progress": 45,
+  "message": "Translation in progress",
+  "result": null,
+  "error": null
+}
+```
+
+### 6. Get All User Jobs
 
 ```bash
 curl -X GET "http://localhost:8000/translate/jobs" \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
-## Web Dashboard
+### 7. Validate Translation Parameters
 
-The web dashboard provides a complete user interface for:
+```bash
+curl -X GET "http://localhost:8000/translate/validate?model=openai&language=zh-hans" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
 
-1. **Authentication** - Automatic handling of Supabase authentication
-2. **File Upload** - Drag-and-drop or file picker
-3. **Translation Configuration** - Model selection, language, prompts
-4. **Job Monitoring** - Real-time status updates
-5. **Download Management** - Easy access to completed translations
-6. **History** - View past translations
+## Request/Response Models
 
-To access the dashboard:
-1. Open `frontend/index.html` in a web browser
-2. Configure the API_BASE_URL in the JavaScript
-3. Set up Supabase credentials if using real authentication
+### TranslationRequest
+```json
+{
+  "book_path": "string",
+  "model": "string",
+  "language": "string",
+  "model_list": "string (optional)",
+  "batch_size": "integer (optional)",
+  "single_translate": "boolean (default: false)",
+  "test_mode": "boolean (default: false)",
+  "test_num": "integer (default: 10)",
+  "use_context": "boolean (default: false)",
+  "reasoning_effort": "string (default: 'medium')",
+  "temperature": "float (default: 1.0)",
+  "accumulated_num": "integer (default: 1)",
+  "block_size": "integer (default: -1)",
+  "prompt_file": "string (optional)",
+  "user_id": "string (default: 'mock_user')"
+}
+```
+
+### TranslationResponse
+```json
+{
+  "job_id": "string",
+  "status": "string",
+  "message": "string"
+}
+```
+
+### Job Status Response
+```json
+{
+  "job_id": "string",
+  "status": "string",
+  "progress": "integer",
+  "message": "string",
+  "result": "object (optional)",
+  "error": "string (optional)"
+}
+```
 
 ## Configuration Options
 
@@ -274,68 +325,71 @@ To access the dashboard:
 - QMD (Quarto Markdown)
 - MD (Markdown)
 
-## Background Processing Options
+## Authentication
 
-### FastAPI BackgroundTasks
-- **Pros**: Simple, built-in, no external dependencies
-- **Cons**: Limited scalability, tasks lost on restart
-- **Use Case**: Development, small-scale usage
+The service supports two authentication modes:
 
-### Celery with Redis
-- **Pros**: Robust, scalable, persistent, retry logic
-- **Cons**: Requires Redis, more complex setup
-- **Use Case**: Production, high-volume processing
+1. **Mock Mode** (Development):
+   - No Supabase required
+   - Uses mock user credentials
+   - Automatically enabled when Supabase is not configured
 
-## Monitoring & Logging
-
-### Database Logging
-All translation runs are logged to the Supabase database with:
-- Job configuration
-- Status tracking
-- Error information
-- Performance metrics
-- Token usage
-
-### File Logging
-Detailed logs are stored in Supabase Storage:
-- Translation progress
-- API responses
-- Error details
-- Processing times
-
-### Job Status Tracking
-Real-time status updates:
-- `pending` - Job created, waiting to start
-- `started` - Translation in progress
-- `completed` - Successfully finished
-- `failed` - Error occurred
-- `cancelled` - User cancelled
-
-## Security Considerations
-
-1. **Authentication**: All endpoints require valid JWT tokens
-2. **Authorization**: Users can only access their own jobs
-3. **File Upload**: Validation of file types and sizes
-4. **API Keys**: Secure storage in environment variables
-5. **CORS**: Configurable for production deployment
+2. **Supabase Mode** (Production):
+   - Requires valid JWT tokens
+   - Bearer token in Authorization header
+   - User isolation and security
 
 ## Error Handling
 
-The service implements comprehensive error handling:
-- Configuration validation
-- API key validation
-- File format validation
-- Network error handling
-- Database error handling
-- Storage error handling
+The API returns standard HTTP status codes:
+- `200` - Success
+- `400` - Bad Request (validation errors)
+- `401` - Unauthorized (authentication required)
+- `404` - Not Found (resource not found)
+- `500` - Internal Server Error
+
+Error responses include:
+```json
+{
+  "detail": "Error message description"
+}
+```
+
+## Job Status Values
+
+- `running` - Translation in progress
+- `completed` - Successfully finished
+- `failed` - Error occurred
+
+## Testing the API
+
+### Interactive Documentation
+Visit `http://localhost:8000/docs` for Swagger UI interface where you can:
+- Explore all endpoints
+- Test API calls directly
+- View request/response schemas
+- Generate code examples
+
+### Alternative Documentation
+Visit `http://localhost:8000/redoc` for ReDoc interface with:
+- Clean, readable documentation
+- Code examples
+- Schema definitions
+
+## Security Considerations
+
+1. **Authentication**: Endpoints require valid JWT tokens (except in mock mode)
+2. **Authorization**: Users can only access their own jobs
+3. **File Validation**: Path validation for file access
+4. **API Keys**: Secure storage in environment variables
+5. **CORS**: Configurable for production deployment
 
 ## Performance Considerations
 
 1. **Async Processing**: Non-blocking translation execution
-2. **Database Indexing**: Optimized queries for job lookup
-3. **File Management**: Automatic cleanup of temporary files
+2. **Background Tasks**: Efficient job processing
+3. **Database Indexing**: Optimized queries for job lookup
 4. **Connection Pooling**: Efficient database connections
-5. **Caching**: Job status caching for performance
 
 ## Development Tips
 
@@ -352,8 +406,8 @@ The service implements comprehensive error handling:
 FROM python:3.10-slim
 
 WORKDIR /app
-COPY requirements.txt fastapi_requirements.txt ./
-RUN pip install -r requirements.txt -r fastapi_requirements.txt
+COPY requirements.txt ./
+RUN pip install -r requirements.txt
 
 COPY . .
 
@@ -370,54 +424,7 @@ API_WORKERS=4
 # Database connection pooling
 DATABASE_POOL_SIZE=10
 DATABASE_MAX_OVERFLOW=20
-
-# Rate limiting
-RATE_LIMIT_ENABLED=true
-RATE_LIMIT_REQUESTS=100
-RATE_LIMIT_WINDOW=3600
 ```
-
-## Testing
-
-### Unit Tests
-```bash
-# Run translation tests
-python -m pytest tests/test_translation.py
-
-# Run API tests
-python -m pytest tests/test_api.py
-
-# Run integration tests
-python -m pytest tests/test_integration.py
-```
-
-### Manual Testing
-1. Test authentication flow
-2. Test file upload and processing
-3. Test job management
-4. Test error scenarios
-5. Test dashboard functionality
-
-## Contributing
-
-1. Follow the existing code structure
-2. Add comprehensive error handling
-3. Include type hints
-4. Write tests for new features
-5. Update documentation
-
-## Future Enhancements
-
-- [ ] Batch translation processing
-- [ ] Translation quality metrics
-- [ ] User usage analytics
-- [ ] Custom model integration
-- [ ] Advanced file preprocessing
-- [ ] Multi-tenant support
-- [ ] API rate limiting
-- [ ] WebSocket status updates
-- [ ] Mobile app integration
-- [ ] Advanced search and filtering
 
 ## Troubleshooting
 
@@ -425,9 +432,8 @@ python -m pytest tests/test_integration.py
 
 1. **Authentication fails**: Check Supabase configuration
 2. **Translation fails**: Verify API keys and model availability
-3. **File upload fails**: Check file size and format
-4. **Jobs stuck**: Restart Celery workers
-5. **Database errors**: Check Supabase connection
+3. **File path errors**: Check file permissions and paths
+4. **Database errors**: Check Supabase connection
 
 ### Debug Mode
 ```bash
@@ -435,7 +441,7 @@ python -m pytest tests/test_integration.py
 export DEBUG=True
 
 # Check service status
-curl http://localhost:8000/health
+curl http://localhost:8000/
 
 # Check authentication
 curl http://localhost:8000/auth/status
@@ -444,9 +450,9 @@ curl http://localhost:8000/auth/status
 ## Support
 
 For issues and questions:
-1. Check the troubleshooting section
+1. Check the API documentation at `/docs`
 2. Review the logs for error details
 3. Verify environment configuration
 4. Test with minimal configuration
 
-This implementation provides a complete, production-ready translation service that combines the power of FastAPI's async capabilities with Supabase's authentication and storage features, exactly as outlined in the integration guide.
+This implementation provides a complete, production-ready translation service API that combines the power of FastAPI's async capabilities with Supabase's authentication features.

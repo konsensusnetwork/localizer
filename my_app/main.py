@@ -2,8 +2,6 @@ import logging
 import sys
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
 import os
 
 # Load environment variables from .env file
@@ -41,21 +39,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount static files
-app.mount("/static", StaticFiles(directory="frontend"), name="static")
-
 # Include routers
 app.include_router(auth.router, prefix="/auth", tags=["authentication"])
 app.include_router(translate.router, prefix="/translate", tags=["translation"])
 
-@app.get("/", response_class=HTMLResponse)
+@app.get("/")
 async def read_root():
-    """Serve the main HTML page"""
-    try:
-        with open("frontend/index.html", "r", encoding="utf-8") as f:
-            return HTMLResponse(content=f.read())
-    except FileNotFoundError:
-        return HTMLResponse(content="<h1>Translation Service</h1><p>Frontend not found</p>")
+    """Get service information"""
+    return {
+        "service": "Book Translation Service",
+        "version": "1.0.0",
+        "docs": "/docs",
+        "redoc": "/redoc"
+    }
 
 @app.get("/models")
 async def get_models():
