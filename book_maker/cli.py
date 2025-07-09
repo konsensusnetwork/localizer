@@ -1,12 +1,23 @@
 import argparse
 import json
 import os
+import logging
+import sys
 from os import environ as env
 from pathlib import Path
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
-# load_dotenv()
+# Set up logging BEFORE importing modules
+def setup_logging(debug=False):
+    """Setup logging configuration"""
+    level = logging.DEBUG if debug else logging.INFO
+    logging.basicConfig(
+        level=level,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
+
+# Default to INFO level - will be overridden by CLI args
+setup_logging(debug=False)
 
 from book_maker.loader import BOOK_LOADER_DICT
 from book_maker.translator import MODEL_DICT
@@ -417,8 +428,23 @@ So you are close to reaching the limit. You have to choose your own value, there
         choices=["low", "medium", "high", "auto"],
         help="Set the reasoning effort for o3-mini model (default: medium)",
     )
+    parser.add_argument(
+        "--debug",
+        dest="debug",
+        action="store_true",
+        help="Enable debug logging for detailed output",
+    )
 
     options = parser.parse_args()
+    
+    # Update logging level based on debug flag
+    if options.debug:
+        # Reconfigure logging for debug level
+        logging.getLogger().setLevel(logging.DEBUG)
+        # Also set level for all existing loggers
+        for logger_name in logging.root.manager.loggerDict:
+            logging.getLogger(logger_name).setLevel(logging.DEBUG)
+    
     project_dir = os.path.dirname(os.path.abspath(options.book_name))
 
     if not options.book_name:

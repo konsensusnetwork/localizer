@@ -4,7 +4,7 @@ from typing import Dict, Any, Optional
 from fastapi import APIRouter, HTTPException, BackgroundTasks
 from pydantic import BaseModel
 
-from my_app.core import translate_book
+from my_app.core import translate_book, get_supported_languages, get_supported_models
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -38,7 +38,7 @@ class TranslationResponse(BaseModel):
 # Store jobs in memory (in production, use a database)
 jobs: Dict[str, Dict[str, Any]] = {}
 
-@router.post("/translate/start", response_model=TranslationResponse)
+@router.post("/start", response_model=TranslationResponse)
 async def start_translation(request: TranslationRequest, background_tasks: BackgroundTasks):
     """Start a translation job"""
     import uuid
@@ -160,7 +160,7 @@ async def run_translation(
             "message": f"Translation failed: {str(e)}"
         })
 
-@router.get("/translate/jobs")
+@router.get("/jobs")
 async def get_jobs():
     """Get all translation jobs"""
     return {
@@ -173,7 +173,7 @@ async def get_jobs():
         ]
     }
 
-@router.get("/translate/jobs/{job_id}")
+@router.get("/jobs/{job_id}")
 async def get_job(job_id: str):
     """Get a specific translation job"""
     if job_id not in jobs:
@@ -183,6 +183,28 @@ async def get_job(job_id: str):
         "job_id": job_id,
         **jobs[job_id]
     }
+
+@router.get("/models")
+async def get_models():
+    """Get supported models"""
+    try:
+        models = get_supported_models()
+        logger.info(f"Retrieved {len(models)} supported models")
+        return models
+    except Exception as e:
+        logger.error(f"Error getting models: {str(e)}")
+        raise
+
+@router.get("/languages")
+async def get_languages():
+    """Get supported languages"""
+    try:
+        languages = get_supported_languages()
+        logger.info(f"Retrieved {len(languages)} supported languages")
+        return languages
+    except Exception as e:
+        logger.error(f"Error getting languages: {str(e)}")
+        raise
 
 @router.get("/validate")
 async def validate_translation(

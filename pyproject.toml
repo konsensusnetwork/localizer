@@ -55,6 +55,30 @@ plugins = ["pdm-autoexport"]
 [[tool.pdm.autoexport]]
 filename = "requirements.txt"
 without-hashes = true
+
+[tool.pdm.scripts]
+test-api = "pytest tests/test_api.py"
+test-api-verbose = "pytest tests/test_api.py -v"
+test-api-markers = "pytest tests/test_api.py -m"
+start-service = "python run_service.py"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--verbose",
+    "--tb=short",
+    "--strict-markers",
+    "--disable-warnings",
+    "--log-cli-level=INFO"
+]
+markers = [
+    "api: marks tests as API tests",
+    "integration: marks tests as integration tests",
+    "slow: marks tests as slow"
+]
 [build-system]
 requires = ["pdm-backend>=2.0.0"]
 build-backend = "pdm.backend"

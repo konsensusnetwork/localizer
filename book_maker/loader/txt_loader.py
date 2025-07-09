@@ -1,3 +1,4 @@
+import logging
 import sys
 from pathlib import Path
 import datetime
@@ -6,6 +7,8 @@ import os
 from book_maker.utils import prompt_config_to_kwargs, generate_output_filename, log_translation_run
 
 from .base_loader import BaseBookLoader
+
+logger = logging.getLogger(__name__)
 
 
 class TXTBookLoader(BaseBookLoader):
@@ -72,23 +75,23 @@ class TXTBookLoader(BaseBookLoader):
         self.temp_file_path = None
 
         try:
-            print(f"DEBUG: Starting make_bilingual_book with {len(self.origin_book)} lines")
+            logger.debug(f"Starting make_bilingual_book with {len(self.origin_book)} lines")
             for line_num, line in enumerate(self.origin_book):
                 if self._is_special_text(line):
                     continue
                 if not self.resume or index >= p_to_save_len:
                     try:
-                        print(f"DEBUG: Translating line {line_num + 1}: {line[:50]}...")
+                        logger.debug(f"Translating line {line_num + 1}: {line[:50]}...")
                         t_line = self.translate_model.translate(line)
                         # Check if translation returned None or empty string
                         if t_line is None or t_line.strip() == "":
-                            print(f"Warning: Translation returned None or empty for line: {line}")
+                            logger.warning(f"Translation returned None or empty for line: {line}")
                             t_line = f"[TRANSLATION_ERROR: {line}]"
-                        print(f"DEBUG: Translation result: {t_line[:50]}...")
+                        logger.debug(f"Translation result: {t_line[:50]}...")
                     except Exception as e:
-                        print(f"ERROR: translate failed for line {line_num + 1}: {type(e).__name__}: {str(e)}")
+                        logger.error(f"translate failed for line {line_num + 1}: {type(e).__name__}: {str(e)}")
                         import traceback
-                        print(f"DEBUG: Translation error traceback: {traceback.format_exc()}")
+                        logger.debug(f"Translation error traceback: {traceback.format_exc()}")
                         t_line = f"[TRANSLATION_ERROR: {line}]"
                     
                     self.p_to_save.append(t_line)
@@ -107,7 +110,7 @@ class TXTBookLoader(BaseBookLoader):
                 if self.is_test and index > self.test_num:
                     break
             
-            print(f"DEBUG: Translation completed, generating output file")
+            logger.debug(f"Translation completed, generating output file")
             
             # Get model class name for filename
             model_class = self.translate_model.__class__.__name__.lower()
@@ -122,7 +125,7 @@ class TXTBookLoader(BaseBookLoader):
                 actual_model
             )
             
-            print(f"DEBUG: Output path: {output_path}")
+            logger.debug(f"Output path: {output_path}")
             
             # Save the file
             self.save_file(output_path, self.bilingual_result)
@@ -150,9 +153,9 @@ class TXTBookLoader(BaseBookLoader):
             return True
 
         except (KeyboardInterrupt, Exception) as e:
-            print(f"ERROR in make_bilingual_book: {type(e).__name__}: {str(e)}")
+            logger.error(f"ERROR in make_bilingual_book: {type(e).__name__}: {str(e)}")
             import traceback
-            print(f"DEBUG: Full traceback: {traceback.format_exc()}")
+            logger.debug(f"Full traceback: {traceback.format_exc()}")
             print("you can resume it next time")
             self._save_progress()
             self._save_temp_book()

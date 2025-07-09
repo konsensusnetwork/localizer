@@ -4,26 +4,32 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 import os
 
+# Configure logging
+def setup_logging(debug=False):
+    """Setup logging configuration"""
+    level = logging.DEBUG if debug else logging.INFO
+    logging.basicConfig(
+        level=level,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.StreamHandler(sys.stdout),
+            logging.FileHandler('translation_debug.log')
+        ]
+    )
+
+# Default to INFO level, can be overridden by CLI
+setup_logging(debug=False)
+
+# Create logger for this module
+logger = logging.getLogger(__name__)
+
 # Load environment variables from .env file
 try:
     from dotenv import load_dotenv
     load_dotenv()
-    print("DEBUG: Loaded environment variables from .env file")
+    logger.debug("Loaded environment variables from .env file")
 except ImportError:
-    print("DEBUG: python-dotenv not available, using system environment variables")
-
-# Configure logging
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.StreamHandler(sys.stdout),
-        logging.FileHandler('translation_debug.log')
-    ]
-)
-
-# Create logger for this module
-logger = logging.getLogger(__name__)
+    logger.debug("python-dotenv not available, using system environment variables")
 
 from my_app.routers import auth, translate
 from my_app.core import get_supported_models
