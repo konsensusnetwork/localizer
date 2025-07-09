@@ -26,7 +26,7 @@ def rename_files_in_directory(directory):
         print(f"Renaming {filename} -> {new_filename}")
         os.rename(old_path, new_path)
 
-if __name__ == "__main__":
+def main():
     # Use directory provided as a command-line argument, or default to current directory.
     if len(sys.argv) > 1:
         directory = sys.argv[1]
@@ -38,3 +38,6 @@ if __name__ == "__main__":
         sys.exit(1)
     
     rename_files_in_directory(directory)
+
+if __name__ == "__main__":
+    main()
