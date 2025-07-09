@@ -12,6 +12,8 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 class TranslationRequest(BaseModel):
+    model_config = {"protected_namespaces": ()}
+    
     book_path: str
     model: str
     language: str

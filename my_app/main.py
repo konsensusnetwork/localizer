@@ -73,7 +73,11 @@ async def global_exception_handler(request: Request, exc: Exception):
     logger.error(f"Traceback: {traceback.format_exc()}")
     raise exc
 
-if __name__ == "__main__":
+def main():
+    """Entry point for the start_api script"""
     import uvicorn
     logger.info("Starting translation service...")
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run("my_app.main:app", host="0.0.0.0", port=8000, reload=True)
+
+if __name__ == "__main__":
+    main()
