@@ -36,6 +36,8 @@ dependencies = [
     "html5lib>=1.1",
     "soupsieve>=2.7",
     "python-dotenv>=1.1.1",
+    "uvicorn>=0.35.0",
+    "python-multipart>=0.0.20",
 ]
 
 [project.scripts]
@@ -43,15 +45,11 @@ bbook_maker = "book_maker.cli:main"
 dir_process = "utils.process_md_dir:main"
 rename_files = "utils.rename_files:main"
 promptdown = "promptdown_cli:main"
+start_api = "my_app.main:main"
 
 [project.urls]
 Homepage = "https://github.com/yihong0618/bilingual_book_maker"
 
-[project.optional-dependencies]
-fastapi = [
-    "uvicorn>=0.35.0",
-    "python-multipart>=0.0.20",
-]
 [tool.pdm]
 plugins = ["pdm-autoexport"]
 [[tool.pdm.autoexport]]

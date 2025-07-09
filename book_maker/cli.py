@@ -201,54 +201,12 @@ def main():
         help="OpenAI api key,if you have more than one key, please use comma"
         " to split them to go beyond the rate limits",
     )
-    parser.add_argument(
-        "--caiyun_key",
-        dest="caiyun_key",
-        type=str,
-        help="you can apply caiyun key from here (https://dashboard.caiyunapp.com/user/sign_in/)",
-    )
-    parser.add_argument(
-        "--deepl_key",
-        dest="deepl_key",
-        type=str,
-        help="you can apply deepl key from here (https://rapidapi.com/splintPRO/api/dpl-translator",
-    )
-    parser.add_argument(
-        "--claude_key",
-        dest="claude_key",
-        type=str,
-        help="you can find claude key from here (https://console.anthropic.com/account/keys)",
-    )
-
-    parser.add_argument(
-        "--custom_api",
-        dest="custom_api",
-        type=str,
-        help="you should build your own translation api",
-    )
-
     # for Google Gemini
     parser.add_argument(
         "--gemini_key",
         dest="gemini_key",
         type=str,
         help="You can get Gemini Key from  https://makersuite.google.com/app/apikey",
-    )
-
-    # for Groq
-    parser.add_argument(
-        "--groq_key",
-        dest="groq_key",
-        type=str,
-        help="You can get Groq Key from  https://console.groq.com/keys",
-    )
-
-    # for xAI
-    parser.add_argument(
-        "--xai_key",
-        dest="xai_key",
-        type=str,
-        help="You can get xAI Key from  https://console.x.ai/",
     )
 
     parser.add_argument(
@@ -264,16 +222,7 @@ def main():
         default=10,
         help="how many paragraphs will be translated for testing",
     )
-    parser.add_argument(
-        "-m",
-        "--model",
-        dest="model",
-        type=str,
-        default="chatgptapi",
-        choices=translate_model_list,  # support DeepL later
-        metavar="MODEL",
-        help="model to use, available: {%(choices)s}",
-    )
+    # Model parameter removed - use --model_list instead
     parser.add_argument(
         "--ollama_model",
         dest="ollama_model",
@@ -419,7 +368,7 @@ So you are close to reaching the limit. You have to choose your own value, there
         "--temperature",
         type=float,
         default=1.0,
-        help="temperature parameter for `chatgptapi`/`gpt4`/`claude`/`gemini`",
+        help="temperature parameter for supported models (OpenAI, Claude, Gemini)",
     )
     parser.add_argument(
         "--block_size",
@@ -428,10 +377,19 @@ So you are close to reaching the limit. You have to choose your own value, there
         help="merge multiple paragraphs into one block, may increase accuracy and speed up the process, but disturb the original format, must be used with `--single_translate`",
     )
     parser.add_argument(
+        "-m",
+        "--model",
+        dest="model",
+        type=str,
+        choices=["openai", "gemini"],
+        metavar="MODEL",
+        help="Simple model selection with sensible defaults. Choose 'openai' (uses gpt-3.5-turbo) or 'gemini' (uses gemini-1.5-flash). For specific models, use --model_list instead.",
+    )
+    parser.add_argument(
         "--model_list",
         type=str,
         dest="model_list",
-        help="Rather than using our preset lists of models, specify exactly the models you want as a comma separated list `gpt-4-32k,gpt-3.5-turbo-0125` (Currently only supports: `openai`)",
+        help="Specify exactly the models you want as a comma separated list. OpenAI examples: `gpt-4,gpt-3.5-turbo,gpt-4o,o1-mini`. Gemini examples: `gemini-1.5-flash-002,gemini-1.5-pro`. For all available models, see the MODEL_DICT in translator/__init__.py",
     )
     parser.add_argument(
         "--batch",
@@ -475,10 +433,49 @@ So you are close to reaching the limit. You have to choose your own value, there
         os.environ["http_proxy"] = PROXY
         os.environ["https_proxy"] = PROXY
 
-    translate_model = MODEL_DICT.get(options.model)
-    assert translate_model is not None, "unsupported model"
+    # Validate that either --model or --model_list is provided
+    if not options.model and not options.model_list:
+        raise Exception("Either --model or --model_list must be provided")
+    
+    if options.model and options.model_list:
+        raise Exception("Cannot use both --model and --model_list. Choose one.")
+    
+    # Set up model list and provider type
+    if options.model:
+        # Use defaults for the selected provider
+        if options.model == "openai":
+            provider_type = "openai"
+            model_list = ["gpt-3.5-turbo"]
+        elif options.model == "gemini":
+            provider_type = "gemini"
+            model_list = ["gemini-1.5-flash"]
+        else:
+            raise Exception(f"Unsupported model type: {options.model}")
+    else:
+        # Use explicit model list
+        model_list = options.model_list.split(",")
+        first_model = model_list[0].strip()
+        
+        # Check if the first model is supported
+        if first_model not in MODEL_DICT:
+            supported_models = list(MODEL_DICT.keys())
+            raise Exception(f"Unsupported model: '{first_model}'. Supported models are: {', '.join(supported_models)}")
+        
+        # Determine provider type based on model name
+        if first_model.startswith(("gpt-", "o1-", "o3-")):
+            provider_type = "openai"
+        elif first_model.startswith("gemini-"):
+            provider_type = "gemini"
+        else:
+            raise Exception(f"Unable to determine provider for model: {first_model}")
+    
+    # Get the translator class for the first model
+    first_model = model_list[0].strip()
+    translate_model = MODEL_DICT[first_model]
+    
+    # Handle API keys based on provider type
     API_KEY = ""
-    if options.model in ["openai", "chatgptapi", "gpt4", "gpt4omini", "gpt4o"]:
+    if provider_type == "openai":
         API_KEY = get_project_config("BBM_OPENAI_API_KEY", project_dir) or options.openai_key
         if API_KEY:
             # patch if necessary
@@ -490,30 +487,12 @@ So you are close to reaching the limit. You have to choose your own value, there
             raise Exception(
                 "OpenAI API key not provided, please google how to obtain it",
             )
-    elif options.model == "caiyun":
-        API_KEY = get_project_config("BBM_CAIYUN_API_KEY", project_dir) or options.caiyun_key
-        if not API_KEY:
-            raise Exception("Please provide caiyun key")
-    elif options.model == "deepl":
-        API_KEY = get_project_config("BBM_DEEPL_API_KEY", project_dir) or options.deepl_key
-        if not API_KEY:
-            raise Exception("Please provide deepl key")
-    elif options.model.startswith("claude"):
-        API_KEY = get_project_config("BBM_CLAUDE_API_KEY", project_dir) or options.claude_key
-        if not API_KEY:
-            raise Exception("Please provide claude key")
-    elif options.model == "customapi":
-        API_KEY = get_project_config("BBM_CUSTOM_API", project_dir) or options.custom_api
-        if not API_KEY:
-            raise Exception("Please provide custom translate api")
-    elif options.model in ["gemini", "geminipro"]:
+    elif provider_type == "gemini":
         API_KEY = get_project_config("BBM_GOOGLE_GEMINI_KEY", project_dir) or options.gemini_key
-    elif options.model == "groq":
-        API_KEY = get_project_config("BBM_GROQ_API_KEY", project_dir) or options.groq_key
-    elif options.model == "xai":
-        API_KEY = get_project_config("BBM_XAI_API_KEY", project_dir) or options.xai_key
+        if not API_KEY:
+            raise Exception("Please provide Gemini key")
     else:
-        API_KEY = ""
+        raise Exception(f"Unsupported provider type: {provider_type}")
 
     if options.book_from == "kobo":
         from book_maker import obok
@@ -587,51 +566,16 @@ So you are close to reaching the limit. You have to choose your own value, there
     if options.retranslate:
         e.retranslate = options.retranslate
     if options.deployment_id:
-        # only work for ChatGPT api for now
-        # later maybe support others
-        assert options.model in [
-            "chatgptapi",
-            "gpt4",
-            "gpt4omini",
-            "gpt4o",
-            "o1",
-            "o1preview",
-            "o1mini",
-            "o3mini",
-        ], "only support chatgptapi for deployment_id"
+        # only work for OpenAI models
+        assert provider_type == "openai", "only support OpenAI models for deployment_id"
         if not options.api_base:
             raise ValueError("`api_base` must be provided when using `deployment_id`")
         e.translate_model.set_deployment_id(options.deployment_id)
-    if options.model in ("openai", "groq"):
-        # Currently only supports `openai` when you also have --model_list set
-        if options.model_list:
-            e.translate_model.set_model_list(options.model_list.split(","))
-        else:
-            raise ValueError(
-                "When using `openai` model, you must also provide `--model_list`. For default model sets use `--model chatgptapi` or `--model gpt4` or `--model gpt4omini`",
-            )
-    # TODO refactor, quick fix for gpt4 model
-    if options.model == "chatgptapi":
-        if options.ollama_model:
-            e.translate_model.set_gpt35_models(ollama_model=options.ollama_model)
-        else:
-            e.translate_model.set_gpt35_models()
-    if options.model == "gpt4":
-        e.translate_model.set_gpt4_models()
-    if options.model == "gpt4omini":
-        e.translate_model.set_gpt4omini_models()
-    if options.model == "gpt4o":
-        e.translate_model.set_gpt4o_models()
-    if options.model == "o1preview":
-        e.translate_model.set_o1preview_models()
-    if options.model == "o1":
-        e.translate_model.set_o1_models()
-    if options.model == "o1mini":
-        e.translate_model.set_o1mini_models()
-    if options.model == "o3mini":
-        e.translate_model.set_o3mini_models()
-    if options.model.startswith("claude-"):
-        e.translate_model.set_claude_model(options.model)
+    
+    # Set the model list for all supported provider types
+    if provider_type in ("openai", "gemini"):
+        e.translate_model.set_model_list(model_list)
+    
     if options.block_size > 0:
         e.block_size = options.block_size
     if options.batch_flag:
@@ -639,15 +583,8 @@ So you are close to reaching the limit. You have to choose your own value, there
     if options.batch_use_flag:
         e.batch_use_flag = options.batch_use_flag
 
-    if options.model in ("gemini", "geminipro"):
+    if provider_type == "gemini":
         e.translate_model.set_interval(options.interval)
-    if options.model == "gemini":
-        if options.model_list:
-            e.translate_model.set_model_list(options.model_list.split(","))
-        else:
-            e.translate_model.set_geminiflash_models()
-    if options.model == "geminipro":
-        e.translate_model.set_geminipro_models()
 
     # Set the reasoning_effort parameter BEFORE calling make_bilingual_book
     if hasattr(e, "translate_model"):

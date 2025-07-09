@@ -20,9 +20,21 @@ For comprehensive documentation, please visit the **[docs folder](./docs/)** whi
 
 ## Supported Models
 
-gpt-4, gpt-3.5-turbo, claude-2, palm, llama-2, azure-openai, command-nightly, gemini
-For using Non-OpenAI models, use class `liteLLM()` - liteLLM supports all models above.
-Find more info here for using liteLLM: https://github.com/BerriAI/litellm/blob/main/setup.py
+**OpenAI Models:**
+- `gpt-4`, `gpt-4-turbo`, `gpt-4-32k`, `gpt-4-0613`, `gpt-4-32k-0613`
+- `gpt-4-1106-preview`, `gpt-4-0125-preview`
+- `gpt-3.5-turbo`, `gpt-3.5-turbo-0125`, `gpt-3.5-turbo-1106`, `gpt-3.5-turbo-16k`
+- `gpt-4o`, `gpt-4o-mini`
+- `o1-preview`, `o1-mini`, `o3-mini`
+
+**Gemini Models:**
+- `gemini-1.5-flash`, `gemini-1.5-flash-002`, `gemini-1.5-flash-8b`, `gemini-1.5-flash-8b-exp-0924`
+- `gemini-1.5-pro`, `gemini-1.5-pro-002`
+- `gemini-1.0-pro`
+
+**Model Selection:** You can use either:
+- `--model` with simple defaults: `--model openai` (uses gpt-3.5-turbo) or `--model gemini` (uses gemini-1.5-flash)
+- `--model_list` for precise control: specify exact model names like `--model_list gpt-4,gpt-3.5-turbo`
 
 ## Preparation
 
@@ -37,10 +49,18 @@ A sample book, `test_books/animal_farm.epub`, is provided for testing purposes.
 
 ```shell
 pip install -r requirements.txt
-python3 make_book.py --book_name test_books/animal_farm.epub --openai_key ${openai_key} --test
+# Simple usage with defaults
+python3 make_book.py --book_name test_books/animal_farm.epub --model openai --openai_key ${openai_key} --test
+# Or specify exact model
+python3 make_book.py --book_name test_books/animal_farm.epub --model_list gpt-3.5-turbo --openai_key ${openai_key} --test
+
 OR
+
 pip install -U bbook_maker
-bbook --book_name test_books/animal_farm.epub --openai_key ${openai_key} --test
+# Simple usage with defaults
+bbook --book_name test_books/animal_farm.epub --model openai --openai_key ${openai_key} --test
+# Or specify exact model
+bbook --book_name test_books/animal_farm.epub --model_list gpt-3.5-turbo --openai_key ${openai_key} --test
 ```
 
 ## Testing
@@ -66,84 +86,71 @@ python tests/run_tests.py --coverage
 
 ## Translate Service
 
+### Basic Usage
+
 - Use `--openai_key` option to specify OpenAI API key. If you have multiple keys, separate them by commas (xxx,xxx,xxx) to reduce errors caused by API call limits.
   Or, just set environment variable `BBM_OPENAI_API_KEY` instead.
+- Use `--gemini_key` option to specify Gemini API key, or set environment variable `BBM_GOOGLE_GEMINI_KEY` instead.
 - A sample book, `test_books/animal_farm.epub`, is provided for testing purposes.
-- The default underlying model is [GPT-3.5-turbo](https://openai.com/blog/introducing-chatgpt-and-whisper-apis), which is used by ChatGPT currently. Use `--model gpt4` to change the underlying model to `GPT4`. You can also use `GPT4omini`.
-- Important to note that `gpt-4` is significantly more expensive than `gpt-4-turbo`, but to avoid bumping into rate limits, we automatically balance queries across `gpt-4-1106-preview`, `gpt-4`, `gpt-4-32k`, `gpt-4-0613`,`gpt-4-32k-0613`.
-- If you want to use a specific model alias with OpenAI (eg `gpt-4-1106-preview` or `gpt-3.5-turbo-0125`), you can use `--model openai --model_list gpt-4-1106-preview,gpt-3.5-turbo-0125`. `--model_list` takes a comma-separated list of model aliases.
-- If using chatgptapi, you can add `--use_context` to add a context paragraph to each passage sent to the model for translation (see below).
+- **Model Selection:** Choose either:
+  - `--model openai` or `--model gemini` for simple usage with sensible defaults
+  - `--model_list` to specify exact model names (e.g., `gpt-4`, `gpt-3.5-turbo`, `gemini-1.5-flash-002`)
+- You can specify multiple models separated by commas for load balancing: `--model_list gpt-4,gpt-3.5-turbo,gpt-4o`.
+- You can add `--use_context` to add a context paragraph to each passage sent to the model for translation (see below).
 
-* DeepL
-  Support DeepL model [DeepL Translator](https://rapidapi.com/splintPRO/api/dpl-translator) need pay to get the token
+### OpenAI Models
 
-  ```
-  python3 make_book.py --book_name test_books/animal_farm.epub --model deepl --deepl_key ${deepl_key}
-  ```
+**Simple Usage (with defaults):**
+```shell
+# Use OpenAI with default model (gpt-3.5-turbo)
+python3 make_book.py --book_name test_books/animal_farm.epub --model openai --openai_key ${openai_key}
+```
 
-* DeepL free
+**Advanced Usage (specific models):**
+```shell
+# Use GPT-4
+python3 make_book.py --book_name test_books/animal_farm.epub --model_list gpt-4 --openai_key ${openai_key}
 
-  ```shell
-  python3 make_book.py --book_name test_books/animal_farm.epub --model deeplfree
-  ```
+# Use GPT-3.5-turbo
+python3 make_book.py --book_name test_books/animal_farm.epub --model_list gpt-3.5-turbo --openai_key ${openai_key}
 
-* [Claude](https://console.anthropic.com/docs)
+# Use multiple models for load balancing
+python3 make_book.py --book_name test_books/animal_farm.epub --model_list gpt-4,gpt-3.5-turbo,gpt-4o --openai_key ${openai_key}
 
-  Use [Claude](https://console.anthropic.com/docs) model to translate
+# Use O1 models
+python3 make_book.py --book_name test_books/animal_farm.epub --model_list o1-mini --openai_key ${openai_key}
+```
 
-  ```shell
-  python3 make_book.py --book_name test_books/animal_farm.epub --model claude --claude_key ${claude_key}
-  ```
+### Gemini Models
 
-* Google Translate
+**Simple Usage (with defaults):**
+```shell
+# Use Gemini with default model (gemini-1.5-flash)
+python3 make_book.py --book_name test_books/animal_farm.epub --model gemini --gemini_key ${gemini_key}
+```
 
-  ```shell
-  python3 make_book.py --book_name test_books/animal_farm.epub --model google
-  ```
+**Advanced Usage (specific models):**
+```shell
+# Use Gemini Flash
+python3 make_book.py --book_name test_books/animal_farm.epub --model_list gemini-1.5-flash --gemini_key ${gemini_key}
 
-* Caiyun Translate
+# Use Gemini Pro
+python3 make_book.py --book_name test_books/animal_farm.epub --model_list gemini-1.5-pro --gemini_key ${gemini_key}
 
-  ```shell
-  python3 make_book.py --book_name test_books/animal_farm.epub --model caiyun --caiyun_key ${caiyun_key}
-  ```
+# Use specific Gemini model version
+python3 make_book.py --book_name test_books/animal_farm.epub --model_list gemini-1.5-flash-002 --gemini_key ${gemini_key}
 
-* Gemini
+# Use multiple Gemini models
+python3 make_book.py --book_name test_books/animal_farm.epub --model_list gemini-1.5-flash,gemini-1.5-pro --gemini_key ${gemini_key}
+```
 
-  Support Google [Gemini](https://aistudio.google.com/app/apikey) model, use `--model gemini` for Gemini Flash or `--model geminipro` for Gemini Pro.
-  If you want to use a specific model alias with Gemini (eg `gemini-1.5-flash-002` or `gemini-1.5-flash-8b-exp-0924`), you can use `--model gemini --model_list gemini-1.5-flash-002,gemini-1.5-flash-8b-exp-0924`. `--model_list` takes a comma-separated list of model aliases.
+### Ollama Support
 
-  ```shell
-  python3 make_book.py --book_name test_books/animal_farm.epub --model gemini --gemini_key ${gemini_key}
-  ```
+For Ollama models, use the OpenAI-compatible endpoint:
 
-* [Tencent TranSmart](https://transmart.qq.com)
-
-  ```shell
-  python3 make_book.py --book_name test_books/animal_farm.epub --model tencentransmart
-  ```
-
-* [xAI](https://x.ai)
-
-  ```shell
-  python3 make_book.py --book_name test_books/animal_farm.epub --model xai --xai_key ${xai_key}
-  ```
-
-* [Ollama](https://github.com/ollama/ollama)
-
-  Support [Ollama](https://github.com/ollama/ollama) self-host models,
-  If ollama server is not running on localhost, use `--api_base http://x.x.x.x:port/v1` to point to the ollama server address
-
-  ```shell
-  python3 make_book.py --book_name test_books/animal_farm.epub --ollama_model ${ollama_model_name}
-  ```
-
-* [groq](https://console.groq.com/keys)
-
-  GroqCloud currently supports models: you can find from [Supported Models](https://console.groq.com/docs/models)
-
-  ```shell
-  python3 make_book.py --book_name test_books/animal_farm.epub --groq_key [your_key] --model groq --model_list llama3-8b-8192
-  ```
+```shell
+python3 make_book.py --book_name test_books/animal_farm.epub --model_list gpt-3.5-turbo --ollama_model ${ollama_model_name} --api_base http://localhost:11434/v1
+```
 
 ## Use
 
@@ -272,72 +279,50 @@ python tests/run_tests.py --coverage
 **Note if use `pip install bbook_maker` all commands can change to `bbook_maker args`**
 
 ```shell
-# Test quickly
-python3 make_book.py --book_name test_books/animal_farm.epub --openai_key ${openai_key}  --test --language zh-hans
+# Test quickly with default OpenAI model (gpt-3.5-turbo)
+python3 make_book.py --book_name test_books/animal_farm.epub --model openai --openai_key ${openai_key} --test --language zh-hans
 
-# Test quickly for src
-python3 make_book.py --book_name test_books/Lex_Fridman_episode_322.srt --openai_key ${openai_key}  --test
+# Test quickly for srt file with default OpenAI model
+python3 make_book.py --book_name test_books/Lex_Fridman_episode_322.srt --model openai --openai_key ${openai_key} --test
 
-# Or translate the whole book
-python3 make_book.py --book_name test_books/animal_farm.epub --openai_key ${openai_key} --language zh-hans
+# Or translate the whole book with default Gemini model
+python3 make_book.py --book_name test_books/animal_farm.epub --model gemini --gemini_key ${gemini_key} --language zh-hans
 
-# Or translate the whole book using Gemini flash
-python3 make_book.py --book_name test_books/animal_farm.epub --gemini_key ${gemini_key} --model gemini
+# Or translate the whole book using specific GPT-4 model
+python3 make_book.py --book_name test_books/animal_farm.epub --model_list gpt-4 --openai_key ${openai_key} --language zh-hans
 
 # Use a specific list of Gemini model aliases
-python3 make_book.py --book_name test_books/animal_farm.epub --gemini_key ${gemini_key} --model gemini --model_list gemini-1.5-flash-002,gemini-1.5-flash-8b-exp-0924
+python3 make_book.py --book_name test_books/animal_farm.epub --model_list gemini-1.5-flash-002,gemini-1.5-flash-8b-exp-0924 --gemini_key ${gemini_key}
 
 # Set env OPENAI_API_KEY to ignore option --openai_key
 export OPENAI_API_KEY=${your_api_key}
 
 # Use the GPT-4 model with context to Japanese
-python3 make_book.py --book_name test_books/animal_farm.epub --model gpt4 --use_context --language ja
+python3 make_book.py --book_name test_books/animal_farm.epub --model_list gpt-4 --use_context --language ja
 
-# Use a specific OpenAI model alias
-python3 make_book.py --book_name test_books/animal_farm.epub --model openai --model_list gpt-4-1106-preview --openai_key ${openai_key}
+# Use a specific OpenAI model
+python3 make_book.py --book_name test_books/animal_farm.epub --model_list gpt-4-1106-preview --openai_key ${openai_key}
 
-**Note** you can use other `openai like` model in this way
-python3 make_book.py --book_name test_books/animal_farm.epub --model openai --model_list yi-34b-chat-0205 --openai_key ${openai_key} --api_base "https://api.lingyiwanwu.com/v1"
+# Use multiple OpenAI models for load balancing
+python3 make_book.py --book_name test_books/animal_farm.epub --model_list gpt-4-1106-preview,gpt-4-0125-preview,gpt-3.5-turbo-0125 --openai_key ${openai_key}
 
-# Use a specific list of OpenAI model aliases
-python3 make_book.py --book_name test_books/animal_farm.epub --model openai --model_list gpt-4-1106-preview,gpt-4-0125-preview,gpt-3.5-turbo-0125 --openai_key ${openai_key}
+# Translate contents in <div> and <p> using simple defaults
+python3 make_book.py --book_name test_books/animal_farm.epub --model openai --translate-tags div,p
 
-# Use the DeepL model with Japanese
-python3 make_book.py --book_name test_books/animal_farm.epub --model deepl --deepl_key ${deepl_key} --language ja
-
-# Use the Claude model with Japanese
-python3 make_book.py --book_name test_books/animal_farm.epub --model claude --claude_key ${claude_key} --language ja
-
-# Use the CustomAPI model with Japanese
-python3 make_book.py --book_name test_books/animal_farm.epub --model customapi --custom_api ${custom_api} --language ja
-
-# Translate contents in <div> and <p>
-python3 make_book.py --book_name test_books/animal_farm.epub --translate-tags div,p
-
-# Tweaking the prompt
-python3 make_book.py --book_name test_books/animal_farm.epub --prompt prompt_template_sample.txt
+# Tweaking the prompt with simple defaults
+python3 make_book.py --book_name test_books/animal_farm.epub --model openai --prompt prompt_template_sample.txt
 # or
-python3 make_book.py --book_name test_books/animal_farm.epub --prompt prompt_template_sample.json
+python3 make_book.py --book_name test_books/animal_farm.epub --model openai --prompt prompt_template_sample.json
 # or
-python3 make_book.py --book_name test_books/animal_farm.epub --prompt "Please translate \`{text}\` to {language}"
+python3 make_book.py --book_name test_books/animal_farm.epub --model openai --prompt "Please translate \`{text}\` to {language}"
 
 # Translate books download from Rakuten Kobo on kobo e-reader
-python3 make_book.py --book_from kobo --device_path /tmp/kobo
+python3 make_book.py --book_from kobo --device_path /tmp/kobo --model openai
 
 # translate txt file
-python3 make_book.py --book_name test_books/the_little_prince.txt --test --language zh-hans
+python3 make_book.py --book_name test_books/the_little_prince.txt --model openai --test --language zh-hans
 # aggregated translation txt file
-python3 make_book.py --book_name test_books/the_little_prince.txt --test --batch_size 20
-
-# Using Caiyun model to translate
-# (the api currently only support: simplified chinese <-> english, simplified chinese <-> japanese)
-# the official Caiyun has provided a test token (3975l6lr5pcbvidl6jl2)
-# you can apply your own token by following this tutorial(https://bobtranslate.com/service/translate/caiyun.html)
-python3 make_book.py --model caiyun --caiyun_key 3975l6lr5pcbvidl6jl2 --book_name test_books/animal_farm.epub
-
-
-# Set env BBM_CAIYUN_API_KEY to ignore option --openai_key
-export BBM_CAIYUN_API_KEY=${your_api_key}
+python3 make_book.py --book_name test_books/the_little_prince.txt --model openai --test --batch_size 20
 
 ```
 

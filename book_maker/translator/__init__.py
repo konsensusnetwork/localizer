@@ -1,40 +1,33 @@
-from book_maker.translator.caiyun_translator import Caiyun
 from book_maker.translator.chatgptapi_translator import ChatGPTAPI
-from book_maker.translator.deepl_translator import DeepL
-from book_maker.translator.deepl_free_translator import DeepLFree
-from book_maker.translator.google_translator import Google
-from book_maker.translator.claude_translator import Claude
 from book_maker.translator.gemini_translator import Gemini
-from book_maker.translator.groq_translator import GroqClient
-from book_maker.translator.tencent_transmart_translator import TencentTranSmart
-from book_maker.translator.custom_api_translator import CustomAPI
-from book_maker.translator.xai_translator import XAIClient
 
+# Simplified MODEL_DICT with only OpenAI and Gemini providers
+# Users must specify exact model names like "gpt-4", "gpt-3.5-turbo", "gemini-1.5-flash-002", etc.
 MODEL_DICT = {
-    "openai": ChatGPTAPI,
-    "chatgptapi": ChatGPTAPI,
-    "gpt4": ChatGPTAPI,
-    "gpt4omini": ChatGPTAPI,
-    "gpt4o": ChatGPTAPI,
-    "o1preview": ChatGPTAPI,
-    "o1": ChatGPTAPI,
-    "o1mini": ChatGPTAPI,
-    "o3mini": ChatGPTAPI,
-    "google": Google,
-    "caiyun": Caiyun,
-    "deepl": DeepL,
-    "deeplfree": DeepLFree,
-    "claude": Claude,
-    "claude-3-5-sonnet-latest": Claude,
-    "claude-3-5-sonnet-20241022": Claude,
-    "claude-3-5-sonnet-20240620": Claude,
-    "claude-3-5-haiku-latest": Claude,
-    "claude-3-5-haiku-20241022": Claude,
-    "gemini": Gemini,
-    "geminipro": Gemini,
-    "groq": GroqClient,
-    "tencentransmart": TencentTranSmart,
-    "customapi": CustomAPI,
-    "xai": XAIClient,
-    # add more here
+    # OpenAI models - all use ChatGPTAPI class
+    "gpt-4": ChatGPTAPI,
+    "gpt-4-turbo": ChatGPTAPI,
+    "gpt-4-32k": ChatGPTAPI,
+    "gpt-4-0613": ChatGPTAPI,
+    "gpt-4-32k-0613": ChatGPTAPI,
+    "gpt-4-1106-preview": ChatGPTAPI,
+    "gpt-4-0125-preview": ChatGPTAPI,
+    "gpt-3.5-turbo": ChatGPTAPI,
+    "gpt-3.5-turbo-0125": ChatGPTAPI,
+    "gpt-3.5-turbo-1106": ChatGPTAPI,
+    "gpt-3.5-turbo-16k": ChatGPTAPI,
+    "gpt-4o": ChatGPTAPI,
+    "gpt-4o-mini": ChatGPTAPI,
+    "o1-preview": ChatGPTAPI,
+    "o1-mini": ChatGPTAPI,
+    "o3-mini": ChatGPTAPI,
+    
+    # Gemini models - all use Gemini class
+    "gemini-1.5-flash": Gemini,
+    "gemini-1.5-flash-002": Gemini,
+    "gemini-1.5-flash-8b": Gemini,
+    "gemini-1.5-flash-8b-exp-0924": Gemini,
+    "gemini-1.5-pro": Gemini,
+    "gemini-1.5-pro-002": Gemini,
+    "gemini-1.0-pro": Gemini,
 }
