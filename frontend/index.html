@@ -346,9 +346,9 @@
             <!-- Main App Content -->
             <div id="app-content" class="hidden">
                 <div class="tabs">
-                    <div class="tab active" onclick="showTab('translate')">New Translation</div>
-                    <div class="tab" onclick="showTab('jobs')">My Jobs</div>
-                    <div class="tab" onclick="showTab('history')">History</div>
+                    <div class="tab active" onclick="showTab('translate', event)">New Translation</div>
+                    <div class="tab" onclick="showTab('jobs', event)">My Jobs</div>
+                    <div class="tab" onclick="showTab('history', event)">History</div>
                 </div>
 
                 <!-- Translation Tab -->
@@ -360,8 +360,8 @@
 
                         <form id="translation-form">
                             <div class="tabs">
-                                <div class="tab active" onclick="showUploadMethod('file')">Upload File</div>
-                                <div class="tab" onclick="showUploadMethod('path')">File Path</div>
+                                <div class="tab active" onclick="showUploadMethod('file', event)">Upload File</div>
+                                <div class="tab" onclick="showUploadMethod('path', event)">File Path</div>
                             </div>
 
                             <div id="file-upload-method" class="tab-content active">
@@ -415,12 +415,6 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label for="prompt">Custom Prompt (Optional)</label>
-                                <textarea id="prompt" rows="3" placeholder="Enter custom translation prompt..."></textarea>
-                                <small style="color: #6b7280; font-size: 12px;">Use this if you don't select a prompt file above</small>
-                            </div>
-
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="prompt-file">Prompt File (Optional)</label>
@@ -438,6 +432,7 @@
                             <div class="form-group">
                                 <label for="prompt">Custom Prompt (Optional)</label>
                                 <textarea id="prompt" rows="8" placeholder="Enter custom translation prompt or select a prompt file above..."></textarea>
+                                <small style="color: #6b7280; font-size: 12px;">Use this if you don't select a prompt file above</small>
                             </div>
 
                             <div class="form-group">
@@ -450,8 +445,15 @@
                                 <div class="form-group">
                                     <label>
                                         <input type="checkbox" id="use-context"> Use Context (Adds historical context)
-                                    </input>
+                                    </label>
                                 </div>
+                                <div class="form-group">
+                                    <label>
+                                        <input type="checkbox" id="test-mode"> Test Mode (Translate only first few chapters)
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-row">
                                 <div class="form-group">
                                     <label for="reasoning-effort">Reasoning Effort (for o3-mini)</label>
                                     <select id="reasoning-effort">
@@ -612,18 +614,28 @@
         }
 
         function clearFile() {
-            document.getElementById('file-input').value = '';
-            document.getElementById('file-drop-zone').innerHTML = `
-                <p>Drag and drop your file here or <button type="button" class="btn" onclick="document.getElementById('file-input').click()">Choose File</button></p>
-                <p style="font-size: 14px; color: #6b7280; margin-top: 10px;">Supported formats: EPUB, TXT, SRT, QMD, MD</p>
-            `;
+            const fileInput = document.getElementById('file-input');
+            const dropZone = document.getElementById('file-drop-zone');
+            
+            if (fileInput) {
+                fileInput.value = '';
+            }
+            
+            if (dropZone) {
+                dropZone.innerHTML = `
+                    <p>Drag and drop your file here or <button type="button" class="btn" onclick="document.getElementById('file-input').click()">Choose File</button></p>
+                    <p style="font-size: 14px; color: #6b7280; margin-top: 10px;">Supported formats: EPUB, TXT, SRT, QMD, MD</p>
+                `;
+            }
         }
 
         // Tab functions
-        function showTab(tabName) {
+        function showTab(tabName, event) {
             // Update tab buttons
             document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            event.target.classList.add('active');
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
             
             // Update tab content
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
@@ -637,10 +649,12 @@
             }
         }
 
-        function showUploadMethod(method) {
+        function showUploadMethod(method, event) {
             currentMethod = method;
             document.querySelectorAll('#translate-tab .tab').forEach(tab => tab.classList.remove('active'));
-            event.target.classList.add('active');
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
             
             document.querySelectorAll('#translate-tab .tab-content').forEach(content => content.classList.remove('active'));
             document.getElementById(method === 'file' ? 'file-upload-method' : 'path-method').classList.add('active');
@@ -793,7 +807,13 @@
                     return;
                 }
             } else {
-                const bookPath = document.getElementById('book-path').value;
+                const bookPathElement = document.getElementById('book-path');
+                if (!bookPathElement) {
+                    errorDiv.textContent = 'File path input not found';
+                    errorDiv.classList.remove('hidden');
+                    return;
+                }
+                const bookPath = bookPathElement.value;
                 if (!bookPath) {
                     errorDiv.textContent = 'Please enter a file path';
                     errorDiv.classList.remove('hidden');
@@ -813,7 +833,11 @@
                     formData.append('file', fileInput.files[0]);
                     console.log('File selected:', fileInput.files[0].name);
                 } else {
-                    const bookPath = document.getElementById('book-path').value;
+                    const bookPathElement = document.getElementById('book-path');
+                    if (!bookPathElement) {
+                        throw new Error('File path input not found');
+                    }
+                    const bookPath = bookPathElement.value;
                     formData.append('book_path', bookPath);
                     console.log('Book path:', bookPath);
                 }
@@ -824,14 +848,39 @@
                     throw new Error('Please select a target language or enter a custom language code');
                 }
                 
-                formData.append('model', document.getElementById('model').value);
+                const modelElement = document.getElementById('model');
+                const modelListElement = document.getElementById('model-list');
+                const promptElement = document.getElementById('prompt');
+                const promptFileElement = document.getElementById('prompt-file');
+                const batchSizeElement = document.getElementById('batch-size');
+                const singleTranslateElement = document.getElementById('single-translate');
+                const testModeElement = document.getElementById('test-mode');
+                const useContextElement = document.getElementById('use-context');
+                const reasoningEffortElement = document.getElementById('reasoning-effort');
+                
+                if (!modelElement || !promptElement || !batchSizeElement || !singleTranslateElement || 
+                    !testModeElement || !useContextElement || !reasoningEffortElement) {
+                    throw new Error('One or more form elements not found');
+                }
+                
+                formData.append('model', modelElement.value);
+                if (modelListElement && modelListElement.value.trim()) {
+                    formData.append('model_list', modelListElement.value.trim());
+                }
                 formData.append('language', language);
-                formData.append('prompt', document.getElementById('prompt').value);
-                formData.append('batch_size', document.getElementById('batch-size').value);
-                formData.append('single_translate', document.getElementById('single-translate').checked);
-                formData.append('test', document.getElementById('test-mode').checked);
-                formData.append('use_context', document.getElementById('use-context').checked);
-                formData.append('reasoning_effort', document.getElementById('reasoning-effort').value);
+                
+                // Handle prompt: if prompt file is selected, use that; otherwise use custom prompt
+                if (promptFileElement && promptFileElement.value) {
+                    formData.append('prompt_file', promptFileElement.value);
+                } else {
+                    formData.append('prompt', promptElement.value);
+                }
+                
+                formData.append('batch_size', batchSizeElement.value);
+                formData.append('single_translate', singleTranslateElement.checked);
+                formData.append('test', testModeElement.checked);
+                formData.append('use_context', useContextElement.checked);
+                formData.append('reasoning_effort', reasoningEffortElement.value);
                 
                 const endpoint = currentMethod === 'file' ? 'upload-and-translate' : 'start';
                 const url = `${API_BASE_URL}/translate/${endpoint}`;
@@ -855,7 +904,10 @@
                     successDiv.classList.remove('hidden');
                     
                     // Clear form
-                    document.getElementById('translation-form').reset();
+                    const formElement = document.getElementById('translation-form');
+                    if (formElement) {
+                        formElement.reset();
+                    }
                     clearFile();
                     
                     // Switch to jobs tab

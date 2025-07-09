@@ -124,6 +124,10 @@ def parse_prompt_arg(prompt_arg):
             prompt_file_path = "inline_json"  # Mark as inline JSON
         except json.JSONDecodeError:
             # if not a json string, treat it as a template string
+            # Ensure the prompt string contains the required {text} placeholder
+            if "{text}" not in prompt_arg:
+                # Add the {text} placeholder if it's missing
+                prompt_arg = prompt_arg + " {text}"
             prompt = {"user": prompt_arg}
             prompt_file_path = "inline_template"  # Mark as inline template
 
@@ -141,13 +145,23 @@ def parse_prompt_arg(prompt_arg):
     else:
         raise FileNotFoundError(f"{prompt_arg} not found")
 
-    # if prompt is None or any(c not in prompt["user"] for c in ["{text}", "{language}"]):
-    if prompt is None or any(c not in prompt["user"] for c in ["{text}"]):
-        raise ValueError("prompt must contain `{text}`")
-
+    # Validate prompt structure
+    if prompt is None:
+        raise ValueError("prompt is None")
+    
+    if not isinstance(prompt, dict):
+        raise ValueError(f"prompt must be a dictionary, got {type(prompt)}")
+    
     if "user" not in prompt:
         raise ValueError("prompt must contain the key of `user`")
-
+    
+    if not isinstance(prompt["user"], str):
+        raise ValueError(f"prompt['user'] must be a string, got {type(prompt['user'])}")
+    
+    if "{text}" not in prompt["user"]:
+        raise ValueError("prompt must contain `{text}` placeholder")
+    
+    # Check for invalid keys
     if (prompt.keys() - {"user", "system"}) != set():
         raise ValueError("prompt can only contain the keys of `user` and `system`")
 

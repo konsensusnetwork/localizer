@@ -3,9 +3,20 @@
 
 # bilingual_book_maker
 
-The bilingual_book_maker is an AI translation tool that uses ChatGPT to assist users in creating multi-language versions of epub/txt/srt files and books. This tool is exclusively designed for translating epub books that have entered the public domain and is not intended for copyrighted works. Before using this tool, please review the project's **[disclaimer](./disclaimer.md)**.
+The bilingual_book_maker is an AI translation tool that uses ChatGPT to assist users in creating multi-language versions of epub/txt/srt files and books. This tool is exclusively designed for translating epub books that have entered the public domain and is not intended for copyrighted works. Before using this tool, please review the project's **[disclaimer](./docs/disclaimer.md)**.
 
 ![image](https://user-images.githubusercontent.com/15976103/222317531-a05317c5-4eee-49de-95cd-04063d9539d9.png)
+
+## 📚 Documentation
+
+For comprehensive documentation, please visit the **[docs folder](./docs/)** which contains:
+
+- **[Getting Started](./docs/index.md)** - Complete documentation overview
+- **[Installation Guide](./docs/installation.md)** - Setup instructions
+- **[Quick Start](./docs/quickstart.md)** - Basic usage examples
+- **[Command Reference](./docs/cmd.md)** - Complete CLI documentation
+- **[Examples](./docs/commands_examples.md)** - Real-world usage examples
+- **[Implementation Details](./docs/implementation.md)** - Technical architecture
 
 ## Supported Models
 
@@ -30,6 +41,27 @@ python3 make_book.py --book_name test_books/animal_farm.epub --openai_key ${open
 OR
 pip install -U bbook_maker
 bbook --book_name test_books/animal_farm.epub --openai_key ${openai_key} --test
+```
+
+## Testing
+
+The project includes a comprehensive test suite that uses the test books and basic prompts:
+
+```bash
+# Run all tests
+python tests/run_tests.py
+
+# Run specific test types
+python tests/run_tests.py --type basic    # Basic prompt tests
+python tests/run_tests.py --type cli      # CLI command tests
+python tests/run_tests.py --type integration  # Integration tests
+python tests/run_tests.py --type markdown # Markdown and quarto tests
+
+# Check test environment
+python tests/run_tests.py --check-env
+
+# Run with coverage
+python tests/run_tests.py --coverage
 ```
 
 ## Translate Service

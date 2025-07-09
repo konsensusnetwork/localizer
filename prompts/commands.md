@@ -14,6 +14,8 @@ pdm run bbook_maker --book_name books/bm-it/ch01.qmd --model openai --model_list
 
 pdm run bbook_maker --book_name books/bm-nl/ch09.qmd --model openai --model_list o3-mini --prompt prompts/nl/nl-edit-o3.prompt.md --batch_size=5 --single_translate --language nl --use_context --reasoning_effort=high
 
+pdm run bbook_maker --book_name books/tsi-nl/ch01.qmd --model openai --model_list o3-mini --prompt prompts/nl/nl-edit-o3.prompt.md --batch_size=5 --single_translate --language nl --use_context --reasoning_effort=high
+
 ## 21FFF_FR
 
 ### Run 1

@@ -1,50 +1,83 @@
-from fastapi import FastAPI
+import logging
+import sys
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
-from pathlib import Path
-from my_app.routers import translate, auth
+import os
 
-app = FastAPI(
-    title="Translation Service",
-    description="Asynchronous translation service using FastAPI and Supabase",
-    version="0.1.0"
+# Load environment variables from .env file
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+    print("DEBUG: Loaded environment variables from .env file")
+except ImportError:
+    print("DEBUG: python-dotenv not available, using system environment variables")
+
+# Configure logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(sys.stdout),
+        logging.FileHandler('translation_debug.log')
+    ]
 )
+
+# Create logger for this module
+logger = logging.getLogger(__name__)
+
+from my_app.routers import auth, translate
+from my_app.core import get_supported_models
+
+app = FastAPI(title="Book Translation Service", version="1.0.0")
 
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Configure this properly for production
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-app.include_router(auth.router, prefix="/auth", tags=["Auth"])
-app.include_router(translate.router, prefix="/translate", tags=["Translation"])
+# Mount static files
+app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
-# Mount static files from frontend directory
-frontend_path = Path("frontend")
-if frontend_path.exists():
-    app.mount("/static", StaticFiles(directory="frontend"), name="static")
-    print("📁 Frontend static files mounted at /static")
+# Include routers
+app.include_router(auth.router, prefix="/auth", tags=["authentication"])
+app.include_router(translate.router, prefix="/translate", tags=["translation"])
 
-@app.get("/")
-async def root():
-    """Serve the main dashboard page"""
-    index_path = Path("frontend/index.html")
-    if index_path.exists():
-        return FileResponse(index_path)
-    return {"message": "Translation Service API", "version": "0.1.0"}
+@app.get("/", response_class=HTMLResponse)
+async def read_root():
+    """Serve the main HTML page"""
+    try:
+        with open("frontend/index.html", "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
+    except FileNotFoundError:
+        return HTMLResponse(content="<h1>Translation Service</h1><p>Frontend not found</p>")
 
-@app.get("/dashboard")
-async def dashboard():
-    """Alternative route to the dashboard"""
-    index_path = Path("frontend/index.html")
-    if index_path.exists():
-        return FileResponse(index_path)
-    return {"error": "Dashboard not found"}
+@app.get("/models")
+async def get_models():
+    """Get supported models"""
+    try:
+        models = get_supported_models()
+        logger.info(f"Retrieved {len(models)} supported models")
+        return models
+    except Exception as e:
+        logger.error(f"Error getting models: {str(e)}")
+        raise
 
-@app.get("/health")
-async def health_check():
-    return {"status": "healthy"}
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    """Global exception handler to log all errors"""
+    logger.error(f"Unhandled exception: {type(exc).__name__}: {str(exc)}")
+    logger.error(f"Request URL: {request.url}")
+    import traceback
+    logger.error(f"Traceback: {traceback.format_exc()}")
+    raise exc
+
+if __name__ == "__main__":
+    import uvicorn
+    logger.info("Starting translation service...")
+    uvicorn.run(app, host="0.0.0.0", port=8000)

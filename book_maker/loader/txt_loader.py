@@ -72,15 +72,25 @@ class TXTBookLoader(BaseBookLoader):
         self.temp_file_path = None
 
         try:
-            for line in self.origin_book:
+            print(f"DEBUG: Starting make_bilingual_book with {len(self.origin_book)} lines")
+            for line_num, line in enumerate(self.origin_book):
                 if self._is_special_text(line):
                     continue
                 if not self.resume or index >= p_to_save_len:
                     try:
+                        print(f"DEBUG: Translating line {line_num + 1}: {line[:50]}...")
                         t_line = self.translate_model.translate(line)
+                        # Check if translation returned None or empty string
+                        if t_line is None or t_line.strip() == "":
+                            print(f"Warning: Translation returned None or empty for line: {line}")
+                            t_line = f"[TRANSLATION_ERROR: {line}]"
+                        print(f"DEBUG: Translation result: {t_line[:50]}...")
                     except Exception as e:
-                        print(f"translate failed {e}")
-                        raise Exception("translation failed") from e
+                        print(f"ERROR: translate failed for line {line_num + 1}: {type(e).__name__}: {str(e)}")
+                        import traceback
+                        print(f"DEBUG: Translation error traceback: {traceback.format_exc()}")
+                        t_line = f"[TRANSLATION_ERROR: {line}]"
+                    
                     self.p_to_save.append(t_line)
                     if not self.single_translate:
                         self.bilingual_result.append(line)
@@ -97,6 +107,8 @@ class TXTBookLoader(BaseBookLoader):
                 if self.is_test and index > self.test_num:
                     break
             
+            print(f"DEBUG: Translation completed, generating output file")
+            
             # Get model class name for filename
             model_class = self.translate_model.__class__.__name__.lower()
             
@@ -109,6 +121,8 @@ class TXTBookLoader(BaseBookLoader):
                 self.translate_model.language,
                 actual_model
             )
+            
+            print(f"DEBUG: Output path: {output_path}")
             
             # Save the file
             self.save_file(output_path, self.bilingual_result)
@@ -136,7 +150,9 @@ class TXTBookLoader(BaseBookLoader):
             return True
 
         except (KeyboardInterrupt, Exception) as e:
-            print(e)
+            print(f"ERROR in make_bilingual_book: {type(e).__name__}: {str(e)}")
+            import traceback
+            print(f"DEBUG: Full traceback: {traceback.format_exc()}")
             print("you can resume it next time")
             self._save_progress()
             self._save_temp_book()
@@ -169,9 +185,18 @@ class TXTBookLoader(BaseBookLoader):
 
     def _save_progress(self):
         try:
+            # Filter out None values and convert all items to strings
+            filtered_content = []
+            for item in self.p_to_save:
+                if item is not None:
+                    filtered_content.append(str(item))
+                else:
+                    filtered_content.append("[MISSING_TRANSLATION]")
+            
             with open(self.bin_path, "w", encoding="utf-8") as f:
-                f.write("\n".join(self.p_to_save))
-        except:
+                f.write("\n".join(filtered_content))
+        except Exception as e:
+            print(f"Error saving progress: {e}")
             raise Exception("can not save resume file")
 
     def load_state(self):
@@ -183,9 +208,18 @@ class TXTBookLoader(BaseBookLoader):
 
     def save_file(self, book_path, content):
         try:
+            # Filter out None values and convert all items to strings
+            filtered_content = []
+            for item in content:
+                if item is not None:
+                    filtered_content.append(str(item))
+                else:
+                    filtered_content.append("[MISSING_TRANSLATION]")
+            
             with open(book_path, "w", encoding="utf-8") as f:
-                f.write("\n".join(content))
-        except:
+                f.write("\n".join(filtered_content))
+        except Exception as e:
+            print(f"Error saving file: {e}")
             raise Exception("can not save file")
 
     def remove_temp_file(self):

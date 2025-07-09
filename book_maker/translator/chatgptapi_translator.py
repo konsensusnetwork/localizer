@@ -149,7 +149,13 @@ class ChatGPTAPI(Base):
         self.openai_client.api_key = next(self.keys)
 
     def rotate_model(self):
+        print(f"DEBUG: rotate_model called, model_list type: {type(self.model_list)}")
+        print(f"DEBUG: model_list value: {self.model_list}")
+        if self.model_list is None:
+            print("ERROR: model_list is None in rotate_model")
+            raise Exception("Model list not initialized in rotate_model")
         self.model = next(self.model_list)
+        print(f"DEBUG: model set to: {self.model}")
 
     def create_messages(self, text, intermediate_messages=None):
         # Format user content with text and language placeholders
@@ -244,6 +250,15 @@ class ChatGPTAPI(Base):
             self.openai_client.api_key = next(self.keys)
         max_retries = 5
         retry_count = 0
+        
+        # Debug: Check model_list before using it
+        print(f"DEBUG: model_list type: {type(self.model_list)}")
+        print(f"DEBUG: model_list value: {self.model_list}")
+        
+        if self.model_list is None:
+            print("ERROR: model_list is None, cannot rotate model")
+            raise Exception("Model list not initialized")
+        
         self.model = next(self.model_list)
         
         # Create messages outside the retry loop to avoid recreating them each time
@@ -262,28 +277,37 @@ class ChatGPTAPI(Base):
                 if self.model in O3MINI_MODEL_LIST:
                     request_params["reasoning_effort"] = self.reasoning_effort
                 
+                print(f"DEBUG: Making API call with model: {self.model}")
+                print(f"DEBUG: Request params: {request_params}")
+                
                 ## ACTUAL API CALL to OpenAI
                 completion = self.openai_client.chat.completions.create(**request_params)
                 self.api_call_count += 1
                 
+                print(f"DEBUG: API call successful, completion type: {type(completion)}")
+                print(f"DEBUG: Completion object: {completion}")
+                
                 # Store actual token usage information from the API response
-                self.log_info.update({
-                    "output_prompt_tokens": completion.usage.prompt_tokens,
-                    "output_completion_tokens": completion.usage.completion_tokens, 
-                    "output_total_tokens": completion.usage.total_tokens
-                })
-                
-                # Cumulative log info
-                self.cumulative_log_info.update({
-                    "output_prompt_tokens": self.cumulative_log_info["output_prompt_tokens"] + completion.usage.prompt_tokens,
-                    "output_completion_tokens": self.cumulative_log_info["output_completion_tokens"] + completion.usage.completion_tokens,
-                    "output_total_tokens": self.cumulative_log_info["output_total_tokens"] + completion.usage.total_tokens
-                })
-                
-                # Calculate cost based on model and token usage
-                cost = self._calculate_cost(completion.model, completion.usage.prompt_tokens, completion.usage.completion_tokens, self.log_info["input_uncached_tokens"])
-                self.log_info["cost"] = cost
-                self.cumulative_log_info["cost"] = self.cumulative_log_info["cost"] + cost
+                if hasattr(completion, 'usage'):
+                    self.log_info.update({
+                        "output_prompt_tokens": completion.usage.prompt_tokens,
+                        "output_completion_tokens": completion.usage.completion_tokens, 
+                        "output_total_tokens": completion.usage.total_tokens
+                    })
+                    
+                    # Cumulative log info
+                    self.cumulative_log_info.update({
+                        "output_prompt_tokens": self.cumulative_log_info["output_prompt_tokens"] + completion.usage.prompt_tokens,
+                        "output_completion_tokens": self.cumulative_log_info["output_completion_tokens"] + completion.usage.completion_tokens,
+                        "output_total_tokens": self.cumulative_log_info["output_total_tokens"] + completion.usage.total_tokens
+                    })
+                    
+                    # Calculate cost based on model and token usage
+                    cost = self._calculate_cost(completion.model, completion.usage.prompt_tokens, completion.usage.completion_tokens, self.log_info["input_uncached_tokens"])
+                    self.log_info["cost"] = cost
+                    self.cumulative_log_info["cost"] = self.cumulative_log_info["cost"] + cost
+                else:
+                    print("WARNING: completion object has no 'usage' attribute")
                 
                 return completion
             except RateLimitError:
@@ -296,29 +320,71 @@ class ChatGPTAPI(Base):
                     raise Exception("Rate limit exceeded too many times.")
                 time.sleep(3 * retry_count)  # Exponential backoff
             except Exception as e:
-                print(f"Error: {e}")
+                print(f"Error in create_chat_completion: {type(e).__name__}: {str(e)}")
                 retry_count += 1
                 if retry_count >= max_retries:
+                    print(f"DEBUG: Final error after {max_retries} retries: {str(e)}")
+                    import traceback
+                    print(f"DEBUG: Full traceback: {traceback.format_exc()}")
                     raise
                 time.sleep(1)
 
     def get_translation(self, text):
+        print(f"DEBUG: get_translation called with text length: {len(text)}")
         self.rotate_key()
+        print(f"DEBUG: rotate_key completed")
         self.rotate_model()  # rotate all the model to avoid the limit
+        print(f"DEBUG: rotate_model completed, model is: {self.model}")
 
-        completion = self.create_chat_completion(text)
+        try:
+            completion = self.create_chat_completion(text)
+            print(f"DEBUG: create_chat_completion completed")
+            print(f"DEBUG: completion type: {type(completion)}")
+            print(f"DEBUG: completion attributes: {dir(completion)}")
+            
+            # Add detailed debugging for completion structure
+            if hasattr(completion, 'choices'):
+                print(f"DEBUG: completion.choices type: {type(completion.choices)}")
+                print(f"DEBUG: completion.choices length: {len(completion.choices)}")
+                if len(completion.choices) > 0:
+                    print(f"DEBUG: completion.choices[0] type: {type(completion.choices[0])}")
+                    print(f"DEBUG: completion.choices[0] attributes: {dir(completion.choices[0])}")
+                    
+                    if hasattr(completion.choices[0], 'message'):
+                        print(f"DEBUG: completion.choices[0].message type: {type(completion.choices[0].message)}")
+                        print(f"DEBUG: completion.choices[0].message attributes: {dir(completion.choices[0].message)}")
+                        
+                        if hasattr(completion.choices[0].message, 'content'):
+                            print(f"DEBUG: completion.choices[0].message.content type: {type(completion.choices[0].message.content)}")
+                            print(f"DEBUG: completion.choices[0].message.content value: {completion.choices[0].message.content}")
+                        else:
+                            print("ERROR: completion.choices[0].message has no 'content' attribute")
+                    else:
+                        print("ERROR: completion.choices[0] has no 'message' attribute")
+                else:
+                    print("ERROR: completion.choices is empty")
+            else:
+                print("ERROR: completion has no 'choices' attribute")
+                print(f"DEBUG: completion content: {completion}")
 
-        # Ensure proper UTF-8 handling of the response
-        if completion.choices[0].message.content is not None:
-            # Don't double-encode/decode - just ensure we have a clean string
-            t_text = completion.choices[0].message.content
-        else:
-            t_text = ""
+            # Ensure proper UTF-8 handling of the response
+            if completion.choices[0].message.content is not None:
+                # Don't double-encode/decode - just ensure we have a clean string
+                t_text = completion.choices[0].message.content
+            else:
+                t_text = ""
 
-        if self.context_flag:
-            self.save_context(text, t_text)
+            if self.context_flag:
+                self.save_context(text, t_text)
 
-        return t_text
+            return t_text
+            
+        except Exception as e:
+            print(f"ERROR in get_translation: {type(e).__name__}: {str(e)}")
+            print(f"DEBUG: completion object: {completion if 'completion' in locals() else 'Not created'}")
+            import traceback
+            print(f"DEBUG: Full traceback: {traceback.format_exc()}")
+            raise
 
     def save_context(self, text, t_text):
         if self.context_paragraph_limit > 0:
@@ -352,7 +418,9 @@ class ChatGPTAPI(Base):
 
         while attempt_count < max_attempts:
             try:
+                print(f"DEBUG: Translation attempt {attempt_count + 1}/{max_attempts}")
                 t_text = self.get_translation(text)
+                print(f"DEBUG: Translation successful, result length: {len(t_text) if t_text else 0}")
                 break
             except RateLimitError as e:
                 # todo: better sleep time? why sleep alawys about key_len
@@ -367,8 +435,15 @@ class ChatGPTAPI(Base):
                     print(f"Get {attempt_count} consecutive exceptions")
                     raise
             except Exception as e:
-                print(str(e))
-                return
+                print(f"ERROR in translate method: {type(e).__name__}: {str(e)}")
+                attempt_count += 1
+                if attempt_count == max_attempts:
+                    print(f"DEBUG: Final translation error after {max_attempts} attempts: {str(e)}")
+                    import traceback
+                    print(f"DEBUG: Full traceback: {traceback.format_exc()}")
+                    # Return a meaningful error message instead of None
+                    return f"[TRANSLATION_ERROR: {str(e)}]"
+                time.sleep(1)
 
         # todo: Determine whether to print according to the cli option
         if needprint:
@@ -641,9 +716,12 @@ class ChatGPTAPI(Base):
             self.model_list = cycle(model_list)
 
     def set_model_list(self, model_list):
+        print(f"DEBUG: set_model_list called with: {model_list}")
+        print(f"DEBUG: model_list type: {type(model_list)}")
         model_list = list(set(model_list))
         print(f"Using model list {model_list}")
         self.model_list = cycle(model_list)
+        print(f"DEBUG: self.model_list set to: {self.model_list}")
 
     def batch_init(self, book_name):
         self.book_name = self.sanitize_book_name(book_name)
