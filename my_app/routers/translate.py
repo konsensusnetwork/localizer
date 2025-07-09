@@ -37,7 +37,6 @@ class TranslationRequest:
         batch_size: int = 1,
         single_translate: bool = False,
         model_list: Optional[str] = None,
-        temperature: float = 1.0,
         test: bool = False,
         test_num: int = 10,
         accumulated_num: int = 1,
@@ -50,7 +49,7 @@ class TranslationRequest:
         self.batch_size = batch_size
         self.single_translate = single_translate
         self.model_list = model_list
-        self.temperature = temperature
+        self.temperature = 1.0  # Default value
         self.test = test
         self.test_num = test_num
         self.accumulated_num = accumulated_num
@@ -63,6 +62,71 @@ async def get_models():
     return get_supported_models()
 
 
+@router.get("/prompts/{language}")
+async def get_prompt_files(language: str):
+    """Get available prompt files for a specific language"""
+    prompts_dir = Path("prompts")
+    language_dir = prompts_dir / language
+    
+    if not language_dir.exists():
+        # Check for prompt files in the root prompts directory that match the language
+        root_prompts = []
+        if prompts_dir.exists():
+            for file in prompts_dir.glob(f"{language}-*.prompt.md"):
+                root_prompts.append(file.name)
+            for file in prompts_dir.glob(f"*{language}*.prompt.md"):
+                if file.name not in root_prompts:
+                    root_prompts.append(file.name)
+        
+        return {"prompts": root_prompts}
+    
+    # Get prompt files from language-specific directory
+    prompt_files = []
+    for file in language_dir.glob("*.prompt.md"):
+        prompt_files.append(file.name)
+    
+    # Also check for files in the root directory that match this language
+    if prompts_dir.exists():
+        for file in prompts_dir.glob(f"{language}-*.prompt.md"):
+            if file.name not in prompt_files:
+                prompt_files.append(file.name)
+        for file in prompts_dir.glob(f"*{language}*.prompt.md"):
+            if file.name not in prompt_files:
+                prompt_files.append(file.name)
+    
+    return {"prompts": sorted(prompt_files)}
+
+
+@router.get("/prompts/{language}/{prompt_file}")
+async def get_prompt_content(language: str, prompt_file: str):
+    """Get the content of a specific prompt file"""
+    prompts_dir = Path("prompts")
+    
+    # Try language-specific directory first
+    language_dir = prompts_dir / language
+    prompt_path = language_dir / prompt_file
+    
+    # If not found in language directory, try root prompts directory
+    if not prompt_path.exists():
+        prompt_path = prompts_dir / prompt_file
+    
+    if not prompt_path.exists():
+        raise HTTPException(
+            status_code=404,
+            detail=f"Prompt file '{prompt_file}' not found for language '{language}'"
+        )
+    
+    try:
+        with open(prompt_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        return content
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to read prompt file: {str(e)}"
+        )
+
+
 @router.post("/start")
 async def start_translation(
     book_path: str = Form(...),
@@ -73,7 +137,6 @@ async def start_translation(
     batch_size: int = Form(1),
     single_translate: bool = Form(False),
     model_list: Optional[str] = Form(None),
-    temperature: float = Form(1.0),
     test: bool = Form(False),
     test_num: int = Form(10),
     accumulated_num: int = Form(1),
@@ -85,67 +148,26 @@ async def start_translation(
 ):
     """Start a translation job"""
     
-    try:
-        print(f"DEBUG: Starting translation with book_path={book_path}, model={model}, language={language}")
-        print(f"DEBUG: User: {user}")
-        
-        # Use prompt file if provided, otherwise use custom prompt
-        final_prompt = prompt_file if prompt_file else prompt
-        
-        # Create translation configuration
-        config = TranslationConfig(
-            book_path=book_path,
-            model=model,
-            language=language,
-            prompt=final_prompt,
-            batch_size=batch_size,
-            single_translate=single_translate,
-            model_list=model_list,
-            temperature=temperature,
-            test=test,
-            test_num=test_num,
-            accumulated_num=accumulated_num,
-            block_size=block_size,
-            user_id=user["id"]
-        )
-        
-        print(f"DEBUG: Created config with job_id={config.job_id}")
-        
-        # Validate configuration
-        validation_result = validate_translation_config(config)
-        print(f"DEBUG: Validation result: {validation_result}")
-        
-        if not validation_result["valid"]:
-            print(f"DEBUG: Validation failed with errors: {validation_result['errors']}")
-            raise HTTPException(
-                status_code=400,
-                detail={"errors": validation_result["errors"]}
-            )
-        
-        # Create job
-        job = create_translation_job(config)
-        print(f"DEBUG: Created job with status={job.status}")
-        
-        # Start translation in background
-        async def run_translation():
-            await translate_book_async(config, job)
-        
-        background_tasks.add_task(run_translation)
-        
-        return {
-            "job_id": config.job_id,
-            "status": "started",
-            "message": "Translation job started successfully"
-        }
-        
-    except HTTPException:
-        # Re-raise HTTP exceptions as-is
-        raise
-    except Exception as e:
-        print(f"DEBUG: Unexpected error in start_translation: {str(e)}")
-        print(f"DEBUG: Error type: {type(e)}")
-        import traceback
-        print(f"DEBUG: Traceback: {traceback.format_exc()}")
+    # Create translation configuration
+    config = TranslationConfig(
+        book_path=book_path,
+        model=model,
+        language=language,
+        prompt=prompt,
+        batch_size=batch_size,
+        single_translate=single_translate,
+        model_list=model_list,
+        temperature=1.0,  # Default value
+        test=test,
+        test_num=test_num,
+        accumulated_num=accumulated_num,
+        block_size=block_size,
+        user_id=user["id"]
+    )
+    
+    # Validate configuration
+    validation_result = validate_translation_config(config)
+    if not validation_result["valid"]:
         raise HTTPException(
             status_code=500,
             detail=f"Internal server error: {str(e)}"
@@ -162,7 +184,6 @@ async def upload_and_translate(
     batch_size: int = Form(1),
     single_translate: bool = Form(False),
     model_list: Optional[str] = Form(None),
-    temperature: float = Form(1.0),
     test: bool = Form(False),
     test_num: int = Form(10),
     accumulated_num: int = Form(1),
@@ -275,7 +296,34 @@ async def upload_and_translate(
         print(f"DEBUG: Traceback: {traceback.format_exc()}")
         raise HTTPException(
             status_code=500,
-            detail=f"Internal server error: {str(e)}"
+            detail=f"Failed to save uploaded file: {str(e)}"
+        )
+    
+    # Create translation configuration
+    config = TranslationConfig(
+        book_path=str(file_path),
+        model=model,
+        language=language,
+        prompt=prompt,
+        batch_size=batch_size,
+        single_translate=single_translate,
+        model_list=model_list,
+        temperature=1.0,  # Default value
+        test=test,
+        test_num=test_num,
+        accumulated_num=accumulated_num,
+        block_size=block_size,
+        user_id=user["id"]
+    )
+    
+    # Validate configuration
+    validation_result = validate_translation_config(config)
+    if not validation_result["valid"]:
+        # Clean up uploaded file if validation fails
+        file_path.unlink(missing_ok=True)
+        raise HTTPException(
+            status_code=400,
+            detail={"errors": validation_result["errors"]}
         )
 
 
