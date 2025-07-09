@@ -97,6 +97,17 @@
             border-color: #4f46e5;
         }
 
+        #custom-language {
+            margin-top: 10px;
+            font-style: italic;
+            background: #f8fafc;
+        }
+
+        #custom-language::placeholder {
+            color: #6b7280;
+            font-style: italic;
+        }
+
         .form-row {
             display: flex;
             gap: 20px;
@@ -382,7 +393,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="language">Target Language</label>
-                                    <select id="language" required onchange="loadPromptFiles()">
+                                    <select id="language" required onchange="handleLanguageChange()">
                                         <option value="">Select Language</option>
                                         <option value="nl">Dutch</option>
                                         <option value="fr">French</option>
@@ -390,7 +401,9 @@
                                         <option value="it">Italian</option>
                                         <option value="es">Spanish</option>
                                         <option value="en">English</option>
+                                        <option value="custom">Other (Custom)</option>
                                     </select>
+                                    <input type="text" id="custom-language" placeholder="Enter custom language code (e.g., de, pt, ja)" style="display: none;" onchange="loadPromptFiles()">
                                 </div>
                             </div>
 
@@ -609,9 +622,39 @@
             // This function is kept for compatibility but does nothing now
         }
 
+        // Handle language selection change
+        function handleLanguageChange() {
+            const languageSelect = document.getElementById('language');
+            const customLanguageInput = document.getElementById('custom-language');
+            
+            if (languageSelect.value === 'custom') {
+                customLanguageInput.style.display = 'block';
+                customLanguageInput.required = true;
+                languageSelect.required = false;
+            } else {
+                customLanguageInput.style.display = 'none';
+                customLanguageInput.required = false;
+                customLanguageInput.value = '';
+                languageSelect.required = true;
+            }
+            
+            loadPromptFiles();
+        }
+
+        // Get the current language (either from dropdown or custom input)
+        function getCurrentLanguage() {
+            const languageSelect = document.getElementById('language');
+            const customLanguageInput = document.getElementById('custom-language');
+            
+            if (languageSelect.value === 'custom') {
+                return customLanguageInput.value.trim();
+            }
+            return languageSelect.value;
+        }
+
         // Load prompt files based on selected language
         async function loadPromptFiles() {
-            const language = document.getElementById('language').value;
+            const language = getCurrentLanguage();
             const promptFileSelect = document.getElementById('prompt-file');
             
             // Clear existing options
@@ -648,7 +691,7 @@
 
         // Load and preview the selected prompt file
         async function loadPromptPreview() {
-            const language = document.getElementById('language').value;
+            const language = getCurrentLanguage();
             const promptFile = document.getElementById('prompt-file').value;
             const promptTextarea = document.getElementById('prompt');
             
@@ -710,8 +753,14 @@
                     formData.append('book_path', document.getElementById('book-path').value);
                 }
                 
+                // Validate language selection
+                const language = getCurrentLanguage();
+                if (!language) {
+                    throw new Error('Please select a target language or enter a custom language code');
+                }
+                
                 formData.append('model', document.getElementById('model').value);
-                formData.append('language', document.getElementById('language').value);
+                formData.append('language', language);
                 formData.append('prompt', document.getElementById('prompt').value);
                 formData.append('batch_size', document.getElementById('batch-size').value);
                 formData.append('single_translate', document.getElementById('single-translate').checked);

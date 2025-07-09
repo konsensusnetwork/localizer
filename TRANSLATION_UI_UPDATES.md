@@ -12,13 +12,14 @@ I've successfully updated the translation service frontend and backend according
 - **Note**: Optional model list functionality is preserved
 
 ### 2. Target Languages
-- **Updated** language dropdown to include only:
+- **Updated** language dropdown to include:
   - Dutch (nl)
   - French (fr) 
   - Finnish (fi)
   - Italian (it)
   - Spanish (es)
   - English (en)
+  - **Other (Custom)** - allows users to input any custom language code
 
 ### 3. Prompt File Selection
 - **Added**: Language-conditional prompt file dropdown
@@ -36,9 +37,18 @@ I've successfully updated the translation service frontend and backend according
 - **Removed**: Temperature control field
 - **Expanded**: Custom prompt textarea from 3 to 8 rows for better prompt viewing
 - **Updated**: Placeholder text to guide users about prompt file selection
+- **Added**: Custom language input field with conditional display and validation
 
-### 6. Form Submission
+### 6. Custom Language Support
+- **Dynamic Input**: When "Other (Custom)" is selected, a text input field appears
+- **Validation**: Ensures custom language code is provided when custom option is selected
+- **Prompt Compatibility**: Custom languages can still load prompt files if they exist
+- **Graceful Fallback**: Shows "no prompts found" message for unsupported custom languages
+- **Smart Detection**: Uses `getCurrentLanguage()` function throughout the app
+
+### 7. Form Submission
 - **Removed**: Temperature parameter from form data (backend uses default value of 1.0)
+- **Enhanced**: Language validation ensures either predefined or custom language is selected
 - **Maintained**: All other functionality intact
 
 ## Backend Changes (my_app/routers/translate.py)
@@ -91,10 +101,18 @@ prompts/
 5. **Backward Compatibility**: Existing translation functionality preserved
 6. **Error Handling**: Graceful fallbacks when prompt files aren't found
 
+## JavaScript Functions Added
+
+- `handleLanguageChange()` - Manages language dropdown changes and custom input visibility
+- `getCurrentLanguage()` - Returns the current language (predefined or custom)
+- Updated `loadPromptFiles()` - Uses current language for prompt file discovery  
+- Updated `loadPromptPreview()` - Uses current language for prompt content loading
+
 ## Testing
 
 - ✅ Backend syntax validation passed
-- ✅ Frontend JavaScript functions implemented
+- ✅ Frontend JavaScript functions implemented and validated
+- ✅ Custom language functionality tested
 - ✅ API endpoints structured correctly
 - ✅ Form submission updated appropriately
 
@@ -105,5 +123,8 @@ prompts/
 3. **Visual Feedback**: Large textarea provides better prompt preview experience
 4. **Progressive Enhancement**: Prompt files are optional - users can still enter custom prompts
 5. **Clean Interface**: Removed temperature reduces interface complexity
+6. **Flexible Language Support**: Users can choose from predefined languages or enter custom ones
+7. **Smart UI**: Custom language input appears only when needed, with helpful placeholder text
+8. **Robust Validation**: Clear error messages guide users to complete required fields
 
 The implementation maintains all existing functionality while adding the requested features in a user-friendly way.
