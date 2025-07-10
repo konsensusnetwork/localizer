@@ -60,6 +60,15 @@ without-hashes = true
 test-api = "pytest tests/test_api.py"
 test-api-verbose = "pytest tests/test_api.py -v"
 test-api-markers = "pytest tests/test_api.py -m"
+test-examples = "pytest tests/test_examples.py"
+test-examples-basic = "pytest tests/test_examples.py -m basic"
+test-examples-models = "pytest tests/test_examples.py -m models"
+test-examples-advanced = "pytest tests/test_examples.py -m advanced"
+test-examples-languages = "pytest tests/test_examples.py -m languages"
+test-examples-prompts = "pytest tests/test_examples.py -m prompts"
+test-examples-cli = "pytest tests/test_examples.py -m cli"
+test-examples-errors = "pytest tests/test_examples.py -m errors"
+test-all = "pytest tests/"
 start-service = "python run_service.py"
 
 [tool.pytest.ini_options]
@@ -77,7 +86,14 @@ addopts = [
 markers = [
     "api: marks tests as API tests",
     "integration: marks tests as integration tests",
-    "slow: marks tests as slow"
+    "slow: marks tests as slow",
+    "basic: marks tests as basic translation tests",
+    "models: marks tests as model selection tests",
+    "advanced: marks tests as advanced feature tests",
+    "languages: marks tests as language support tests",
+    "prompts: marks tests as prompt example tests",
+    "cli: marks tests as CLI command tests",
+    "errors: marks tests as error handling tests"
 ]
 [build-system]
 requires = ["pdm-backend>=2.0.0"]
