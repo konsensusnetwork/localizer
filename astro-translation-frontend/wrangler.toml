@@ -1,0 +1,11 @@
+name = "astro-translation-frontend"
+compatibility_date = "2024-01-01"
+
+[env.production]
+pages_build_output_dir = "dist"
+
+[env.production.vars]
+# Environment variables will be set in Cloudflare Pages dashboard
+# PUBLIC_SUPABASE_URL = "https://your-project-id.supabase.co"
+# PUBLIC_SUPABASE_ANON_KEY = "your-supabase-anon-key"
+# PUBLIC_TRANSLATION_API_URL = "https://your-api-domain.com"
