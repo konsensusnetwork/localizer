@@ -4,10 +4,49 @@ import logging
 import os
 from pathlib import Path
 from typing import Dict, Any, Optional
+from datetime import datetime
+from dataclasses import dataclass, field
 
 from book_maker.loader import BOOK_LOADER_DICT
 from book_maker.translator import MODEL_DICT
 from book_maker.utils import LANGUAGES
+
+
+@dataclass
+class TranslationConfig:
+    """Configuration for a translation job"""
+    book_path: str
+    model: str
+    language: str
+    user_id: str
+    job_id: str = field(default_factory=lambda: str(__import__('uuid').uuid4()))
+    model_list: Optional[str] = None
+    batch_size: Optional[int] = None
+    single_translate: bool = False
+    test: bool = False
+    test_num: int = 10
+    use_context: bool = False
+    reasoning_effort: str = "medium"
+    temperature: float = 1.0
+    accumulated_num: int = 1
+    block_size: int = -1
+    prompt: Optional[str] = None
+    prompt_file: Optional[str] = None
+
+
+@dataclass
+class TranslationJob:
+    """Translation job with status tracking"""
+    config: TranslationConfig
+    status: str = "pending"  # pending, running, completed, failed
+    progress: int = 0
+    created_at: datetime = field(default_factory=datetime.now)
+    started_at: Optional[datetime] = None
+    completed_at: Optional[datetime] = None
+    output_file: Optional[str] = None
+    error: Optional[str] = None
+    token_usage: Dict[str, Any] = field(default_factory=dict)
+
 
 # Set up logging
 def setup_logging(debug=False):
@@ -26,6 +65,50 @@ def get_supported_models():
 def get_supported_languages():
     """Get list of supported languages"""
     return list(LANGUAGES.keys())
+
+async def translate_book_job(job: TranslationJob) -> TranslationJob:
+    """
+    Translate a book using a TranslationJob for better tracking
+    """
+    job.status = "running"
+    job.started_at = datetime.now()
+    
+    try:
+        result = await translate_book(
+            book_path=job.config.book_path,
+            model=job.config.model,
+            language=job.config.language,
+            model_list=job.config.model_list,
+            batch_size=job.config.batch_size,
+            single_translate=job.config.single_translate,
+            test_mode=job.config.test,
+            test_num=job.config.test_num,
+            use_context=job.config.use_context,
+            reasoning_effort=job.config.reasoning_effort,
+            temperature=job.config.temperature,
+            accumulated_num=job.config.accumulated_num,
+            block_size=job.config.block_size,
+            prompt_file=job.config.prompt_file,
+            user_id=job.config.user_id
+        )
+        
+        job.status = "completed" if result["success"] else "failed"
+        job.completed_at = datetime.now()
+        job.output_file = result.get("output_file")
+        job.progress = 100
+        
+        if not result["success"]:
+            job.error = result.get("message", "Translation failed")
+            
+    except Exception as e:
+        job.status = "failed"
+        job.completed_at = datetime.now()
+        job.error = str(e)
+        job.progress = 0
+        logger.error(f"Translation job {job.config.job_id} failed: {e}")
+        
+    return job
+
 
 async def translate_book(
     book_path: str,
