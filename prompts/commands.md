@@ -38,4 +38,4 @@ pdm run bbook_maker --book_name books/tsi-nl/ch02.qmd --model gemini  --prompt p
 
 pdm run bbook_maker --book_name books/bm-al/ch00.md --model gemini --prompt prompts/al-translation.prompt.md --batch_size=5 --single_translate --language Albanian --gemini_key AIzaSyA1ZHnMzY6F4vn7JA8QJ6UJXwUvMe2pnfU --model_list gemini-2.5-pro-preview-06-05
 
-pdm run dir_process books/bm-it/todo --model gemini --prompt prompts/it-translation-2.prompt.md --batch_size=5 --single_translate --language it --gemini_key AIzaSyA1ZHnMzY6F4vn7JA8QJ6UJXwUvMe2pnfU --model_list gemini-2.5-pro-preview-06-05
+pdm run dir_process books/tsi-fr --model gemini --prompt prompts/fr/fr-edit-2.prompt.md --batch_size=5 --single_translate --language fr --gemini_key AIzaSyA1ZHnMzY6F4vn7JA8QJ6UJXwUvMe2pnfU --model_list gemini-2.5-pro
