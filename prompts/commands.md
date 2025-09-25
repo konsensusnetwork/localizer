@@ -34,8 +34,20 @@ pdm run dir_process books/21fff/es/to-edit --model openai --model_list o3-mini -
 
 python3 make_book.py --book_name test_books/animal_farm.epub --model gemini --language nl
 
-pdm run bbook_maker --book_name books/tsi-nl/ch02.qmd --model gemini  --prompt prompts/nl/nl-translation-tsi.prompt.md --batch_size=5 --single_translate --language nl --gemini_key AIzaSyA1ZHnMzY6F4vn7JA8QJ6UJXwUvMe2pnfU --model_list gemini-2.5-pro-preview-06-05
+pdm run bbook_maker --book_name books/tsi-nl/ch02.qmd --model gemini  --prompt prompts/nl/nl-translation-tsi.prompt.md --batch_size=5 --single_translate --language nl --gemini_key AIzaSyBAwu8vTHKGC2zCGYdJEH6STZByibatgNI --model_list gemini-2.5-pro-preview-06-05
 
-pdm run bbook_maker --book_name books/bm-al/ch00.md --model gemini --prompt prompts/al-translation.prompt.md --batch_size=5 --single_translate --language Albanian --gemini_key AIzaSyA1ZHnMzY6F4vn7JA8QJ6UJXwUvMe2pnfU --model_list gemini-2.5-pro-preview-06-05
+pdm run bbook_maker --book_name books/bm-al/ch00.md --model gemini --prompt prompts/al-translation.prompt.md --batch_size=5 --single_translate --language Albanian --gemini_key AIzaSyBAwu8vTHKGC2zCGYdJEH6STZByibatgNI --model_list gemini-2.5-pro-preview-06-05
 
-pdm run dir_process books/tsi-fr --model gemini --prompt prompts/fr/fr-edit-2.prompt.md --batch_size=5 --single_translate --language fr --gemini_key AIzaSyA1ZHnMzY6F4vn7JA8QJ6UJXwUvMe2pnfU --model_list gemini-2.5-pro
+pdm run dir_process books/tsi-fr --model gemini --prompt prompts/fr/fr-edit-2.prompt.md --batch_size=5 --single_translate --language fr --gemini_key AIzaSyBAwu8vTHKGC2zCGYdJEH6STZByibatgNI --model_list gemini-2.5-pro
+
+pdm run bbook_maker --book_name books/TOMS_EN.md --model gemini --prompt prompts/es/es-translation.prompt.md --batch_size=5 --single_translate --language es --gemini_key AIzaSyBAwu8vTHKGC2zCGYdJEH6STZByibatgNI --model_list gemini-2.5-pro
+
+pdm run bbook_maker --book_name books/TOMS_EN.md --model gemini --prompt prompts/it-translation-2.prompt.md --batch_size=5 --single_translate --language it --gemini_key AIzaSyBAwu8vTHKGC2zCGYdJEH6STZByibatgNI --model_list gemini-2.5-pro
+
+pdm run bbook_maker --book_name books/OTALP/OTALP_EN.md --model gemini --prompt prompts/es/es-translation.prompt.md --batch_size=5 --single_translate --language es --gemini_key AIzaSyBAwu8vTHKGC2zCGYdJEH6STZByibatgNI --model_list gemini-2.5-pro
+
+pdm run bbook_maker --book_name books/JB/CH11.md --model gemini --prompt prompts/en/en-copy-edit.prompt.md --batch_size=5 --single_translate --language en --gemini_key AIzaSyBAwu8vTHKGC2zCGYdJEH6STZByibatgNI --model_list gemini-2.5-pro
+
+pdm run bbook_maker --book_name books/JB/CH11.md --model gemini --prompt prompts/en/en-edit.prompt.md --batch_size=5 --single_translate --language en --gemini_key AIzaSyBAwu8vTHKGC2zCGYdJEH6STZByibatgNI --model_list gemini-2.5-pro
+
+pdm run bbook_maker --book_name books/JB/CH08.md --model gemini --prompt prompts/en/en-translation.prompt.md --batch_size=5 --single_translate --language en --gemini_key AIzaSyBAwu8vTHKGC2zCGYdJEH6STZByibatgNI --model_list gemini-2.5-pro

@@ -38,7 +38,7 @@ def split_chapters(input_file):
         
         # Add referenced footnotes
         if footnote_refs:
-            chapter_content += "\n## Footnotes\n\n"
+            chapter_content += "\n"
             for ref in sorted(footnote_refs, key=int):
                 if ref in footnotes:
                     chapter_content += f"[^{ref}]: {footnotes[ref]}\n"
