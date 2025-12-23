@@ -1,0 +1,91 @@
+{
+  "runs": [
+    {
+      "timestamp": "2025-10-21T14:01:12.561402",
+      "input_file": "ch01.qmd",
+      "input_line_count": 35,
+      "input_file_tokens": 1721,
+      "output_file": "ch01_20251021_1401_gemini-2_5-pro.qmd",
+      "output_line_count": 41,
+      "output_file_tokens": 1751,
+      "batch_size": 5,
+      "language": "nederlands",
+      "model": "gemini-2.5-pro",
+      "context_flag": false,
+      "single_translate": true,
+      "api_calls": 3,
+      "reasoning_effort": "medium",
+      "cumulative_log_info": {
+        "input_uncached_tokens": 59905,
+        "input_system_tokens": 116868,
+        "input_user_tokens": 61051,
+        "input_intermediate_tokens": 0,
+        "input_total_tokens": 177919,
+        "output_prompt_tokens": 0,
+        "output_completion_tokens": 59938,
+        "output_total_tokens": 59938,
+        "cost": 0.44833
+      },
+      "prompt_filename": "nl-edit-o3.prompt.md",
+      "full_system_message": "As a professional {language} translator and editor, you act as a cultural mediator between source te..."
+    },
+    {
+      "timestamp": "2025-10-21T14:06:10.486924",
+      "input_file": "ch02.qmd",
+      "input_line_count": 83,
+      "input_file_tokens": 4544,
+      "output_file": "ch02_20251021_1406_gemini-2_5-pro.qmd",
+      "output_line_count": 77,
+      "output_file_tokens": 4166,
+      "batch_size": 5,
+      "language": "nederlands",
+      "model": "gemini-2.5-pro",
+      "context_flag": false,
+      "single_translate": true,
+      "api_calls": 9,
+      "reasoning_effort": "medium",
+      "cumulative_log_info": {
+        "input_uncached_tokens": 179261,
+        "input_system_tokens": 350604,
+        "input_user_tokens": 182699,
+        "input_intermediate_tokens": 0,
+        "input_total_tokens": 533303,
+        "output_prompt_tokens": 0,
+        "output_completion_tokens": 178962,
+        "output_total_tokens": 178962,
+        "cost": 1.3401625000000001
+      },
+      "prompt_filename": "nl-edit-o3.prompt.md",
+      "full_system_message": "As a professional {language} translator and editor, you act as a cultural mediator between source te..."
+    },
+    {
+      "timestamp": "2025-10-21T14:14:46.644530",
+      "input_file": "ch03.qmd",
+      "input_line_count": 221,
+      "input_file_tokens": 10636,
+      "output_file": "ch03_20251021_1414_gemini-2_5-pro.qmd",
+      "output_line_count": 218,
+      "output_file_tokens": 9966,
+      "batch_size": 5,
+      "language": "nederlands",
+      "model": "gemini-2.5-pro",
+      "context_flag": false,
+      "single_translate": true,
+      "api_calls": 22,
+      "reasoning_effort": "medium",
+      "cumulative_log_info": {
+        "input_uncached_tokens": 457486,
+        "input_system_tokens": 895988,
+        "input_user_tokens": 466283,
+        "input_intermediate_tokens": 0,
+        "input_total_tokens": 1362271,
+        "output_prompt_tokens": 0,
+        "output_completion_tokens": 437323,
+        "output_total_tokens": 437323,
+        "cost": 3.274855
+      },
+      "prompt_filename": "nl-edit-o3.prompt.md",
+      "full_system_message": "As a professional {language} translator and editor, you act as a cultural mediator between source te..."
+    }
+  ]
+}

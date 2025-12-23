@@ -1,0 +1,83 @@
+# Inleiding {.unnumbered}
+
+De oorsprong van dit boek stamt uit onze individuele verhalen over hoe we voor het eerst met bitcoin in aanraking kwamen. We zouden elkaar bijna zeker nooit hebben ontmoet zonder bitcoin, en geen van ons had zich kunnen voorstellen hoe levensveranderend bitcoin voor ons zou zijn. Tussen 2011 en 2013 werden we elk afzonderlijk en op nogal verschillende manieren geïntroduceerd in deze cryptovaluta, leerden erover en raakten erbij betrokken. Marco Krohns samenvatting van zijn vroegste ervaringen met bitcoin verschoof van aanvankelijke scepsis naar een veranderd perspectief op economie, de aard van geld en enorme zakelijke kansen.
+
+Marco leerde voor het eerst over virtuele valuta's op een middag in de zomer van 2011 uit naar wat volgens zijn verwachting het minst interessante artikel in een computertijdschrift zou zijn. Die dag las hij dat een mysterieuze, anonieme figuur internetgeld had uitgevonden en dat iedereen met voldoende computervaardigheden meer kon genereren. Hij had een doctoraatsdiploma in fysica, een baan in de banksector en een mening: Het idee was geschift. Het kon niet werken.
+
+Dit was, herinnerde hij zich de volgende dag, dezelfde mening die hij had toen hij voor het eerst over Wikipedia hoorde. Enigszins overdonderd door de herinnering, bekeek hij bitcoin wat grondiger en viel meteen in het spreekwoordelijke konijnenhol.[^1] Hoe meer hij begreep, hoe meer hij geïntrigeerd raakte. De kernprincipes, hoewel niet onmiddellijk voor de hand liggend, waren fundamenteel solide en hadden diepgaande implicaties. Het idee *was* geschift---net als vaccinatie en de heliocentrische theorie dat ooit waren. Elf jaar en de oprichting van een van 's werelds grootste bitcoin-mijnbedrijven later, is hij er nog meer van overtuigd dat deze nieuwe vorm van geld net zo belangrijk zal zijn als de microprocessor voor individuele, commerciële en wereldeconomieën.
+
+Hij gaf zijn baan in de bankensector op en had, met enkele vrienden, snel een serverfarm opgezet en in werking gesteld in Bosnië-Herzegovina. De enkele, spelonkachtige kamer vol grafische kaarten en computers met constellaties van blinkende lichtjes, leek op (en klonk ook) als een ruimteschip---en vrienden reageerden er quasi gelijkaardig op. Steeds opnieuw bleken Marco en zijn partners te moeten verklaren dat hun futuristische, lawaaierige opslagruimte "geld drukte". En bijna elke keer wilden mensen meedoen.
+
+Aanvankelijk was de bitcoingemeenschap klein, vol mensen die vergelijkbare ervaringen en verhalen hadden over hoe ze bitcoin ontdekten. Anthony Jefferies, Marco Streng, Zoran Balkic en Marco Krohn ontmoetten elkaar in deze vroege dagen en waren opgetogen over de potentieel verstrekkende implicaties van bitcoin.
+
+Die passie, zo ontdekten ze, ging veel verder dan hun uitgebreide kring. Een enthousiaste en groeiende populatie was geïnteresseerd in bitcoin. Mensen hadden een verleidelijk gevoel dat fortuinen werden gemaakt aan de andere kant van een of andere obscure informatiebarrière en waren gefrustreerd dat ze niet begrepen hoe het werkte of hoe ze konden deelnemen.
+
+Op dezelfde manier dat de kracht van personal computing een grafische interface nodig had om toegankelijk te zijn voor leken, heeft bitcoin (of algemener "crypto") een tussenpersoon nodig. Hier is de noodzakelijke laag tussen mensen en technologie informatief in plaats van visueel. Mensen hebben een conceptuele houvast nodig over wat cryptovaluta's zijn en hoe ze werken, voordat ze er effectief mee kunnen omgaan. Maar in tegenstelling tot computers, waar weinig mensen vijftig jaar geleden ervaring mee hadden, is geld een middel waarvan we zeker zijn dat iedereen die dit leest het al regelmatig gebruikt. Helaas is bekendheid ermee niet hetzelfde als begrip ervan. Het kan zelfs een hindernis vormen.
+
+Geld is een ongelooflijk nuttige abstractie die met de menselijke cultuur is geëvolueerd van schelpen op stranden tot chips op kaarten, waarbij elke iteratie het verbeterde, zo niet perfectioneerde. Cryptovaluta's vergen een intellectuele en conceptuele tol en vragen een inzet van intelligentie en verbeeldingskracht van de deelnemers.
+
+Als je de gewone man in de straat vraagt wat geld is, zullen velen zeggen dat het de biljetten zijn in hun portemonnee. Toen we voor het eerst over bitcoin hoorden, was ons begripsvermogen niet veel meer geavanceerd, hoewel we diploma's hadden behaald in wiskunde of ingenieurswetenschappen, of werkten in de bank!! We konden de wiskunde en het programmeren achter bitcoin bewonderen, maar pas nadat we over de geschiedenis, functies en eigenschappen van geld hadden geleerd, konden we de diepgang en verstrekkende gevolgen ervan waarderen.
+
+## Naar een diepgaander begrip
+
+Bitcoin hoeft niet esoterisch te zijn, maar boeken over het onderwerp neigen naar òf het simplistische òf het uiterst technische. Hoewel er veel goede informatie online beschikbaar is, kan het moeilijk zijn om een gecombineerd overzicht op hoog niveau en een voldoende gedetailleerd niveau op dezelfde plaats te vinden. In 2013, toen we ons realiseerden dat de wiskundige en conceptuele complexiteiten van bitcoin onze vrienden en al te veel andere geïnteresseerde niet-experts ervan weerhielden om te investeren in (en winst te maken met) het mijnen van bitcoin, hebben we Genesis Mining opgericht om die kloof te overbruggen. Dit boek is een uitbreiding van die brug.
+
+Met dit boek hopen we om ons enthousiasme te delen, een directe weg te bieden naar een dieper begripsniveau---de meest technisch complexe aspecten van bitcoin omzeilend zonder meer dan nodig te oversimplificeren. Dit is geen "Gids voor domkoppen" en ook geen tekst op universiteitsniveau over cryptomunten en blockchains. In plaats daarvan is het eerder een uitgebreide inleiding voor geïnteresseerde, intelligente lezers die willen begrijpen hoe dit nieuwe "internetgeld" wordt gebruikt en gemaakt, en misschien om voor zichzelf wat te maken.
+
+Om lezers een gelijke basis te geven, biedt Deel 1 van *Geld ontcijferen* een verkenning van geld, beginnend in Hoofdstuk 1 met een van zijn vroegste vormen--- de kaurischelp---en verdergaand met de opkomst van door de overheid uitgegeven papiergeld. Dit is geen uitgebreide geschiedenis, maar een historisch geordende representatieve steekproef van uitgekozen valuta's, deels vanwege hun vermogen om die functies en eigenschappen van geld te illustreren die de focus zijn van Hoofdstuk 2.
+
+Hoofdstuk 3 behandelt de evolutie van digitale valuta's, evalueert ze aan de hand van de functies en eigenschappen die in het vorige hoofdstuk zijn beschreven en vergelijkt ze met de historische valuta's uit het eerste hoofdstuk. Hierdoor wordt vastgesteld dat (niet-fysiek) digitaal geld de eigenschappen en kenmerken kan hebben die in principe toelaten dat het als (een digitale vorm van) geld wordt gebruikt. Deel 1 wordt afgesloten met een verkenning van problemen die inherent zijn aan alle vormen van geld en een overzicht van hoe verschillende vroege digitale valuta's poogden sommige daarvan aan te pakken.
+
+Deel 2 richt zich op bitcoin, de oorspronkelijke cryptomunt. Hoofdstuk 4 begint met het mysterie van Satoshi Nakamoto (het pseudoniem van de onbekende persoon of personen die bitcoin hebben uitgevonden), zijn agenda en zijn genialiteit. Het behandelt de introductie en vroege geschiedenis van bitcoin, van de oorspronkelijke whitepaper tot de beroemde bitcoinpizza, die wordt beschouwd als de duurste pizza in de geschiedenis van de mensheid.[^2] In Hoofdstuk 5 analyseren we bitcoin aan de hand van de functies en eigenschappen van geld die werden vastgesteld. Ten slotte vergelijken we het met de overheersende vormen van geld van onze tijd, goud en fiat, en bespreken we de relatieve sterkten en zwakheden.
+
+Deel 3 graaft dieper in hoe bitcoin werkt. Hoofdstuk 6 is een introductie tot de fundamentele aspecten van bitcoin, waarbij begrippen zoals adressen, publieke/privésleutels, ledgers, wallets, beurzen, nodes en mijnen (digitaal delven) worden geïntroduceerd en uitgelegd. Dit hoofdstuk biedt beknopte uitleg over de twee belangrijkste manieren waarop mensen bitcoin kunnen gaan beginnen gebruiken. Dit overzicht van bitcoinwallets, beurzen, geldautomaten en mijnen biedt beschrijvingen op hoog niveau om lezers te helpen zich te oriënteren en beschermen in het bitcoinlandschap.
+
+Hoofdstuk 7 biedt een grondigere technische bespreking van de cryptografische functies waarvan bitcoin afhankelijk is. Hoofdstuk 8 richt zich eerst op hoe transacties worden geauthenticeerd en nieuwe bitcoins worden gecreëerd. Vervolgens legt het de blockchain uit: wat die is, hoe die werkt en wat die zowel beschermt als de voortzetting ervan verzekert. Uiteindelijk voorziet het in een beschrijving van het sleutelproces waarbij bitcoin wordt gecreëerd: het mijnen. Tot slot volgt in Hoofdstuk 9 een overzicht van bitcoins onthaal en adoptie, alsook belangrijke gebeurtenissen uit zijn geschiedenis tot op heden.
+
+## Zowel filosofie als valuta
+
+Bitcoin is meer dan een valuta. Het begon als een bijna filosofisch gesprek op een cypherpunk mailinglijst over hoe een betere vorm van geld eruit zou zien, en de oorsprong van dit gesprek heeft zowel bitcoin als zijn oorspronkelijke publiek gevormd.[^3] Die vroege demografie blijft een aanzienlijk deel van de mensen (en met name de mensen die het meest intensief bij bitcoin betrokken zijn) omvatten. Deze cohorte is de cypherpunks. Ze komen naar bitcoin vanuit een interesse in cryptografie en hechten veel belang aan het beschermen van de individuele privacy.
+
+:::{.infobox}
+**Privacy** is noodzakelijk voor een open samenleving in het electronische tijdperk. Privacy is geen geheimhouding. Een privaat onderwerp is iets dat men niet wilt dat de hele wereld weet, maar een geheim onderwerp is iets dat men niet wilt dat iemand weet. Privacy is de macht om jezelf selectief aan de wereld te tonen.[^4]
+:::
+
+Cypherpunks worden aangetrokken door zowel de onderliggende filosofie van bitcoin als door een methode om waarde over te dragen zonder hun identiteit te onthullen. Deze mensen zijn doorgaans antiautoritair en wantrouwend tegenover de staat en traditionele vormen van overheid. Voor hen is bitcoin bijna evenzeer een ideologie als een geldstelsel. 't Is absoluut een gemeenschap.
+
+De tweede demografische groep die de bitcoingemeenschap vervoegt, bestaat uit mensen die we beschouwen als voorstanders van de gouden standaard (zogenaamde "gold bugs") en libertariërs.[^5] Dit zijn mensen die geloven dat schaarste en waarde onlosmakelijk met elkaar zijn verbonden. Ze hebben een fundamenteel geloof in bitcoin omdat het schaars is (en altijd zal zijn), en een sterk wantrouwen voor fiatgeld omdat het niet schaars is en door niets wat dat wel is wordt ondersteund. Deze groep deelt een wantrouwen voor de staat met de cypherpunks, maar is veel meer geïnteresseerd in goud dan hun tegenhangers en minder ideologisch gedreven. Voor deze groep is bitcoin een digitale vorm van goud en ze kopen het als een manier om hun goudinvesteringen te diversifiëren.
+
+Een andere groep, de speculanten, wordt aangetrokken door de prijsgeschiedenis van bitcoin---van een percentage van een cent tot duizenden Amerikaanse dollars per bitcoin---en hoopt bij een stijgend tij in te stappen en snel veel geld te verdienen.
+
+![Bitcoinhoeveelheid](/figures/Fig0-2.png){#Fig-0-2 width=100%}
+
+Terwijl we in dit boek naar objectiviteit hebben gestreefd en lezers aanmoedigen om informatie over bitcoin uit verschillende bronnen te zoeken, voelden we de verantwoordelijkheid om context te bieden over de verschillende perspectieven en vooroordelen die overheersen in de bitcoincultuur en om expliciet te zijn over waar we onszelf onder hen positioneren.
+
+Deze korte demografische indeling helpt ook om enkele van de bewegingen op de bitcoinmarkt te verklaren. Prijsschommelingen trekken doorgaans een toestroom van nieuwe speculatieve marktparticipanten aan die proberen te profiteren van de snelle verandering in de prijs om heel snel geld te verdienen.
+
+De volatiliteit van bitcoin is zowel een van de aantrekkelijkheden als risico's ervan. We kunnen de toekomst niet voorspellen en dat is niet het doel van dit boek. Het doel is om de fundamentele principes van bitcoin en andere cryptovaluta's te communiceren, zodat je deze belangrijke opkomende technologieën zelf kunt beoordelen.
+
+## Over ons
+
+Dit boek is een samenwerking. We hebben allemaal gewerkt in de voorhoede van cryptovaluta's en blockchaintechnologieën sinds hun ontstaan en hebben bedrijven opgericht en gerund in die dynamische omgeving. Maar we zijn er allemaal vanuit verschillende achtergronden en met verschillende sterke punten toe gekomen:
+
+De kennis van Marco Krohn over blockchaintechnologie en cryptovaluta's profiteert van zijn geavanceerde studies in natuurkunde, wiskunde en economie, evenals meer dan een decennium aan ervaring in de financiële sector en investeringsbankieren. Wanneer hij niet aan het werk is, leest Marco graag over nieuwe technologieën. In wezen is hij een techjunkie die slimme, eenvoudige oplossingen waardeert. Marco geniet vooral van het leren over verbeteringen in toegepaste wetenschappen die zowel elegant als diepgaand zijn in hun potentieel om de manier waarop mensen hun leven leiden radicaal te verbeteren. Marco komt uit Noord-Duitsland en heeft een doctoraatsdiploma in theoretische natuurkunde.
+
+Met diploma's in wiskunde en ingenieurswetenschappen, evenals een doctoraatsdiploma in computationele vloeistofdynamica, was Anthony Jefferies al enkele relevante concepten tegengekomen toen hij bij bitcoin uitkwam, zoals publieke-sleutelcryptografie en gedistribueerde computerisering. Sindsdien is hij betrokken geweest bij een aantal cryptovalutaprojecten, waaronder een cryptobeurs en de ontwikkeling van kwantitatieve tools voor bitcoindata-analyse. Hij werkte ook meer dan tien jaar bij grote Duitse autofabrikanten en voerde numerieke simulaties uit voor de onderzoeks- en ontwikkelingsafdeling.
+
+Marco Streng ontdekte bitcoin als jonge wiskundige die opkomende en zelforganiserende netwerken bestudeerde en werd onmiddellijk aangetrokken door de complexiteit en mogelijkheden ervan. Hij begon met mijnen in zijn studentenkamer, voordat hij zijn operatie opschroefde tot Genesis Mining.
+
+Zoran Balkic is al sinds zijn jeugd een informaticus en heeft vijftien jaar computerwetenschappen gestudeerd en gedoceerd aan de universiteit. Zijn eerste bitcoinproject in 2013 omvatte het gebruik van SMS om bitcoin te kopen en hij richtte succesvolle bedrijven op en leidde ze in de cryptovaluta-industrie. Zijn interesse in onderwijzen blijft bestaan en hij is een actieve deelnemer in de Kroatische bitcoingemeenschap.
+
+Ieder van ons had zijn eigen "door het konijnenhol*"*-moment en we zijn nog steeds even enthousiast als toen over de mogelijkheden die het opent. Cryptovaluta's, de ideeën erachter, de wiskunde en technologie die aan de basis ligt en de toename van nieuwe varianten, kunnen onoverkomelijk complex en abstract lijken, maar bitcoin is eenvoudigweg de volgende logische stap in de evolutie van geld. Om die evolutie beter te begrijpen, beginnen we zo dicht mogelijk bij het begin---met een zeeschelp.
+
+We kunnen geen wonderland zoals dat van Alice beloven, maar we hopen dat je zult genieten van de reis.
+
+[^1]: Bitcoin is zowel een cryptovaluta als een betalingssysteem. Aanvankelijk werd er een onderscheid gemaakt met een kleine en hoofdletter "B", zodat "bitcoin" de valuta voorstelde (als in "ik heb twee bitcoins"), terwijl "Bitcoin" verwees naar het systeem zelf (als in, "ik kan Bitcoin gebruiken om geld over te schrijven"). Die conventie is grotendeels uit gebruik geraakt binnen de bitcoingemeenschap en wij gebruiken uitsluitend de kleine letter "b".
+
+[^2]: Een witboek of whitepaper is een gedetailleerd document dat een specifiek onderwerp beschrijft.
+
+[^3]: "Cypherpunk" is afgeleid van de Engelse woorden *cipher* en *cyberpunk*.
+
+[^4]: Hughes, 1993.
+
+[^5]: Libertariërs beschouwen vrijheid als hun kernwaarde. Ze zijn sceptisch tegenover elke vorm van autoriteit of staatsmacht.

@@ -1,0 +1,41 @@
+# Voorwoord {.unnumbered}
+
+\textbf\large door Garri Kasparov
+
+Stel je voor: je bent een dissident die vecht voor democratie in Venezuela. De overheid controleert de toegang tot financiële diensten via staatsinstellingen. Wie loyaal is aan het regime, krijgt toegang tot de schaarse hulpbronnen van het land, terwijl dissidenten zoals jij worden buitengesloten. De overheid volgt al je bewegingen, monitort je financiële transacties en volgt overal je sporen (zowel digitaal als fysiek). Wat kun je doen? Hoe kun je overleven en blijven strijden voor je zaak?
+
+En wat als de overheid ook de nationale munteenheid manipuleert, geld bijdrukt, met de waarde ervan speelt en — zoals Nero de oorlog aan Neptunus verklaarde — de economie zelf de oorlog verklaart? Kun je dat stabiel noemen? Hoe kan een bedrijf of familie voor de toekomst plannen wanneer de fundamenten van sparen, besteden en investeren onderhevig zijn aan de grillen en het misbruik van wanbeleid?
+
+Maar dit is geen louter gedachte-experiment. Dit is de realiteit voor zowel dissidenten als gewone mensen over de hele wereld. Een antwoord hierop zijn cryptovaluta's zoals *bitcoin*. Voor talloze mensen betekent crypto vrijheid in een tijdperk van toenemende controle en surveillance.
+
+Ik besef dat dit misschien klinkt als een nichetoepassing, specifiek voor mijn werk als voorzitter van de *Human Rights Foundation*. Maar de meeste nieuwe technologieën worden eerst in zulke niches toegepast, voordat ze door het grote publiek begrepen en omarmd worden. Pioniers nemen risico's, gaan uitdagingen aan en plaveien de weg voor de rest.
+
+In die fase bevinden cryptovaluta's zich nu, en gelukkig is er een boek als *Geld ontcijferen* om ons te helpen de volgende stap te zetten. De plaats van Bitcoin in de geschiedenis van geld – tot aan zeeschelpen toe! – is vergelijkbaar met de impact van het internet ten opzichte van de boekdrukkunst.
+
+Nieuwe technologie heeft me altijd gefascineerd, van mijn partijen tegen schaaksupercomputers tot lezingen over hoe AI zal uitgroeien tot *‘augmented intelligence’* en ons slimmer zal maken. Verkennen heeft altijd centraal gestaan in mijn leven, zelfs al voor mijn schaakcarrière. Van het uitstippelen van de routes van grote ontdekkingsreizigers op een wereldbol met mijn vader tot het aangaan van nieuwe uitdagingen in mijn privé- en beroepsleven: verkennen is leren. Verkennen betekent het pad kiezen dat weinigen bewandelen, een pad dat vaak hobbelig is en geen wegwijzers kent. Het verandert onze manier van denken, en als we onze ontdekkingen delen, verandert het ook de wereld om ons heen.
+
+Ik was dan ook een en al oor toen ik in het voorjaar van 2019 Marco Streng ontmoette en in hem een medeverkenner herkende. Maar ik ben ook een geboren scepticus, dus zijn passie voor het onderwerp cryptovaluta was niet genoeg om mij te overtuigen. Wat me uiteindelijk over de streep trok, was zijn wens om voorbij de hype van het moment te kijken, voorbij alle speculatie en mythes, en om samenhangende plannen en visies te schetsen voor ‘internetgeld’ op de korte en lange termijn.
+
+Dat heeft niet alleen te maken met mijn gewoonte om altijd twaalf zetten vooruit te denken. Mijn motto is altijd geweest: denk groots en wees optimistisch, maar heb altijd een plan. De auteurs van dit boek hechten veel waarde aan context en planning. Ze beseffen dat dit fundament – als je de wereld wilt veranderen – nog belangrijker is dan flitsende technologie en mediahype. En welke verandering is nu groter dan het hervormen van de manier waarop de hele wereldeconomie met geld omgaat, van megabanken tot straatverkopers en van dissidenten tot presidenten?
+
+Tegenwoordig besteed ik veel van mijn tijd aan nadenken en schrijven over het snijvlak van recht en technologie. Denk bijvoorbeeld aan de vrijheid van meningsuiting in het digitale tijdperk, maar ook aan eigendom van gegevens, privacy en cyberbeveiliging. Zoals bijna elke nieuwe technologie in de loop van de geschiedenis heeft ook deze eindeloze mogelijkheden gecreëerd, inclusief nieuwe bedreigingen en vormen van misbruik.
+
+Cryptovaluta’s vormen hierop geen uitzondering, en daarom is het cruciaal om een breder begrip te krijgen van wat ze zijn, wat ze niet zijn en wat ze ooit zullen worden. Normaal gesproken spreken we met zekerheid over het verleden, met vertrouwen over het heden en met twijfel over de toekomst. Met bitcoin ligt dat echter heel anders. De oorsprong was bescheiden en de identiteit van de bedenker is nog altijd in nevelen gehuld. Het heden is het onderwerp van felle discussie, waarbij de meningen uiteenlopen van een vloek tot een zegen. Dat is een status die alleen is voorbehouden aan de meest invloedrijke krachten: denk maar aan de drukpers en het internet. Zoals ik vaak opmerk, ook als het gaat om artificiële intelligentie: onze technologie is agnostisch, ze is van zichzelf noch goed, noch slecht. Het gaat erom hoe we haar gebruiken.
+
+Maar over de toekomst van bitcoin ben ik rotsvast overtuigd. Het *ís* de toekomst, een toekomst waarin we zullen terugkijken op onze huidige bankbiljetten, munten en de standaarden van centrale banken, zoals we vandaag naar zeeschelpen kijken. Ik weet niet zeker of ik lang genoeg zal leven om het mee te maken, hoewel ik dat natuurlijk hoop, want dat zou aantonen dat ook op het vlak van persoonlijke vrijheid en maatschappelijke verandering veel positieve ontwikkelingen hebben plaatsgevonden. Cryptovaluta’s vormen niet alleen de voorhoede van de technologie, maar ook op het gebied van mensenrechten en de verhoudingen tussen overheid, bedrijfsleven en individuen. Daarom is het succes ervan een belangrijke graadmeter voor de menselijke vooruitgang.
+
+Ik dank de auteurs dat ze mijn pad op deze hobbelige en spannende weg hebben verlicht, en ik ben ervan overtuigd dat ook u als lezer van deze reis zult genieten. Veel leesplezier.
+
+\begin{flushright}
+
+\bfseries{Garri Kasparov} \\
+
+Voorzitter \emph{Human Rights Foundation} \\
+
+Voorzitter \emph{Renew Democracy Initiative}\\
+
+13de wereldkampioen schaken\\
+
+New York City
+
+\end{flushright}

@@ -1,0 +1,91 @@
+{
+  "runs": [
+    {
+      "timestamp": "2025-09-25T11:46:24.874647",
+      "input_file": "CH11.md",
+      "input_line_count": 107,
+      "input_file_tokens": 3887,
+      "output_file": "CH11_20250925_1146_gemini-2_5-pro.md",
+      "output_line_count": 110,
+      "output_file_tokens": 3803,
+      "batch_size": 5,
+      "language": "english",
+      "model": "gemini-2.5-pro",
+      "context_flag": false,
+      "single_translate": true,
+      "api_calls": 11,
+      "reasoning_effort": "medium",
+      "cumulative_log_info": {
+        "input_uncached_tokens": 245008,
+        "input_system_tokens": 482086,
+        "input_user_tokens": 247220,
+        "input_intermediate_tokens": 0,
+        "input_total_tokens": 729306,
+        "output_prompt_tokens": 0,
+        "output_completion_tokens": 244923,
+        "output_total_tokens": 244923,
+        "cost": 1.83356125
+      },
+      "prompt_filename": "en-copy-edit.prompt.md",
+      "full_system_message": "As a professional editor, strictly follow these rules:\n1. **Formatting & Structure**\n* **Do not alte..."
+    },
+    {
+      "timestamp": "2025-09-25T11:46:37.480833",
+      "input_file": "CH08.md",
+      "input_line_count": 187,
+      "input_file_tokens": 12786,
+      "output_file": "CH08_20250925_1146_gemini-2_5-pro.md",
+      "output_line_count": 187,
+      "output_file_tokens": 7816,
+      "batch_size": 5,
+      "language": "english",
+      "model": "gemini-2.5-pro",
+      "context_flag": false,
+      "single_translate": true,
+      "api_calls": 19,
+      "reasoning_effort": "medium",
+      "cumulative_log_info": {
+        "input_uncached_tokens": 20673,
+        "input_system_tokens": 19000,
+        "input_user_tokens": 27228,
+        "input_intermediate_tokens": 0,
+        "input_total_tokens": 46228,
+        "output_prompt_tokens": 0,
+        "output_completion_tokens": 17685,
+        "output_total_tokens": 17685,
+        "cost": 0.13023812499999998
+      },
+      "prompt_filename": "en-translation.prompt.md",
+      "full_system_message": "As a professional translator and editor, you act as a cultural mediator between source text and targ..."
+    },
+    {
+      "timestamp": "2025-09-25T12:10:53.048436",
+      "input_file": "CH08_EN.md",
+      "input_line_count": 187,
+      "input_file_tokens": 7816,
+      "output_file": "CH08_EN_20250925_1210_gemini-2_5-pro.md",
+      "output_line_count": 187,
+      "output_file_tokens": 7495,
+      "batch_size": 5,
+      "language": "english",
+      "model": "gemini-2.5-pro",
+      "context_flag": false,
+      "single_translate": true,
+      "api_calls": 19,
+      "reasoning_effort": "medium",
+      "cumulative_log_info": {
+        "input_uncached_tokens": 424532,
+        "input_system_tokens": 832694,
+        "input_user_tokens": 428349,
+        "input_intermediate_tokens": 0,
+        "input_total_tokens": 1261043,
+        "output_prompt_tokens": 0,
+        "output_completion_tokens": 424221,
+        "output_total_tokens": 424221,
+        "cost": 3.174589375
+      },
+      "prompt_filename": "en-copy-edit.prompt.md",
+      "full_system_message": "As a professional editor, strictly follow these rules:\n1. **Formatting & Structure**\n* **Do not alte..."
+    }
+  ]
+}

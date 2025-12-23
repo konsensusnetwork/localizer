@@ -1,0 +1,221 @@
+# De oorsprong van geld
+
+Is bitcoin geld? En andere cryptovaluta's? Voordat we deze fundamentele vragen beantwoorden, moeten we duidelijkheid krijgen over wat geld precies is. Daarom bestuderen we in dit hoofdstuk voorbeelden van de zeer diverse soorten geld die de mensheid heeft uitgevonden. In het proces leren we over de eigenschappen ervan en ook in veel gevallen waarom een valuta uiteindelijk faalde.
+
+De meeste mensen hebben geld verdiend, besteed en gespaard sinds ze oud genoeg waren voor de tandenfee en een spaarpotje, en in een bepaalde vorm heeft het deel uitgemaakt van elke menselijke beschaving van voor we metaal bewerkten. Veel mensen lijken een vaag idee te hebben over de oorsprong van geld---een verbeelde, onduidelijke prehistorie waarin een primitieve ruilhandel\index{Ruilhandel} evolueerde tot een rudimentaire munteenheid om de waarde van een kip en een paar schoenen te mediëren. Het is een intuïtieve visie die wordt gepromoot (zonder bewijs) door de anders vrij strikte Adam Smith in zijn befaamde *The Wealth of Nations*\index{Wealth of Nations, The}.
+
+In feite, terwijl alles van slakkenhuizen tot sigaretten ooit een keer als ruilmiddel werd gebruikt, is er maar weinig etnografisch bewijs dat een ruilhandelconomie ooit heeft bestaan en veel minder nog dat die evolueerde tot een muntgebaseerde economie.[^6] Geld lijkt eerder vanaf het begin al een abstractie te zijn geweest en de geschiedenis ervan zit vol verrassingen.
+
+## Goederengeld
+
+Misschien wel de minst abstracte vorm van valuta, goederengeld, is zelf nuttig en heeft een intrinsieke waarde. In tegenstelling tot ruilhandel, waarbij goederen tegen andere goederen worden verhandeld, is goederengeld een algemeen aanvaard goed dat een aanvullende functie vervult als ruilmiddel.[^7] Albert zou een tafel kunnen ruilen voor een koe en een koe voor een nieuw paar laarzen, maar als de schoenmaker geen behoefte heeft aan rundvlees, blijft Albert zonder schoenen achter. Indien, daarentegen, koeien ook als valuta worden gebruikt, zou de schoenmaker Bessie accepteren in de overtuiging dat hij het nodige hout zal kunnen kopen, aangezien iedereen koeien als betaling aanvaardt.
+
+### Kaurischelpen\index{Kaurischelpen}
+
+Misschien wel de oudste---en zeker een van de langstbestaande---valutavorm, de kleine ovaalvormige schelpen van een soort zeeslak (*Cypraea moneta\index{Cypraea moneta}*), wordt zo sterk geassocieerd met geld en handel in China\index{China} dat het evocatieve \chinesefont{貝} kaurisymbool deel uitmaakt van de geschreven vorm van veel Chinese woorden met commerciële en financiële implicaties, zoals welvaart (\chinesefont{財}) en rekening (\chinesefont{賬}).[^8] Gebruikt sinds de vierde eeuw v.Chr. tot in de twintigste eeuw in Noord-Amerika, Afrika, Azië en Oceanië, dankt de kauri zijn lange levensduur en breed gebruik aan enkele belangrijke kenmerken. Naast de functie die ze deelt met goud en zilver als persoonlijke versiering, is de kaurischelp klein en licht, wat het gemakkelijk maakt ze te hanteren en te vervoeren. De organische complexiteit maakt het moeilijk om te vervalsen, terwijl de uniformiteit van grootte het mogelijk maakt om hoeveelheden te beoordelen door gewicht, wat tijdrovend werk bespaart om alles stuk voor stuk te tellen.
+
+![Kaurischelpen, waarschijnlijk de oudste valutavorm](/figures/Fig1-1.jpg){#Fig-1-1 width=100%}
+
+### Rai-stenen\index{Rai-stenen}
+
+Als een fascinerend contrast met gemakkelijk deelbaar, draagbaar schelpgeld, kan de stenen valuta van de Yap-eilanden tot wel vier ton wegen. Gemaakt van kalksteen, die daar niet inheems is, werden rai-stenen met de hand uitgehouwen tot afgeplatte schijven of donutvormen door enorme investeringen van tijd en arbeid. De stenen werden gewonnen en gevormd op Palau\index{Palau (eiland)}, een eiland op 450 kilometer (280 mijl) afstand, en met kano's vervoerd met aanzienlijk risico voor leven en kalksteen.
+
+In feite werd de waarde van een individuele steen verhoogd door zowel moeilijkheid als gevaar. Een steen van dezelfde grootte, vorm en gewicht was meer waard als iemand stierf op de reis van Palau naar Yap. De sociale status van de mensen die betrokken waren bij de creatie van een steen en het verhaal van de gestaag toenemende geschiedenis droegen ook bij aan (of verminderden) de waarde ervan. Ze werden zelden gebruikt in financiële transacties en waren daardoor minder een valuta dan een fysieke manifestatie van waarde.
+
+Terwijl ze in diameter varieerden van een D-batterij tot groter dan de gemiddelde olifant (en even zwaar), werd hun eigenaarschap niet vastgesteld door bezit (ze veranderden zelden van fysieke locatie), maar door uitvaardiging. Als gevolg hiervan was echte diefstal onmogelijk. Een nietsnut zou bijvoorbeeld de steen van Stan kunnen stelen, maar als de overdracht van Stan naar de potentiële dief niet luidkeels aan iedereen was verkondigd, en de verandering het eigenaarschap geen officieel onderdeel was van de mondelinge geschiedenis van het eiland, deed het fysieke bezit van zijn geld niets af aan de rijkdom van Stan noch vergrootte het die van de dief. Dit abstractieniveau werd zo geavanceerd dat, nadat het bezit ervan was geregistreerd, één enorme rai-steen bleef worden behandeld als een bruikbare valuta nadat hij naar de oceaanbodem was gezonken op zijn reis van Palau.[^9]
+
+![Rai-stenen, gewaardeerd voor hun gewicht en geschiedenis](/figures/Fig1-2.jpg){#Fig-1-2 width=100%}
+
+Het is onduidelijk wanneer het houwen van rai-stenen is begonnen, maar op een gegeven moment was tot 10% van de volwassen mannelijke bevolking van de Yap-eilanden betrokken bij het houwen en vervoeren ervan. Dit werk, en eigenlijk de hele economie van de cultuur, veranderde in 1871 toen David Dean O'Keefe schipbreuk leed op het eiland en ijzeren gereedschappen en grote zeilschepen introduceerde, wat de snelheid waarmee de rai-stenen konden worden gehouwen en vervoerd aanzienlijk verhoogde. Deze toestroom van met ijzer bewerkte en gemakkelijk te vervoeren stenen leidde tot zulke agressieve inflatie dat de eilandbewoners ze minder gingen waarderen, terwijl oudere stenen, nieuwe stenen op de oude manier gehouwen, of stenen verkregen met grote moeite en gevaar een relatieve waardestijging doormaakten.[^10]
+
+### Romeinse denarii\index{Romeinse denarius}
+
+Een uitstekend vroeg voorbeeld van een door de overheid gecontroleerde valuta, de denarius, was de belangrijkste zilveren munt van het Romeinse Rijk gedurende de ongeveer 450 jaar tussen 211 v.Chr. en 240 n.Chr. In 15 v.Chr. vaardigde keizer Augustus\index{Keizer Augustus} een decreet uit waarin de denarius gestandaardiseerd werd.[^11] Hij stelde het gewicht ervan vast op 3,9 gram en verplichtte een munt met een zilvergehalte van 95 tot 98%.[^12] Deze formalisering verving het gebruik van munten van verschillende groottes en samenstellingen waarvan de waarde uitsluitend bepaald werd door het gewicht.
+
+:::{.infobox}
+##### Libra: antiek en modern
+
+Interessant in verband met de in omvang verschillende koperen munten die wijdverbreid in gebruik waren vóór de keizerlijke invoering van de denarius, is dat de waarde werd bepaald op basis van hun gewicht afgemeten ten opzichte van het Romeinse pond. Dit woog 325 gram, ongeveer hetzelfde gewicht als het vroege Britse pond, en werd libra genoemd, de oorspronkelijke naam van de door Facebook\index{Facebook} geplande digitale valuta.
+:::
+
+Minder dan honderd jaar nadat de denarius officieel gestandaardiseerd was, begon de waarde ervan te dalen, en de beruchte Nero\index{Nero} was de eerste keizer die de ontwaarding ervan overzag.[^13] In 64 n.Chr. verlaagde hij het gewicht van 3,9 naar 3,41 gram en verminderde het zilvergehalte tot 93,5%. Hiermee legde hij een patroon vast dat zich tijdens het Romeinse Rijk meerdere malen zou herhalen, dat veel latere valuta's zou teisteren en (naast andere kwesties) in de vroege eenentwintigste eeuw het vuur aanwakkerde om een betere te ontwikkelen. Afbeelding 1.3 toont hoe het gewicht en zilvergehalte van keizer tot keizer werden verlaagd, totdat tweehonderd jaar later de denarius een koperen munt was met zo een dun laagje zilververf dat het er kort na de muntslag afsleet.
+
+![De daling van het zilvergehalte van munten in het Romeinse Rijk](/figures/Fig1-3.png){#Fig-1-3 width=100%}
+
+:::{.infobox}
+**Denarius tot dinar:** de Arabische dinar is genoemd naar de denarius en wordt nog in verschillende landen gebruikt.
+:::
+
+In die 200 jaar verloor de denarius bijna zijn gehele koopkracht en verdween uiteindelijk ondanks verschillende pogingen om er nieuw leven in te blazen. Die devaluatie gebeurde sneller in de landelijke gebieden dan in Rome, waar mensen de oudere, zwaardere munten met een hoger zilvergehalte voor zichzelf hielden, terwijl ze de mindere munten in omloop hielden als een vroeg voorbeeld van de wet van Gresham.
+
+:::{.infobox}
+**De wet van Gresham\index{Wet van Gresham}:** het monetaire principe van "slecht geld drijft goed geld uit circulatie", wat steeds gebeurt wanneer nominaal equivalente representaties van waarde worden verstoord door devaluatie, waardoor mensen de waardevollere munt bijhouden en de minder waardevolle laten circuleren.
+:::
+
+### Sigarettengeld
+
+Sigarettengeld (*Zigarettenwährung*), de laatste van de op grondstoffen gebaseerde valuta's die we zullen verkennen, is vooral interessant omdat het de diepgaande bruikbaarheid van geld illustreert. In extreme situaties, zoals in krijgsgevangenenkampen in de Tweede Wereldoorlog of gevangenissen waar geen centrale autoriteit is om een monetair systeem te organiseren, lijkt er spontaan een te ontstaan. R.A. Radford beschreef in 1945 sigaretten als een volwaardige valuta, met een ad-hocwinkel die voedsel, toiletartikelen en dergelijke verkocht voor "een vaste prijs in [Rode Kruis]-sigaretten".[^14] Zelfs in gemeenschappen waar weinig anders is om zich te verenigen, is geld gewoon zo nuttig dat het onafhankelijk evolueert.
+
+## Representatief geld
+
+Indien sigaretten zo groot of zo fragiel geweest zouden zijn dat ze moeilijk werden om mee te nemen, hadden ze in plaats daarvan door enkele gerespecteerde leden van de gemeenschap kunnen worden opgeslagen, zoals tabak in koloniaal Amerika. Daar had een pond tabak een vastgestelde koopkracht en werden magazijnbonnen gebruikt als een primitieve vorm van representatief geld. Deze mensen zouden dan bonnen hebben kunnen uitgeven die gemarkeerd waren met het aantal sigaretten dat zij voor een individu vasthielden, en die biljetten, aanvaard in plaats van sigaretten, zouden op zich een valuta kunnen worden.[^15] Aangezien de bonnen de sigaretten voorstellen, zou dit een voorbeeld geweest zijn van representatief geld. Representatief geld is waardevol omdat het zowel de plaats inneemt van, als kan worden uitgewisseld voor iets van intrinsieke waarde, ondanks dat het zelf weinig of geen waarde heeft.
+
+:::{.infobox}
+**Representatieve valuta:** geld dat een materiaal (meestal papier) gebruikt om een vorm van goederengeld (meestal munten/edelmetalen) te representeren.
+:::
+
+In China dateert het gebruik van representatief geld vanaf 119 v.Chr., wanneer vierkante stukken felgekleurd wit hertenleer werden uitgegeven door de overheid om bepaalde hoeveelheden koperen munten te representeren.[^16] In het Westen kunnen we de geschiedenis van representatief geld oppikken waar we geografisch waren gebleven---in Italië\index{Italië}. Daar ontwikkelde zich vanaf de veertiende eeuw en gedurende de vijftiende eeuw een vroege vorm van representatieve valuta uit wat functioneel gezien obligaties van de familie Medici\index{Medici (familie)} waren. Iemand die goud of zilver bij de Medici achterliet, kreeg een ontvangstbewijs en omdat mensen de familie vertrouwden, vertrouwden ze die ontvangstbewijzen in die mate dat ze een levensvatbare valuta werden. Dergelijke representatieve valuta's waren tot voor kort de dominante vorm van geld. De Amerikaanse dollar was bijvoorbeeld representatief voor het goud waarvoor het nominaal kon worden ingewisseld tot de jaren 1970.
+
+### Papiergeld\index{Papiergeld}
+
+Naast het eerste representatieve geld, claimt China de creatie van de eerste door de overheid gedekte papieren valuta, de *jiaozi\index{Jiaozi}*.[^17] Ontwikkeld als reactie op het probleem van het meedragen van steeds meer ijzeren munten\index{Ijzeren munten} over steeds langere afstanden naarmate de Song-dynastie\index{Song-dynastie} (960-1279) zich uitbreidde, was de jiaozi ook de eerste papieren valuta die de inflatie-en-hervormingscyclus doormaakte die zoveel van zijn opvolgers trof.
+
+De alomtegenwoordigheid van papiergeld is grotendeels te danken aan de verplaatsbaarheid ervan. Papiergeld is eenvoudigweg handig. Het weegt minder dan munten en neemt minder ruimte in beslag. Eén miljoen Amerikaanse dollars wegen slechts ongeveer tien kilo en kunnen, zoals we allemaal weten uit films, in één grote aktetas worden meegedragen. Bovendien kan een papieren biljet, omdat het een abstractie is, zowel zeer grote als zeer kleine waarden vertegenwoordigen, afhankelijk van de getallen die erop gedrukt zijn.[^18] Deze voordelen worden enigszins tenietgedaan door hoe gemakkelijk papiergeld te vervalsen is. Een kaurischelp is een kaurischelp en een pond zilver is (of was) een Britse pond sterling waard, maar een stuk papier is niets waard als het geen echt biljet is.
+
+### Het Britse pond\index{Britse pond}
+
+De kaurischelp mag dan de oudste valutavorm zijn, het Britse pond is de oudste die nog continu in gebruik is sinds de oprichting ervan. Daterend uit de achtste eeuw, dankt het pond zijn naam aan het gewicht in zilver dat het oorspronkelijk waard was. Destijds was een pond zilver gelijk aan 240 zilveren pennies. Omgezet naar een bimetallieke goud/zilverstandaard door Sir Isaac Newton\index{Newton, Sir Isaac}, verloor het pond uiteindelijk zijn verband met zilver, behalve wat de benaming betreft.
+
+In de negentiende eeuw stond het pond voorop als wereldvaluta en bleef tijdens die periode relatief stabiel, om uiteindelijk 99% van zijn koopkracht te verliezen tijdens de twintigste eeuw. Het pond ontkoppelde zich van de goudstandaard aan het begin van de Eerste Wereldoorlog\index{Eerste Wereldoorlog}, werd kortstondig opnieuw gekoppeld in 1925, maar werd terug ontkoppeld in 1931.[^19] Aan het einde van de Tweede Wereldoorlog\index{Tweede Wereldoorlog}, onder het systeem van Bretton Woods\index{Bretton Woods}, werd het Britse pond samen met vele andere wereldvaluta's gekoppeld aan de Amerikaanse dollar, die destijds nog steeds gedekt werd door goud.
+
+### Drie nieuwe problemen
+
+Vanwege hun vele voordelen vervingen representatieve valuta's op de meeste plaatsen al snel het goederengeld. Maar de aard van representatief geld bracht twee belangrijke nieuwe problemen met zich mee: het dubbele-uitgaveprobleem en fractioneel bankieren, wat op zijn beurt tot een bijkomend probleem leidde.
+
+#### Het dubbele-uitgaveprobleem\index{Dubbele-uitgaveprobleem}
+
+Vanaf transacties werden uitgevoerd door iets uit te wisselen dat rijkdom vertegenwoordigde die elders was opgeslagen, werd het mogelijk dat mensen die opgeslagen waarde meer dan één keer "uitgaven". Het meest voor de hand liggende voorbeeld is chequefraude, waarbij iemand opzettelijk een cheque uitschrijft van een rekening waar niet genoeg geld op staat om deze te dekken.
+
+In een vereenvoudigd voorbeeld, als Alice honderd dollar op haar zichtrekening heeft, kan ze die twee keer uitgeven door honderddollarcheques te schrijven aan twee verschillende handelaars, Bob en Charlie. Aangezien er slechts genoeg geld op haar rekening staat om één van deze cheques te honoreren, krijgt de handelaar die Alice's cheque als eerste int haar honderd dollar, terwijl de andere handelaar onbetaald blijft.
+
+#### Fractioneel bankieren\index{Fractioneel bankieren}
+
+Een legende, die misschien niet authentiek maar toch nuttig is, duidt goudsmeden aan als de oorspronkelijke bedenkers van fractioneel bankieren. Volgens dit verhaal realiseerde een sluwe goudsmid, die ontvangstbewijzen uitdeelde voor goud dat hij voor andere handelaars in bewaring hield, dat hij zijn inkomen kon verhogen door leningen te verstrekken door het opgeslagen goud uit te lenen aan nog andere mensen. Omdat hij die leningen verstrekte (en er rente op inde) door extra ontvangstbewijzen voor goud uit te geven in plaats van het daadwerkelijke goud, kon hij effectief hetzelfde ons goud uitlenen aan één of meer personen. Slim als hij was, hield hij een deel van het goud van de handelaars in reserve om uit te betalen mocht iemand een ontvangstbewijs komen inwisselen. Maar in zeer reële zin creëerde hij iets uit het niets---een nieuw soort geld.
+
+Het nieuwe probleem dat de goudsmid had gecreëerd, en dat geen probleem zou zijn geweest met goederengeld, was dat er nu meer ontvangstbewijzen voor goud in omloop waren dan er goud bestond. Als iedereen die de goudsmid vertrouwde om hun goud voor hen op te slaan het op dezelfde dag probeerde op te halen, zou er niet genoeg zijn om de stortingsbewijzen---het geld---die hij had uitgegeven, te dekken, tenzij hij alle leningen die hij had verstrekt kon terugvorderen.
+
+Dezelfde processen worden vandaag door banken gebruikt. Vandaag gebruiken banken een gelijkaardige techniek die ook de waarde in circulatie vermenigvuldigt ten opzichte van de initiële storting.[^20] Banken zijn verplicht een reserve aan te houden om te voldoen aan de opnameverzoeken van klanten en mogen de rest van de ontvangen deposito's uitlenen. Deze reserve is doorgaans een fractie (de zogenaamd "fractionele reserve") van de totale stortingen en in het volgende voorbeeld voor de eenvoud 10% (het "fractioneel reservepercentage").
+
+Stel dat Alice op haar spaarrekening bij Big Bank US$ 100 stortte. Vervolgens leende Big Bank US$ 90 aan Bob. Alice en Bob hebben nu samen toegang tot US$ 190. Big Bank heeft effectief US$ 90 uit het niets gecreëerd. Dit proces wordt geïllustreerd in Afbeelding 1.4.
+
+![Fractioneel bankieren](/figures/Fig1-4.png){#Fig-1-4 width=100%}
+
+Als Bob vervolgens voor een waarde van US$ 90 aan goederen van Carol kocht en Carol op haar beurt die US$ 90 op haar spaarrekening bij Big Bank stortte, dan zou Big Bank US$ 81 kunnen uitlenen aan Dave. Dit proces zou kunnen doorgaan en met een fractioneel reservepercentage van 10% zou Big Bank op deze manier tot US$ 900 kunnen creëren. Deze praktijk van fractioneel bankieren is hoe commerciële banken vandaag de dag iets uit het niets creëren---geld dat uit de lucht komt vallen.[^21]
+
+De Amerikaanse centrale bank maakt onderscheid tussen verschillende soorten geld, waarvan de volgende twee de belangrijkste zijn:
+
+- M0---fysieke valuta, d.w.z. bankbiljetten en munten
+
+- M1---geld algemeen gebruikt voor betalingen, bestaande uit: M0 plus bankdeposito's en cheques
+
+M1 is eigenlijk de valuta in omloop, inclusief het geld dat "gecreëerd" wordt door commerciële banken.
+
+:::{.infobox}
+**Fractioneel bankieren:** een banksysteem waarbij banken slechts een fractie van de activa van depositohouders in reserve houden en de rest uitlenen, waardoor ze in feite geld creëren.
+:::
+
+Omdat banken hun nieuwgecreëerde dollarbiljetten uitgeven aan oude dollartarieven, transfereert fractioneel bankieren rijkdom naar mensen die het dichtst bij de geldvoorraad zitten en weg van degenen die er verder vanaf staan---van Bob en Carol naar de eigenaars van Big Bank. Dit is een andere toepassing van de wet van Gresham, waarbij de eigenaars het nieuwe "slechte" geld zullen uitgeven voordat de inflatie die het creëerde de waarde vermindert. Voor sommigen maakt dit het geld gecreëerd door fractioneel bankieren minder dan volledig legitiem.
+
+De indruk kan bestaan dat op deze manier geld uit het niets wordt gecreëerd. Maar telkens wanneer geld door dit proces wordt gecreëerd, ontstaat er ook een overeenkomstige schuld, zodat de nettobalans nul is, aangezien het nieuwe gecreëerde geld wordt gecompenseerd door de schuld.
+
+Desalniettemin is bankieren met fractionele reserve vandaag de dag verreweg het dominante systeem, terwijl bankieren met volledige reserve, waarbij banken altijd verplicht zijn om 100% van de activa van hun depositohouders beschikbaar te houden, buitengewoon zeldzaam is. Het is sterk in het belang van banken om dit zo te houden. Elke dollar die in reserve wordt gehouden, is er een minder die een bank kan uitlenen en hoe meer een bank uitleent, hoe meer ze verdient.
+
+#### Bankruns
+
+De overgrote meerderheid van banken maakt gebruik van fractioneel bankieren. Als verslechterende economische of politieke omstandigheden een aanzienlijk percentage van depositohouders aanzetten om hun geld op te nemen, kan het onvermogen van een bank om hun depositohouders te betalen een run op de bank starten. Dit gebeurde in Cyprus\index{Cyprus} en Griekenland\index{Griekenland} tijdens de Europese schuldencrisis, waar mensen dagenlang in lange rijen stonden om een deel van het geld dat ze hadden gestort terug te krijgen. Uiteraard kan een bank met grotere reserves meer klanten tevredenstellen, en er bestaan wetten die in theorie depositohouders beschermen. Niets hiervan verandert echter het eenvoudige feit dat de praktijk van fractioneel bankieren betekent dat banken nooit in staat zijn om tegelijkertijd al hun klantendeposito's te honoreren.
+
+:::{.infobox}
+Een **bankrun** of (**run op de bank**) gebeurt wanneer veel bankklanten proberen hun deposito's op te nemen omdat ze zich zorgen maken over de solvabiliteit van de bank. Dit kan nog meer mensen ertoe aanzetten om hun geld op te nemen, waardoor de kans op wanbetaling toeneemt, en kan een kettingreactie veroorzaken waarbij klanten angstiger worden en meer opnames doen totdat het systeem instort.
+:::
+
+## Fiatgeld
+
+Fiatgeld\index{Fiatgeld}, dat zijn naam ontleent aan het Latijnse woord *fiat* wat "laat het gedaan worden" betekent, is één abstractieniveau verder verwijderd van iets met intrinsieke waarde. Bij goederengeld is de valuta zelf een grondstof en waardevol op zich. Bij representatief geld vertegenwoordigt de valuta de grondstof en wordt erdoor gedekt. Het is waardevol omdat het kan worden ingewisseld voor de grondstof die het vertegenwoordigt. Fiatgeld heeft geen relatie met enige grondstof en wordt nergens door gedekt. Het wordt gecreëerd en wettig betaalmiddel gemaakt door een overheidsdecreet (fiat) en ontleent zijn waarde aan dat decreet.[^22]
+
+In 1971\index{1971 (jaar)}, tegen het einde van de Vietnamoorlog\index{Vietnamoorlog}, ontkoppelde Richard Nixon\index{Nixon, Richard} de Amerikaanse dollar van zijn gouddekking, waardoor het een fiatvaluta werd. Andere landen volgden dit voorbeeld, waarna ook de Zwitsers, als laatste significante goudstandaardsysteem, in 1999 fiat omarmden. Tegenwoordig wordt geen enkele staatsvaluta meer door iets anders gedekt dan de overheid die deze heeft uitgegeven.
+
+Eenmaal ontkoppeld, steeg de relatieve waarde van goud ten opzichte van de Amerikaanse dollar dramatisch. In 1971 was goud US$ 35 per ons waard. Slechts twee jaar later was dit gestegen naar US$ 120. Vandaag wordt een ounce goud verkocht voor US$ 3.000, wat een 80-voudige devaluatie van de dollar ten opzichte van goud betekent in de afgelopen vijftig jaar.[^23]
+
+## Geld en de staat
+
+Historisch hebben natiestaten de exclusieve rechten op het uitgeven van valuta's opgeëist. Vanaf 118 v.Chr., toen de Chinezen voor het eerst lederen bankbiljetten uitgaven, doorheen de denarius en het Britse pond tot heden, stonden de meeste conventionele valuta's onder direct regeringstoezicht. Eigenlijk hangt het idee van een overheid bijna af van de mogelijkheid om een monopolie over twee dingen op te eisen en te verdedigen: geld en geweld. Wanneer een staat de valuta controleert, kan die geld creëren en vernietigen naargelang het uitkomt of om het volk te bedaren. Omdat de belangen van de staat niet noodzakelijk gelijk zijn aan die van het volk, handelt de overheid niet altijd in het voordeel van het volk. Om deze reden verliest geld onder staatscontrole in de loop der jaren vaak zijn waarde, minstens al sinds de regering van Nero.
+
+### Centrale banken
+
+Centrale banken ontstonden als een soort gilde of beroepsvereniging om de samenwerking te bevorderen tussen meerdere particuliere banken met verschillende valuta's en om wat bescherming voor of spreiding van schade te bieden wanneer individuele banken in problemen raakten. De Bank of England\index{Bank of England} werd in 1694 door het parlement opgericht als een particuliere bank met bijzondere privileges (waaronder het alleenrecht om Britse ponden uit te geven in ruil voor het onmiddellijk uitlenen van een grote hoeveelheid geld aan de overheid). Het werd de eerste semi-overheidsinstantie die de verantwoordelijkheden van een centrale bank op zich nam, dienstdoend als 's lands kredietgever in nood die tijdens de financiële crisis\index{Financiële crisis (1866)} van 1866 aan financiële instellingen geld uitgeleende om een ineenstorting van het financiële systeem te voorkomen.
+
+Centrale banken zoals de Bank of England hebben enige controle over de kredietvoorraad en het geld dat particuliere banken creëren door de praktijk van fractioneel bankieren. Door het verlagen van de fractie aan activa die een bank in reserve moet houden, staan centrale banken indirect toe dat commerciële banken meer geld creëren.
+
+Wanneer bijvoorbeeld een centrale bank dit fractioneel reservepercentage verlaagt van 10% naar 5%, verdubbelt de totale potentiële hoeveelheid van de valuta in circulatie.[^24] De geldvoorraad verhogen leidt, indien alle andere factoren gelijkblijven, tot een waardevermindering van het al bestaande geld.[^25] Dit laat de centrale bank toe om een soort draaiknop te bedienen tussen het beschikbare geld voor banken om uit te lenen en de veiligheid van het geld dat zij hun depositohouders verschuldigd zijn. Wanneer de centrale autoriteiten denken dat er te veel krediet wordt gecreëerd---dat mensen te veel lenen of dat banken instabiel worden---kunnen ze dit reservepercentage verhogen, waardoor banken meer van hun activa moeten bijhouden, zodat minder krediet wordt geschapen en banken veiliger zijn. Centrale banken gebruiken echter voornamelijk rentevoeten (in plaats van het fractioneel reservepercentage) om invloed uit te oefenen op het macro-economische milieu.
+
+Dit Britse model van een door de staat beheerde centrale bank met een monopolie op de uitgifte van door de overheidsschuld gedekte fiatvaluta, en fungerend als de laatste reddende kredietgever voor de particuliere banken van het land, werd snel overgenomen door andere landen: de Federal Reserve\index{Federal Reserve} in de Verenigde Staten, de Europese Centrale Bank\index{Europese Centrale Bank} van de Eurozone, de Bank van Japan\index{Bank van Japan} en de Volksbank van China\index{Volksbank van China} in hun respectieve landen. Tegenwoordig hebben deze nationale centrale banken een eigen centrale bank, het Internationaal Monetair Fonds (IMF)\index{Internationaal Monetair Fonds (IMF)}, dat veel van dezelfde functies vervult. Het coördineert tussen nationale financiële systemen en treedt op wanneer een land en zijn centrale bank in moeilijkheden verkeren en externe hulp nodig hebben.
+
+### Privégeld
+
+Geld wordt niet per se door overheden uitgevaardigd. In de Verenigde Staten, bijvoorbeeld, legden tussen 1837 en 1866 de federale autoriteiten geen regels op voor wie het recht had om valuta's uit te vaardigen. Privéorganisaties---van individuele staten tot gemeenten, kerken, banken en spoorwegmaatschappijen---bedachten, drukten en circuleerden hun eigen geld met zo veel enthousiasme dat er tegen 1863 meer dan achtduizend verschillende valuta's in gebruik waren.[^26]
+
+Tegenwoordig wordt privégeld in de VS en EU wellicht het dichtst benaderd door de frequentflyerpunten van luchtvaartmaatschappijen, hoewel er technisch gezien geen reden is waarom een olie- en gasbedrijf zoals Exxon\index{Exxon} geen "Exxon-dollars" zou kunnen uitgeven. Sterker nog, indien die dollars ingewisseld zouden kunnen worden voor benzinetanks zoals vliegmijlen voor vliegtickets, zouden Exxon-dollars door iets tastbaarders gedekt worden dan de Amerikaanse dollar.
+
+Privégeld, wanneer legaal, brengt nog steeds uitdagingen met zich mee. Als het uitgevende bedrijf faalt of failliet gaat, kan de valuta een deel of al zijn waarde verliezen. Hoewel hetzelfde waar is voor geld gedekt door een overheid, hebben staten doorgaans een langere levensduur dan bedrijven. Als gevolg daarvan hebben we momenteel een zeer monolithisch, wereldwijd financieel systeem van centrale banken, fiatvaluta's en particuliere instellingen die slechts een klein percentage van de deposito's van hun investeerders in reserve houden. Tegenwoordig zijn er maar heel weinig andere opties, maar dat is niet altijd zo geweest.
+
+### Vrij bankieren\index{Vrij bankieren}
+
+Historisch gezien hebben verschillende landen economieën gehad die functioneerden zonder een centrale bank als laatste reddende kredietgever in geval van nood of monopolistische uitgever van valuta's. In achttiende- en negentiende-eeuws Schotland, bijvoorbeeld, verving een systeem van concurrerende banken de centrale bank. Grote banken gaven hun eigen biljetten uit en accepteerden die van elkaar. Als bankbiljetten van de ene bank werden gedeponeerd bij een andere bank, werden ze geaccepteerd door die bank en via een vereffeningsmechanisme teruggestuurd naar de oorspronkelijke bank. Op deze manier kon een bank geen overmatige hoeveelheid bankbiljetten uitgeven in de hoop dat ze zouden worden gedeponeerd bij andere banken die vervolgens het goud of zilver zouden dekken dat verschuldigd was aan de deposant. Deze praktijk stimuleerde voorzichtige besluitvorming en verminderde de kans dat één instelling de stabiliteit van een andere zou schaden. Een beleid dat onbeperkte aansprakelijkheid toewees aan aandeelhouders van de bank, bevorderde ook rentmeesterschap. Bankiers, niet de banken---de individuen en niet de instelling---garandeerden gezamenlijk maar persoonlijk alle schulden die hun bank aanging. Het is interessant om te bedenken hoe anders bankiers vandaag zouden handelen indien dat nog steeds het geval zou zijn.
+
+In feite, een systeem waarin financiële instellingen met elkaar concurreren, hun eigen bankbiljetten uitgeven op hun eigen voorwaarden en onderling zorgen voor systeembescherming zonder overheidsbemoeienis, heeft voorstanders, waaronder de Nobelprijswinnende econoom Friedrich Hayek\index{Hayek, Friedrich}.[^27] Hayek heeft betoogd dat een dergelijk systeem van vrij bankieren niet alleen banken, maar ook hun klanten zou bevrijden. Financiële instellingen zouden volgens hem minder vatbaar zijn voor politieke druk en gedreven worden door consumentenvraag om prijsstabiliteit te handhaven door een groter percentage van hun middelen in reserve te houden.
+
+Dit veronderstelt natuurlijk een staat die bereid is zijn monopolie op het uitgeven van geld af te staan, en is niet zonder enig risico. Tegenstanders van Hayek wijzen er snel op dat zonder een centrale bank als vangnet er niets zou zijn om te voorkomen dat een falende bank failliet gaat en al het vermogen van haar klanten meeneemt.
+
+## Samenvatting
+
+We interageren zodanig vaak met geld dat het iets kan worden waarvan we afhangen zonder te begrijpen wat het precies is en hoe het werkt. Het wordt gemakkelijk vergeten dat, terwijl geld altijd een abstractie was, het zo'n ongelooflijk nuttig iets is dat wanneer er in van die uitzonderlijke tijden één valuta instort, een andere spontaan lijkt op te staan om de plaats ervan in te nemen.
+
+Hoe verschillend schelpen en sigaretten, uitgehouwen stenen en Romeinse munten ook zijn, ze illustreren nog steeds allemaal de fundamenteel abstracte aard van geld. Hoewel deze representatieve voorbeelden van goederengeld allemaal enige intrinsieke waarde hadden los van hun gebruik als valuta, lieten ze elk slechts een vrij beperkt scala aan transactiemogelijkheden toe. Goederengeld moet fysiek aanwezig zijn om te worden uitgewisseld.
+
+Representatief geld loste dit probleem op terwijl het nieuwe problemen introduceerde---het dubbele-uitgaveprobleem en fractioneel bankieren, dat het risico inhoudt op bankruns. Fiatgeld en de opkomst van centrale banken, hoewel ze weinig deden om de problemen die representatieve valuta's introduceerden op te lossen, gaven de overheden die ze uitgeven en reguleren meer controle over de hoeveelheid geld en schuld die beschikbaar is.
+
+Doorheen zijn lange evolutie, van de kaurischelp tot de fiatvaluta's en centrale banken van vandaag, heeft geld er steeds anders uitgezien en zich steeds anders gedragen, maar het heeft veelal zelfde functies vervuld vanaf het begin ervan tot op de dag van vandaag. Om de relatieve sterke en zwakke punten van zo'n divers onderwerp te vergelijken en te overwegen hoe de volgende fase in de evolutie van geld verbeteringen kan aanbrengen ten opzichte van zijn geschiedenis, is het nuttig om de functies te articuleren die geld moet vervullen en een lijst van eigenschappen te creëren waarmee valuta's objectiever kunnen worden vergeleken. Zoals we later zullen zien, heeft bitcoin, de oorspronkelijke cryptovaluta, verschillende goed ontworpen eigenschappen die het tot een uitstekende vorm van geld zouden maken.
+
+[^6]: "Geen voorbeeld van een zuivere en eenvoudige ruileconomie is ooit beschreven, laat staan de opkomst van geld daaruit; alle beschikbare etnografie suggereert dat zoiets nooit heeft bestaan." Humphrey, 1985.
+
+[^7]: Zie Hoofdstuk 2.1.i.
+
+[^8]: Yang, 2019, p. 140.
+
+[^9]: Goldstein & Kestenbaum, 2010.
+
+[^10]: Bryan, 2004.
+
+[^11]: Ter referentie, als maatstaf voor de koopkracht, ten tijde van Augustus verdiende een soldaat in het Romeinse leger tweehonderd tot driehonderd denarii per jaar (hoewel na aftrek van zijn voedsel, uniform, begrafenis- en andere kosten zijn besteedbaar inkomen tussen de vijfenveertig en zestig denarii per jaar zou zijn geweest).
+
+[^12]: Pense, 1992.
+
+[^13]: Ontwaarding (devaluatie) is het verminderen van het edelmetaalgehalte van een munt, bijvoorbeeld door het gewicht of de zuiverheid ervan te verlagen.
+
+[^14]: Radford, 1945.
+
+[^15]: In werkelijkheid is dit erg dicht bij wat er effectief gebeurde in koloniaal Amerika, waar een pond tabak een vast bedrag aan koopkracht bezat en waar ontvangstbewijzen van opslagplaatsen voor tabak als een rudimentaire vorm van representatief geld werden gebruikt.
+
+[^16]: Vissering, 1877, pp. 38--39.
+
+[^17]: Von Glahn, 2006; Ulrich, 2016.
+
+[^18]: Tot voor kort produceerde Singapore een biljet van 10.000 Singaporese dollar ter waarde van meer dan US$ 7.000 en de Bank of England heeft biljetten van 1 miljoen en zelfs 100 miljoen pond gedrukt (maar niet in omloop gebracht).
+
+[^19]: OʼNeill, 2024.
+
+[^20]: Met geen implicatie van bedrieglijke activiteiten of bedoelingen.
+
+[^21]: De formule voor het maximale eindtotaal aan geld dat kan ontstaan door dit proces is (initiële storting)/(fractioneel reservepercentage). Bijvoorbeeld, een initële storting van US$ 100 zou kunnen leiden tot een totaalsom van US$ 1.000 als het fractioneel reserveperventage 10% bedraagt. Dit betekent dat naast de bestaande US$ 100 nog US$ 900 wordt gecreëerd door commerciële banken. Als het reservepercentage 5% is, kan de totale geldhoeveelheid tot US$ 2.000 bedragen.
+
+[^22]: Mankiw, 2015, pp. 219--20.
+
+[^23]: De huidige goudprijs kan gevonden worden op <https://goldprice.org/gold-price.html>.
+
+[^24]: Dit kan worden bepaald door de formule (geldvermenigvuldiger) = 1/(reserverevereiste).
+
+[^25]: I.e. de snelheid van geld, wat een maatstaf is voor hoe vaak geld binnen een bepaalde periode wordt overgedragen tussen partijen in een economie.
+
+[^26]: Eveleth, 2012.
+
+[^27]: Hayek, 1976.

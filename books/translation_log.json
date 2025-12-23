@@ -86,6 +86,35 @@
       },
       "prompt_filename": "es-translation.prompt.md",
       "full_system_message": "As a professional translator and editor, you act as a cultural mediator between source text and targ..."
+    },
+    {
+      "timestamp": "2025-10-08T13:04:54.207279",
+      "input_file": "TOMS_EN.md",
+      "input_line_count": 0,
+      "input_file_tokens": 0,
+      "output_file": "TOMS_EN_20251008_1304_gemini-2_5-pro.md",
+      "output_line_count": 2906,
+      "output_file_tokens": 121193,
+      "batch_size": 5,
+      "language": "finnish",
+      "model": "gemini-2.5-pro",
+      "context_flag": false,
+      "single_translate": true,
+      "api_calls": 301,
+      "reasoning_effort": "medium",
+      "cumulative_log_info": {
+        "input_uncached_tokens": 15307202,
+        "input_system_tokens": 30472638,
+        "input_user_tokens": 15414952,
+        "input_intermediate_tokens": 0,
+        "input_total_tokens": 45887590,
+        "output_prompt_tokens": 0,
+        "output_completion_tokens": 15341904,
+        "output_total_tokens": 15341904,
+        "cost": 114.95626500000006
+      },
+      "prompt_filename": "fi-translation-3.prompt.md",
+      "full_system_message": "As a professional {language} translator and editor, you act as a cultural mediator between source te..."
     }
   ]
 }

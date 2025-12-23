@@ -783,6 +783,35 @@
       "reasoning_effort": "medium",
       "prompt_filename": "nl-translation-tsi.prompt.md",
       "full_system_message": "As a professional translator and editor, you act as a cultural mediator between source text and targ..."
+    },
+    {
+      "timestamp": "2025-10-20T11:11:38.077891",
+      "input_file": "Z0.md",
+      "input_line_count": 67,
+      "input_file_tokens": 4493,
+      "output_file": "Z0_20251020_1111_gemini-2_5-pro.md",
+      "output_line_count": 64,
+      "output_file_tokens": 4545,
+      "batch_size": 5,
+      "language": "nederlands",
+      "model": "gemini-2.5-pro",
+      "context_flag": false,
+      "single_translate": true,
+      "api_calls": 7,
+      "reasoning_effort": "medium",
+      "cumulative_log_info": {
+        "input_uncached_tokens": 215116,
+        "input_system_tokens": 422674,
+        "input_user_tokens": 216516,
+        "input_intermediate_tokens": 0,
+        "input_total_tokens": 639190,
+        "output_prompt_tokens": 0,
+        "output_completion_tokens": 215364,
+        "output_total_tokens": 215364,
+        "cost": 1.61076125
+      },
+      "prompt_filename": "nl-translation-tsi.prompt.md",
+      "full_system_message": "As a professional translator and editor, you act as a cultural mediator between source text and targ..."
     }
   ]
 }
