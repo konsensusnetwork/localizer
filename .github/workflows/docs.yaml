@@ -1,8 +1,9 @@
 name: Publish docs
+# 2026-10-30 (Konsensus): this fork is a localizer, not the upstream project. Upstream's docs publish (mkdocs
+# gh-deploy) cannot push here (github-actions[bot] has no write access, no Pages site) and failed on every push to
+# main since 2025-12-23. Manual start only; the original trigger is in git history.
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   deploy:
