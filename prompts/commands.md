@@ -34,32 +34,32 @@ pdm run dir_process books/21fff/es/to-edit --model openai --model_list o3-mini -
 
 python3 make_book.py --book_name test_books/animal_farm.epub --model gemini --language nl
 
-pdm run bbook_maker --book_name books/tsi-nl/ch02.qmd --model gemini  --prompt prompts/nl/nl-translation-tsi.prompt.md --batch_size=5 --single_translate --language nl --gemini_key AIzaSyBAwu8vTHKGC2zCGYdJEH6STZByibatgNI --model_list gemini-2.5-pro-preview-06-05
+pdm run bbook_maker --book_name books/tsi-nl/ch02.qmd --model gemini  --prompt prompts/nl/nl-translation-tsi.prompt.md --batch_size=5 --single_translate --language nl --gemini_key <GEMINI_API_KEY> --model_list gemini-2.5-pro-preview-06-05
 
-pdm run bbook_maker --book_name books/bm-al/ch00.md --model gemini --prompt prompts/al-translation.prompt.md --batch_size=5 --single_translate --language Albanian --gemini_key AIzaSyBAwu8vTHKGC2zCGYdJEH6STZByibatgNI --model_list gemini-2.5-pro-preview-06-05
+pdm run bbook_maker --book_name books/bm-al/ch00.md --model gemini --prompt prompts/al-translation.prompt.md --batch_size=5 --single_translate --language Albanian --gemini_key <GEMINI_API_KEY> --model_list gemini-2.5-pro-preview-06-05
 
-pdm run dir_process books/tsi-fr --model gemini --prompt prompts/fr/fr-edit-2.prompt.md --batch_size=5 --single_translate --language fr --gemini_key AIzaSyBAwu8vTHKGC2zCGYdJEH6STZByibatgNI --model_list gemini-2.5-pro
+pdm run dir_process books/tsi-fr --model gemini --prompt prompts/fr/fr-edit-2.prompt.md --batch_size=5 --single_translate --language fr --gemini_key <GEMINI_API_KEY> --model_list gemini-2.5-pro
 
-pdm run bbook_maker --book_name books/TOMS_EN.md --model gemini --prompt prompts/es/es-translation.prompt.md --batch_size=5 --single_translate --language es --gemini_key AIzaSyBAwu8vTHKGC2zCGYdJEH6STZByibatgNI --model_list gemini-2.5-pro
+pdm run bbook_maker --book_name books/TOMS_EN.md --model gemini --prompt prompts/es/es-translation.prompt.md --batch_size=5 --single_translate --language es --gemini_key <GEMINI_API_KEY> --model_list gemini-2.5-pro
 
-pdm run bbook_maker --book_name books/TOMS_EN.md --model gemini --prompt prompts/it-translation-2.prompt.md --batch_size=5 --single_translate --language it --gemini_key AIzaSyBAwu8vTHKGC2zCGYdJEH6STZByibatgNI --model_list gemini-2.5-pro
+pdm run bbook_maker --book_name books/TOMS_EN.md --model gemini --prompt prompts/it-translation-2.prompt.md --batch_size=5 --single_translate --language it --gemini_key <GEMINI_API_KEY> --model_list gemini-2.5-pro
 
-pdm run bbook_maker --book_name books/OTALP/OTALP_EN.md --model gemini --prompt prompts/es/es-translation.prompt.md --batch_size=5 --single_translate --language es --gemini_key AIzaSyBAwu8vTHKGC2zCGYdJEH6STZByibatgNI --model_list gemini-2.5-pro
+pdm run bbook_maker --book_name books/OTALP/OTALP_EN.md --model gemini --prompt prompts/es/es-translation.prompt.md --batch_size=5 --single_translate --language es --gemini_key <GEMINI_API_KEY> --model_list gemini-2.5-pro
 
-pdm run bbook_maker --book_name books/JB/CH11.md --model gemini --prompt prompts/en/en-copy-edit.prompt.md --batch_size=5 --single_translate --language en --gemini_key AIzaSyBAwu8vTHKGC2zCGYdJEH6STZByibatgNI --model_list gemini-2.5-pro
+pdm run bbook_maker --book_name books/JB/CH11.md --model gemini --prompt prompts/en/en-copy-edit.prompt.md --batch_size=5 --single_translate --language en --gemini_key <GEMINI_API_KEY> --model_list gemini-2.5-pro
 
-pdm run bbook_maker --book_name books/JB/CH11.md --model gemini --prompt prompts/en/en-edit.prompt.md --batch_size=5 --single_translate --language en --gemini_key AIzaSyBAwu8vTHKGC2zCGYdJEH6STZByibatgNI --model_list gemini-2.5-pro
+pdm run bbook_maker --book_name books/JB/CH11.md --model gemini --prompt prompts/en/en-edit.prompt.md --batch_size=5 --single_translate --language en --gemini_key <GEMINI_API_KEY> --model_list gemini-2.5-pro
 
-pdm run bbook_maker --book_name books/JB/CH08.md --model gemini --prompt prompts/en/en-translation.prompt.md --batch_size=5 --single_translate --language en --gemini_key AIzaSyBAwu8vTHKGC2zCGYdJEH6STZByibatgNI --model_list gemini-2.5-pro
+pdm run bbook_maker --book_name books/JB/CH08.md --model gemini --prompt prompts/en/en-translation.prompt.md --batch_size=5 --single_translate --language en --gemini_key <GEMINI_API_KEY> --model_list gemini-2.5-pro
 
-pdm run bbook_maker --book_name books/JB/CH08_EN.md --model gemini --prompt prompts/en/en-copy-edit.prompt.md --batch_size=5 --single_translate --language en --gemini_key AIzaSyBAwu8vTHKGC2zCGYdJEH6STZByibatgNI --model_list gemini-2.5-pro
+pdm run bbook_maker --book_name books/JB/CH08_EN.md --model gemini --prompt prompts/en/en-copy-edit.prompt.md --batch_size=5 --single_translate --language en --gemini_key <GEMINI_API_KEY> --model_list gemini-2.5-pro
 
-pdm run bbook_maker --book_name books/tsi-nl/Z0.md --model gemini --prompt prompts/nl/nl-translation-tsi.prompt.md --batch_size=5 --single_translate --language nl --gemini_key AIzaSyBAwu8vTHKGC2zCGYdJEH6STZByibatgNI --model_list gemini-2.5-pro
+pdm run bbook_maker --book_name books/tsi-nl/Z0.md --model gemini --prompt prompts/nl/nl-translation-tsi.prompt.md --batch_size=5 --single_translate --language nl --gemini_key <GEMINI_API_KEY> --model_list gemini-2.5-pro
 
 ### 2025/10/21 - DM_NL - edit
 
-pdm run bbook_maker --book_name books/dm-nl/ch01.qmd --model gemini --prompt prompts/nl/nl-edit-o3.prompt.md --batch_size=5 --single_translate --language nl --gemini_key AIzaSyBAwu8vTHKGC2zCGYdJEH6STZByibatgNI --model_list gemini-2.5-pro
+pdm run bbook_maker --book_name books/dm-nl/ch01.qmd --model gemini --prompt prompts/nl/nl-edit-o3.prompt.md --batch_size=5 --single_translate --language nl --gemini_key <GEMINI_API_KEY> --model_list gemini-2.5-pro
 
-pdm run bbook_maker --book_name books/dm-nl/ch02.qmd --model gemini --prompt prompts/nl/nl-edit-o3.prompt.md --batch_size=5 --single_translate --language nl --gemini_key AIzaSyBAwu8vTHKGC2zCGYdJEH6STZByibatgNI --model_list gemini-2.5-pro
+pdm run bbook_maker --book_name books/dm-nl/ch02.qmd --model gemini --prompt prompts/nl/nl-edit-o3.prompt.md --batch_size=5 --single_translate --language nl --gemini_key <GEMINI_API_KEY> --model_list gemini-2.5-pro
 
-pdm run bbook_maker --book_name books/dm-nl/ch03.qmd --model gemini --prompt prompts/nl/nl-edit-o3.prompt.md --batch_size=5 --single_translate --language nl --gemini_key AIzaSyBAwu8vTHKGC2zCGYdJEH6STZByibatgNI --model_list gemini-2.5-pro
+pdm run bbook_maker --book_name books/dm-nl/ch03.qmd --model gemini --prompt prompts/nl/nl-edit-o3.prompt.md --batch_size=5 --single_translate --language nl --gemini_key <GEMINI_API_KEY> --model_list gemini-2.5-pro
